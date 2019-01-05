@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
+import DeckSwiper from '../../components/DeckSwipe/DeckSwipe';
 
 const gabinete = ( props ) => (
     <View style={styles.container}>
@@ -9,8 +10,8 @@ const gabinete = ( props ) => (
             <HeaderToolbar open={props} />
         </View>
         <StatusBar color="#ff9933"/>
-        <View style={styles.view}>
-            <Text style={styles.text}>GABINETE</Text>
+        <View>
+            <DeckSwiper />
         </View>
     </View>
 );
