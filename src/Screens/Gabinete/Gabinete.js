@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from 'react-native';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 
-
 const gabinete = ( props ) => (
     <View style={styles.container}>
         <View>
