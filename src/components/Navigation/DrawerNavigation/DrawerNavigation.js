@@ -5,13 +5,19 @@ import {StyleSheet, View, Image, SafeAreaView, ScrollView, Dimensions} from 'rea
 import iconLogo from '../../../assets/images/Logo/logo.png';
 import GabineteScreen from '../../../Screens/Gabinete/Gabinete';
 import MisionVisionScreen from '../../../Screens/MisionVision/MisionVision';
-import PlanMunicipalDesarrollo from '../../../Screens/PlanMunicipalDesarrollo/PlanMunicipalDesarrollo';
-import Reglamentos from '../../../Screens/Reglamentos/Reglamentos';
-import Organizacion from '../../../Screens/Organizacion/Organizacion';
-import Manuales from '../../../Screens/Manuales/Manuales';
-import GestionPublica from '../../../Screens/GestionPublica/GestionPublica';
-import OrganizacionesCiviles from '../../../Screens/OrganizacionesCiviles/OrganizacionesCiviles';
-import DesarrolloUrbano from '../../../Screens/DesarrolloUrbano/DesarrolloUrbano';
+import PlanMunicipalDesarrolloScreen from '../../../Screens/PlanMunicipalDesarrollo/PlanMunicipalDesarrollo';
+import ReglamentosScreen from '../../../Screens/Reglamentos/Reglamentos';
+import OrganizacionScreen from '../../../Screens/Organizacion/Organizacion';
+import ManualesScreen from '../../../Screens/Manuales/Manuales';
+import GestionPublicaScreen from '../../../Screens/GestionPublica/GestionPublica';
+import OrganizacionesCivilesScreen from '../../../Screens/OrganizacionesCiviles/OrganizacionesCiviles';
+import DesarrolloUrbanoScreen from '../../../Screens/DesarrolloUrbano/DesarrolloUrbano';
+import BuzonCiudadanoScreen from '../../../Screens/BuzonCiudadano/BuzonCiudadano';
+import ConsultaCiudadanaScreen from '../../../Screens/ConsultaCiudadana/ConsultaCiudadana';
+import NoticiasScreen from '../../../Screens/Noticias/Noticias';
+import ActividadesScreen from '../../../Screens/Actividades/Actividades';
+import BusEscolarScreen from '../../../Screens/BusEscolar/BusEscolar';
+import IncidenciasScreen from '../../../Screens/Incidencias/Incidencias';
 
 const CustomDrawerComponent = ( props ) => (
     <SafeAreaView style={styles.sAV}>
@@ -28,13 +34,19 @@ const CustomDrawerComponent = ( props ) => (
 const drawerNavigation = createDrawerNavigator({
     'Gabinete': GabineteScreen,
     'Misión y Visión': MisionVisionScreen,
-    'Plan Municipal de Desarrollo': PlanMunicipalDesarrollo,
-    'Reglamentos': Reglamentos,
-    'Organización': Organizacion,
-    'Manuales': Manuales,
-    'Gestión Pública': GestionPublica,
-    'Organizaciones Civiles': OrganizacionesCiviles,
-    'Desarrollo Urbano': DesarrolloUrbano,
+    'Plan Municipal de Desarrollo': PlanMunicipalDesarrolloScreen,
+    'Reglamentos': ReglamentosScreen,
+    'Organización': OrganizacionScreen,
+    'Manuales': ManualesScreen,
+    'Gestión Pública': GestionPublicaScreen,
+    'Organizaciones Civiles': OrganizacionesCivilesScreen,
+    'Desarrollo Urbano': DesarrolloUrbanoScreen,
+    'Buzón Ciudadano': BuzonCiudadanoScreen,
+    'Consulta Ciudadana': ConsultaCiudadanaScreen,
+    'Noticias': NoticiasScreen,
+    'Actividades': ActividadesScreen,
+    'Buz Escolar': BusEscolarScreen,
+    'Incidencias': IncidenciasScreen,
 },{
     contentComponent: CustomDrawerComponent
 });
