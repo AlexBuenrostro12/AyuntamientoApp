@@ -8,7 +8,7 @@ export default class Layout extends Component {
         return (
             <Aux>
                 <DrawerNavigation />
-                <FAB />
+                {/* <FAB /> */}
             </Aux>
         );
     }
