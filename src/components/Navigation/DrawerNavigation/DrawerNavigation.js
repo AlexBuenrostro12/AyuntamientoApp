@@ -18,6 +18,7 @@ import NoticiasScreen from '../../../Screens/Noticias/Noticias';
 import ActividadesScreen from '../../../Screens/Actividades/Actividades';
 import BusEscolarScreen from '../../../Screens/BusEscolar/BusEscolar';
 import IncidenciasScreen from '../../../Screens/Incidencias/Incidencias';
+import { Root } from 'native-base';
 
 const CustomDrawerComponent = ( props ) => (
     <SafeAreaView style={styles.sAV}>
@@ -31,7 +32,7 @@ const CustomDrawerComponent = ( props ) => (
 );
 
 
-const drawerNavigation = createDrawerNavigator({
+const DrawerNavigation = createDrawerNavigator({
     'Gabinete': GabineteScreen,
     'Misión y Visión': MisionVisionScreen,
     'Plan Municipal de Desarrollo': PlanMunicipalDesarrolloScreen,
@@ -68,4 +69,8 @@ const styles = StyleSheet.create({
     }
 });
 
-export default drawerNavigation;
+export default () =>
+    <Root>
+        <DrawerNavigation />
+    </Root>;
+    
