@@ -250,13 +250,12 @@ export default class BuzonCiudadano extends Component {
             <View style={styles.container}>
                 <ScrollView>
                     <View>
-                        <HeaderToolbar open={this.props} />
+                        <HeaderToolbar 
+                            open={this.props}
+                            title="Sugerencias" />
                     </View>
                     <StatusBar color="#ff9933"/>
                     <View>
-                        <View style={styles.view}>
-                            <Text style={styles.text}>Realiza queja o sugerencia</Text>
-                        </View>
                         {form}
                     </View>
                 </ScrollView>
