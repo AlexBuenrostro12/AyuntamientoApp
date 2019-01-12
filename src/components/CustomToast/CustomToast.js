@@ -8,42 +8,39 @@ const CustomToast = ( props ) => {
 
     switch (props.type) {
         case ( 'success' ):
-            if (props.show) {
-                toast = (
-                    Toast.show({
-                        type: ""+props.type,
-                        text: ""+props.text,
-                        buttonText: "Okay",
-                        position: "bottom"
-                    })
-                );    
-            }
+            toast = (
+                Toast.show({
+                    text: props.text,
+                    buttonText: "Okay",
+                    type: props.type,
+                    position: "bottom",
+                    duration: 3000
+                })
+            );
         break;
 
         case ( 'warning' ):
-            if (props.show){
-                toast = (
-                    Toast.show({
-                        text: props.text,
-                        buttonText: "Okay",
-                        type: props.type,
-                        position: "bottom"
-                    })
-                );
-            }
+            toast = (
+                Toast.show({
+                    text: props.text,
+                    buttonText: "Okay",
+                    type: props.type,
+                    position: "bottom",
+                    duration: 3000
+                })
+            );
         break;
 
         case ( 'danger' ):
-            if (props.show) {
-                toast = (
-                    Toast.show({
-                        type: ""+props.type,
-                        text: ""+props.text,
-                        buttonText: "Okay",
-                        position: "bottom"
-                    })
-                );    
-            }  
+            toast = (
+                Toast.show({
+                    text: props.text,
+                    buttonText: "Okay",
+                    type: props.type,
+                    position: "bottom",
+                    duration: 3000
+                })
+            );  
         break;
     }
 

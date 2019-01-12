@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Form, Toast, Button } from 'native-base';
+import { Form, Toast, Button, Spinner } from 'native-base';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomToast from '../../components/CustomToast/CustomToast';
+import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import axios from '../../../axios-ayuntamiento';
 
 export default class BuzonCiudadano extends Component {
@@ -71,11 +72,13 @@ export default class BuzonCiudadano extends Component {
             text: {
                 sText: '¡Comentario enviado!',
                 wText: '¡Complete formulario correctamente!',
-                dText: '¡Comentario fallido al enviar!'
+                dText: 'Sugerencia fallida al enviar!'
             },
         },
-        toastMounted: null,
-        showToast: false,
+        toasts: null,
+        showSuccessToast: false,
+        showWarningToast: false,
+        showDangerToast: false,
         date: 'null',
 
     }
@@ -99,6 +102,7 @@ export default class BuzonCiudadano extends Component {
     }
 
     orderHandler = () => {
+        this.setState({loading: true})
         if (this.state.formIsValid) {
             const formData = {};
             for (let formElementIdentifier in this.state.form) {
@@ -110,21 +114,49 @@ export default class BuzonCiudadano extends Component {
             
             axios.post('/suggestions.json', suggetion)
                 .then(response => {
-                    this.setState( { loading: false } );
+                    this.setState( { showSuccessToast: true } );
+                    this.setTimeOut();
                 } )
                 .catch(error => {
-                    this.setState( { loading: false } );
+                    this.setState( { showDangerToast: true } );
+                    this.setTimeOut();
                 });   
-        }else {
-            // this.setState({showToast: true});
-            let toast = (
-                <CustomToast
-                     show={true}
-                     type={this.state.toastConfiguration.type.warning}
-                     text={this.state.toastConfiguration.text.wText} />
-            );
-            this.setState({toastMounted: toast}); //aQUI VOY
+        } else {
+            this.setState({ showWarningToast: true });
+            this.setTimeOut();
         }
+    }
+
+    componentDidMount() {
+        let success = (
+                <CustomToast
+                    type={this.state.toastConfiguration.type.success}
+                    text={this.state.toastConfiguration.text.sText} />
+        ); 
+        let warning = (
+                <CustomToast
+                    type={this.state.toastConfiguration.type.warning}
+                    text={this.state.toastConfiguration.text.wText} />
+        );
+        let danger = (
+                <CustomToast
+                    type={this.state.toastConfiguration.type.danger}
+                    text={this.state.toastConfiguration.text.dText} />
+        );
+        let toasts = {
+            success: success,
+            warning: warning,
+            danger: danger
+        }
+
+        this.setState({ toasts: toasts });
+    }
+
+    setTimeOut = () => {
+        let that = this;
+        setTimeout(function(){
+            that.setState({ showSuccessToast: false, showWarningToast: false, showDangerToast: false });
+        }, 3000);
     }
 
     checkValidity(value, rules) {
@@ -179,9 +211,7 @@ export default class BuzonCiudadano extends Component {
         for(let inputIdentifier in updatedSuggestionForm) {
             formIsValid = updatedSuggestionForm[inputIdentifier].valid && formIsValid;
         }
-
-
-        this.setState({form: updatedSuggestionForm, formIsValid: formIsValid}); //agregar spinner y toast
+        this.setState({form: updatedSuggestionForm, formIsValid: formIsValid});
     }
 
     render(){
@@ -192,6 +222,8 @@ export default class BuzonCiudadano extends Component {
                 config: this.state.form[key]
             });
         }
+
+        
         let form = (
             <Form>
                 {formElementsArray.map(formElement => (
@@ -204,10 +236,13 @@ export default class BuzonCiudadano extends Component {
 
                 <CustomButton 
                         style={this.state.btnStyle}
-                        name={this.state.btnName+' '+this.state.toastMounted}
+                        name={this.state.btnName}
                         clicked={() => this.orderHandler()} />
 
-                {this.state.toastMounted}
+                {this.state.showSuccessToast ? this.state.toasts.success : null}
+                {this.state.showWarningToast ? this.state.toasts.warning : null}
+                {this.state.showDangerToast ? this.state.toasts.danger : null}
+
             </Form>
         );
 
