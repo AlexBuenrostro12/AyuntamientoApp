@@ -71,8 +71,8 @@ export default class BuzonCiudadano extends Component {
             },
             text: {
                 sText: '¡Comentario enviado!',
-                wText: '¡Complete formulario correctamente!',
-                dText: 'Sugerencia fallida al enviar!'
+                wText: '¡Complete el formulario correctamente!',
+                dText: '¡Sugerencia fallida al enviar!'
             },
         },
         toasts: null,

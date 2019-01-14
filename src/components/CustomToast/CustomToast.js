@@ -11,7 +11,6 @@ const CustomToast = ( props ) => {
             toast = (
                 Toast.show({
                     text: props.text,
-                    buttonText: "Okay",
                     type: props.type,
                     position: "bottom",
                     duration: 3000
@@ -23,7 +22,6 @@ const CustomToast = ( props ) => {
             toast = (
                 Toast.show({
                     text: props.text,
-                    buttonText: "Okay",
                     type: props.type,
                     position: "bottom",
                     duration: 3000
@@ -35,7 +33,6 @@ const CustomToast = ( props ) => {
             toast = (
                 Toast.show({
                     text: props.text,
-                    buttonText: "Okay",
                     type: props.type,
                     position: "bottom",
                     duration: 3000
