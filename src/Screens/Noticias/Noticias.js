@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
@@ -10,14 +10,6 @@ export default class Noticias extends Component {
     state = {
         news: [],
         loading: true,
-        items: [
-            'Simon Mignolet',
-            'Nathaniel Clyne',
-            'Dejan Lovren',
-            'Mama Sakho',
-            'Emre Can'
-          ]
-    
     }
 
     componentDidMount() {
@@ -51,19 +43,21 @@ export default class Noticias extends Component {
         );
 
         return(
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View>
-                    <HeaderToolbar 
-                        open={this.props}
-                        title="Noticias" />
+                    <View>
+                        <HeaderToolbar 
+                            open={this.props}
+                            title="Noticias" />
+                    </View>
+                    <StatusBar color="#ff9933"/>
+                    <View>
+                        <ScrollView>
+                            {this.state.loading ? spinner : form}
+                        </ScrollView>
+                    </View>
                 </View>
-                <StatusBar color="#ff9933"/>
-                <View style={styles.view}>
-                    <ScrollView>
-                        {this.state.loading ? spinner : form}
-                    </ScrollView>
-                </View>
-            </View>
+            </SafeAreaView>
         );
     }
     
@@ -74,9 +68,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     view: {
-        flex: 1,
-        //alignItems: 'center',
-        //justifyContent: 'center', 
+        flex: 1, 
     },
     text: {
         fontSize: 20,

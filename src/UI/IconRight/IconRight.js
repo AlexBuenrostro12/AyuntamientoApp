@@ -3,7 +3,7 @@ import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 import rightArrow from '../../assets/images/RightArrow/arrow.png'
 
 const iconRight = ( props ) => (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={props.describe}>
         <Image 
             style={styles.icon} 
             source={rightArrow} />

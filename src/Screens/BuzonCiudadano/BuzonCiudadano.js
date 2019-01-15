@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Form, Toast, Button, Spinner } from 'native-base';
+import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { Form } from 'native-base';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomToast from '../../components/CustomToast/CustomToast';
-import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import axios from '../../../axios-ayuntamiento';
 
 export default class BuzonCiudadano extends Component {
@@ -247,19 +246,21 @@ export default class BuzonCiudadano extends Component {
         );
 
         return (
-            <View style={styles.container}>
-                <ScrollView>
-                    <View>
-                        <HeaderToolbar 
-                            open={this.props}
-                            title="Sugerencias" />
-                    </View>
-                    <StatusBar color="#ff9933"/>
-                    <View>
-                        {form}
-                    </View>
-                </ScrollView>
-            </View>
+            <SafeAreaView style={styles.container}>
+                <View>
+                    <ScrollView>
+                        <View>
+                            <HeaderToolbar 
+                                open={this.props}
+                                title="Sugerencias" />
+                        </View>
+                        <StatusBar color="#ff9933"/>
+                        <View>
+                            {form}
+                        </View>
+                    </ScrollView>
+                </View>
+            </SafeAreaView>
         );
     }
 }

@@ -1,12 +1,39 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { ListItem, Text, Separator, Content, Left, Right } from 'native-base';
-import CustomToast from '../CustomToast/CustomToast';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { ListItem, Text, Left, Right, Button, Card, CardItem, Body } from 'native-base';
 import IconRight from '../../UI/IconRight/IconRight';
 
 export default class Noticia extends Component {
     state = {
-        listItems: null
+        nombre: null,
+        categoria: null,
+        descripcion: null,
+        fecha: null,
+        noticia:[],
+        showItemCard: false
+    }
+
+    clickedListHandler = ( identifier ) => {
+        let noticia = [];
+        for(let dataName in this.prop.data) {
+            if(this.props.data[dataName] === identifier) {
+                this.setState({nombre: this.props.data[dataName]});
+                this.setState({categoria: this.props.data['categoria']});
+                this.setState({descripcion: this.props.data['descripcion']});
+                this.setState({fecha: this.props.data['fecha']});
+                noticia.push(
+                    {nombre: this.props.data[dataName]},
+                    {categoria: this.props.data['categoria']},
+                    {descripcion: this.props.data['descripcion']},
+                    {fecha: this.props.data['fecha']},
+                )
+            }
+        }
+        this.setState({ noticia: noticia, showItemCard: true });
+    }
+
+    showItemList = () => {
+        this.setState({showItemCard: false})
     }
     
     render() {
@@ -26,17 +53,35 @@ export default class Noticia extends Component {
                         <Text>{dt.name}</Text>
                     </Left>
                     <Right>
-                        <TouchableOpacity> 
-                            <IconRight />
-                        </TouchableOpacity>
+                        <IconRight describe={() => this.clickedListHandler(dt.name)}/>
                     </Right>
                 </ListItem>
             );
         })
         //add onPress evento to TouchableOpacity
+            const card = (
+                <TouchableOpacity onPress={() => this.showItemList()}>
+                    <Card>
+                        <CardItem header>
+                            <Text>{this.state.nombre} / {this.state.categoria}</Text>
+                        </CardItem>
+                        <CardItem>
+                            <Body>
+                                <Text>{this.state.descripcion}</Text>
+                            </Body>
+                        </CardItem>
+                        <CardItem footer>
+                            <Text>{this.state.fecha}</Text>
+                        </CardItem>
+                    </Card> 
+                </TouchableOpacity>
+            );
+
         return (
             <View>
-                {list}
+                <ScrollView>
+                    {!this.state.showItemCard ? list : card}
+                </ScrollView>
             </View>
         );
     }     
