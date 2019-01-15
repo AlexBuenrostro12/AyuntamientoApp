@@ -9,24 +9,17 @@ export default class Noticia extends Component {
         categoria: null,
         descripcion: null,
         fecha: null,
-        noticia:[],
         showItemCard: false
     }
 
     clickedListHandler = ( identifier ) => {
         let noticia = [];
-        for(let dataName in this.prop.data) {
+        for(let dataName in this.props.data) {
             if(this.props.data[dataName] === identifier) {
                 this.setState({nombre: this.props.data[dataName]});
                 this.setState({categoria: this.props.data['categoria']});
                 this.setState({descripcion: this.props.data['descripcion']});
                 this.setState({fecha: this.props.data['fecha']});
-                noticia.push(
-                    {nombre: this.props.data[dataName]},
-                    {categoria: this.props.data['categoria']},
-                    {descripcion: this.props.data['descripcion']},
-                    {fecha: this.props.data['fecha']},
-                )
             }
         }
         this.setState({ noticia: noticia, showItemCard: true });
