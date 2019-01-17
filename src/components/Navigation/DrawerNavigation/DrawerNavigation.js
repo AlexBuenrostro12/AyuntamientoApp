@@ -17,6 +17,7 @@ import ConsultaCiudadanaScreen from '../../../Screens/ConsultaCiudadana/Consulta
 import NoticiasScreen from '../../../Screens/Noticias/Noticias';
 import ActividadesScreen from '../../../Screens/Actividades/Actividades';
 import BusEscolarScreen from '../../../Screens/BusEscolar/BusEscolar';
+import HomeScreen from '../../../Screens/Home/Home';
 import IncidenciasScreen from '../../../Screens/Incidencias/Incidencias';
 import { Root } from 'native-base';
 
@@ -33,6 +34,7 @@ const CustomDrawerComponent = ( props ) => (
 
 
 const DrawerNavigation = createDrawerNavigator({
+    'Home':  HomeScreen,
     'Gabinete': GabineteScreen,
     'Misión y Visión': MisionVisionScreen,
     'Plan Municipal de Desarrollo': PlanMunicipalDesarrolloScreen,

@@ -41,45 +41,52 @@ export default class Noticia extends Component {
         }
         const list = data.map(dt => {
             return (
-                <ListItem key={dt.name}>
-                    <Left>
-                        <Text>{dt.name}</Text>
-                    </Left>
-                    <Right>
-                        <IconRight describe={() => this.clickedListHandler(dt.name)}/>
-                    </Right>
-                </ListItem>
+                <View key={dt.name} style={styles.list}>
+                    <ListItem key={dt.name}>
+                        <Left>
+                            <Text>{dt.name}</Text>
+                        </Left>
+                        <Right>
+                            <IconRight describe={() => this.clickedListHandler(dt.name)}/>
+                        </Right>
+                    </ListItem>
+                </View>
             );
         })
         //add onPress evento to TouchableOpacity
             const card = (
-                <TouchableOpacity onPress={() => this.showItemList()}>
-                    <Card>
-                        <CardItem header>
-                            <Text>{this.state.nombre} / {this.state.categoria}</Text>
-                        </CardItem>
-                        <CardItem>
-                            <Body>
-                                <Text>{this.state.descripcion}</Text>
-                            </Body>
-                        </CardItem>
-                        <CardItem footer>
-                            <Text>{this.state.fecha}</Text>
-                        </CardItem>
-                    </Card> 
-                </TouchableOpacity>
+                <View style={styles.card}>
+                    <TouchableOpacity onPress={() => this.showItemList()}>
+                        <Card>
+                            <CardItem header>
+                                <Text>{this.state.nombre} / {this.state.categoria}</Text>
+                            </CardItem>
+                            <CardItem>
+                                <Body>
+                                    <Text>{this.state.descripcion}</Text>
+                                </Body>
+                            </CardItem>
+                            <CardItem footer>
+                                <Text>{this.state.fecha}</Text>
+                            </CardItem>
+                        </Card> 
+                    </TouchableOpacity>
+                </View>
             );
 
         return (
-            <View>
-                <ScrollView>
-                    {!this.state.showItemCard ? list : card}
-                </ScrollView>
-            </View>
+            <ScrollView>
+                {!this.state.showItemCard ? list : card}
+            </ScrollView>
         );
     }     
 }
 
 const styles = StyleSheet.create({
-
+    card: {
+        padding: 5
+    },
+    list: {
+        padding: 5
+    }
 });

@@ -1,15 +1,17 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView, Text } from 'react-native';
+import React, { Component, useState } from 'react';
+import { View, StyleSheet, Text, SafeAreaView, ScrollView } from 'react-native';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
-import Noticia from '../../components/Noticia/Noticia';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
+import SwiperBanner from '../../components/SwiperBanner/SwiperBanner';
 
-export default class Noticias extends Component {
+
+export default class Home extends Component {
+
     state = {
-        news: [],
-        loading: true,
+        news: null,
+        loading: true
     }
 
     componentDidMount() {
@@ -28,54 +30,50 @@ export default class Noticias extends Component {
                 this.setState({loading: false});
             });
     }
-    
+
     render() {
-        let form = (
-            this.state.news.map(nw => (
-                <Noticia 
-                    key={nw.id}
-                    data={nw.data} />
-                ))
-        );
-        let spinner = (
+
+        const spinner = (
             <CustomSpinner 
                 color="blue"/>
         );
-        let bottomSpace = (
-            <View>
-                <Text></Text>
-                <Text></Text>
-                <Text></Text>
-                <Text></Text>
-            </View>
+
+        let swiperBanner = (
+            <SwiperBanner news={this.state.news} open={this.props}/>
         );
 
         return(
             <SafeAreaView style={styles.container}>
-                <View>
+                <View style={styles.view}>
                     <View>
                         <HeaderToolbar 
                             open={this.props}
-                            title="Noticias" />
+                            title="Home" />
                     </View>
                     <StatusBar color="#ff9933"/>
-                    <ScrollView>
-                        {this.state.loading ? spinner : form}
-                        {bottomSpace}
-                    </ScrollView>
+                    <View>
+                        {this.state.loading ? spinner : swiperBanner}
+                    </View>
                 </View>
             </SafeAreaView>
         );
     }
-    
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 1
+    },
+    text: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 25
     },
     view: {
         flex: 1, 
+        flexWrap: 'wrap', 
+        flexDirection: 'column', 
+        overflow: 'scroll'
     },
     text: {
         fontSize: 20,
