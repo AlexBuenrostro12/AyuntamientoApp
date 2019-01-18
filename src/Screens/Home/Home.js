@@ -5,6 +5,7 @@ import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import SwiperBanner from '../../components/SwiperBanner/SwiperBanner';
+import FABsRadio from '../../components/FABsRadio/FABsRadio';
 
 export default class Home extends Component {
 
@@ -53,6 +54,9 @@ export default class Home extends Component {
                     <View>
                         {this.state.loading ? spinner : swiperBanner}
                     </View>
+                </View>
+                <View>
+                    <FABsRadio />
                 </View>
             </SafeAreaView>
         );
