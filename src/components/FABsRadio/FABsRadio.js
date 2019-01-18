@@ -9,8 +9,6 @@ import mute from '../../assets/images/Mute/mute.png';
 export default class FABsRadio extends Component {
 
     state = {
-        called: false,
-        number: '3411381787',
         active: false
     }
 
@@ -46,7 +44,7 @@ export default class FABsRadio extends Component {
                 </Fab>
                 <Fab 
                     active={this.state.active}
-                    style={{backgroundColor: "red"}}>
+                    style={{backgroundColor: "#1CA9D0"}}>
                     <TouchableOpacity hitSlop={styles.hitSlop}>
                         <Image
                             style={{width:20, height: 20}}
@@ -66,8 +64,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'blue'
     },
     hitSlop: {
-        top: 30, 
-        bottom: 30, 
+        top: 20, 
+        bottom: 20, 
         left: 50, 
         right: 50,
     }
