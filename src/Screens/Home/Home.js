@@ -6,7 +6,6 @@ import axios from '../../../axios-ayuntamiento';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import SwiperBanner from '../../components/SwiperBanner/SwiperBanner';
 
-
 export default class Home extends Component {
 
     state = {
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
         flex: 1, 
         flexWrap: 'wrap', 
         flexDirection: 'column', 
-        overflow: 'scroll'
+        overflow: 'scroll',
     },
     text: {
         fontSize: 20,

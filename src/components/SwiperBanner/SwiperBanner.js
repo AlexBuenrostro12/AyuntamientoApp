@@ -1,27 +1,30 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { Card, DeckSwiper, CardItem, Thumbnail, Left, Body } from 'native-base';
+import CustomButton from '../../components/CustomButton/CustomButton';
 
 export default class SwiperBanner extends Component {
     state = {
         bannerItems: [],
         heightScreen: 0,
-        widthScreen: 0
+        widthScreen: 0,
     }
 
     componentWillMount() {
         let bannerItems = [];
-        this.props.news.map(nw => {
-            bannerItems.push({
-                logo: require('../../assets/images/Ayuntamiento/ayuntamiento.jpg'),
-                nombre: nw.data.nombre,
-                categoria: nw.data.categoria,
-                fecha: nw.data.fecha,
-                logoCategoria: this.choseCategoryLogo(nw.data.categoria)
+        if(this.props.news) {
+            this.props.news.map(nw => {
+                bannerItems.push({
+                    logo: require('../../assets/images/Ayuntamiento/ayuntamiento.jpg'),
+                    nombre: nw.data.nombre,
+                    categoria: nw.data.categoria,
+                    fecha: nw.data.fecha,
+                    logoCategoria: this.choseCategoryLogo(nw.data.categoria)
+                });
             });
-        });
-        let {height, width} = Dimensions.get('window');
-        this.setState({bannerItems: bannerItems, heightScreen: height, widthScreen: width});
+            let {height, width} = Dimensions.get('window');
+            this.setState({bannerItems: bannerItems, heightScreen: height, widthScreen: width});
+        }
     }
     
     choseCategoryLogo = ( category ) => {
@@ -69,21 +72,21 @@ export default class SwiperBanner extends Component {
                 }
               /> //SwiperBanner
         );
-    
+        
+
         return(
             <View style={styles.view}>
                 <View style={styles.banner}>
                     <Text style={styles.bannerText}>Banner de noticias</Text>
                 </View>
                 <View style={styles.swiper}>
-                    {swiper}
+                    {swiper ? swiper : null}
                 </View>
             </View>
         );
     }
     
 }
-
 
 const styles = StyleSheet.create({
     view: {
