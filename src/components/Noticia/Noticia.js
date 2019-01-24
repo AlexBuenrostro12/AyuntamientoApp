@@ -12,27 +12,27 @@ export default class Noticia extends Component {
         showItemCard: false
     }
 
-    clickedListHandler = ( identifier ) => {
+    clickedListHandler = (identifier) => {
         let noticia = [];
-        for(let dataName in this.props.data) {
-            if(this.props.data[dataName] === identifier) {
-                this.setState({nombre: this.props.data[dataName]});
-                this.setState({categoria: this.props.data['categoria']});
-                this.setState({descripcion: this.props.data['descripcion']});
-                this.setState({fecha: this.props.data['fecha']});
+        for (let dataName in this.props.data) {
+            if (this.props.data[dataName] === identifier) {
+                this.setState({ nombre: this.props.data[dataName] });
+                this.setState({ categoria: this.props.data['categoria'] });
+                this.setState({ descripcion: this.props.data['descripcion'] });
+                this.setState({ fecha: this.props.data['fecha'] });
             }
         }
         this.setState({ noticia: noticia, showItemCard: true });
     }
 
     showItemList = () => {
-        this.setState({showItemCard: false})
+        this.setState({ showItemCard: false })
     }
-    
+
     render() {
 
         const data = [];
-        for(let dataName in this.props.data){
+        for (let dataName in this.props.data) {
             if (dataName === 'nombre') {
                 data.push({
                     name: this.props.data[dataName]
@@ -44,42 +44,44 @@ export default class Noticia extends Component {
                 <View key={dt.name} style={styles.list}>
                     <ListItem key={dt.name}>
                         <Left>
-                            <Text>{dt.name}</Text>
+                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.name)}>
+                                <Text>{dt.name}</Text>
+                            </TouchableOpacity>
                         </Left>
                         <Right>
-                            <IconRight describe={() => this.clickedListHandler(dt.name)}/>
+                            <IconRight describe={() => this.clickedListHandler(dt.name)} />
                         </Right>
                     </ListItem>
                 </View>
             );
         })
         //add onPress evento to TouchableOpacity
-            const card = (
-                <View style={styles.card}>
-                    <TouchableOpacity onPress={() => this.showItemList()}>
-                        <Card>
-                            <CardItem header>
-                                <Text>{this.state.nombre} / {this.state.categoria}</Text>
-                            </CardItem>
-                            <CardItem>
-                                <Body>
-                                    <Text>{this.state.descripcion}</Text>
-                                </Body>
-                            </CardItem>
-                            <CardItem footer>
-                                <Text>{this.state.fecha}</Text>
-                            </CardItem>
-                        </Card> 
-                    </TouchableOpacity>
-                </View>
-            );
+        const card = (
+            <View style={styles.card}>
+                <TouchableOpacity onPress={() => this.showItemList()}>
+                    <Card>
+                        <CardItem header>
+                            <Text>{this.state.nombre} / {this.state.categoria}</Text>
+                        </CardItem>
+                        <CardItem>
+                            <Body>
+                                <Text>{this.state.descripcion}</Text>
+                            </Body>
+                        </CardItem>
+                        <CardItem footer>
+                            <Text>{this.state.fecha}</Text>
+                        </CardItem>
+                    </Card>
+                </TouchableOpacity>
+            </View>
+        );
 
         return (
             <ScrollView>
                 {!this.state.showItemCard ? list : card}
             </ScrollView>
         );
-    }     
+    }
 }
 
 const styles = StyleSheet.create({

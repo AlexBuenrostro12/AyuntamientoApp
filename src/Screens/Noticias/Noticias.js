@@ -30,7 +30,7 @@ export default class Noticias extends Component {
     }
     
     render() {
-        let form = (
+        let list = (
             this.state.news.map(nw => (
                 <Noticia 
                     key={nw.id}
@@ -60,7 +60,7 @@ export default class Noticias extends Component {
                     </View>
                     <StatusBar color="#ff9933"/>
                     <ScrollView>
-                        {this.state.loading ? spinner : form}
+                        {this.state.loading ? spinner : list}
                         {bottomSpace}
                     </ScrollView>
                 </View>
