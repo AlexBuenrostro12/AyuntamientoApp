@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
-import { ListItem } from 'native-base';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { ListItem, Left, Right } from 'native-base';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
 import Spinner from '../../components/CustomSpinner/CustomSpinner';
 import Consulta from '../../components/Consulta/Consulta';
+import IconRight from '../../UI/IconRight/IconRight';
 
 export default class ConsultaCiudadana extends Component {
     state = {
@@ -28,16 +29,42 @@ export default class ConsultaCiudadana extends Component {
             .catch(err => {
                 this.setState({loading: false});
             });
+
     }
 
     render() {
-        let list = (
-            this.state.surveys.map(sv => (
-                <Consulta 
-                    key={sv.id}
-                    data={sv.data}/>
-            ))
-        );
+        // let list = (
+        //     this.state.surveys.map(sv => (
+        //         <Consulta 
+        //             key={sv.id}
+        //             data={sv.data}/>
+        //     ))
+        // );
+        
+        const itemsList = [];
+        this.state.surveys.map(sv => {
+            for (let survey in sv.data) {
+                if (survey === 'nombre'){
+                    itemsList.push({
+                        name: sv.data[survey]
+                    })
+                }
+            }
+        })
+        const list = itemsList.map(item => (
+            <View key={item.name} style={styles.list}>
+                <ListItem key={item.name}>
+                    <Left>
+                        <TouchableOpacity>
+                            <Text>{item.name}</Text>
+                        </TouchableOpacity>
+                    </Left>
+                    <Right>
+                        <IconRight />
+                    </Right>
+                </ListItem>
+            </View>
+        ));
         let spinner = (
             <Spinner
                 color="blue" />
@@ -73,5 +100,8 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20,
         fontWeight: 'bold',
+    },
+    list: {
+        padding: 5
     }
 });

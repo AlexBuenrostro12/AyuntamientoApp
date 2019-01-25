@@ -56,6 +56,7 @@ export default class Noticia extends Component {
             );
         })
         //add onPress evento to TouchableOpacity
+        // "start": "node node_modules/react-native/local-cli/cli.js start",
         const card = (
             <View style={styles.card}>
                 <TouchableOpacity onPress={() => this.showItemList()}>
