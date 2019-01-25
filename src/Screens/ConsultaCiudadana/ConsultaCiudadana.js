@@ -32,40 +32,24 @@ export default class ConsultaCiudadana extends Component {
     }
 
     render() {
-        // let list = (
-        //     this.state.surveys.map(sv => (
-        //         <Consulta 
-        //             key={sv.id}
-        //             data={sv.data}/>
-        //     ))
-        // );
-        const surverData = [];
-        this.state.surveys.map(sv => {
-            for (let survey in sv.data) {
-                if (survey === 'nombre') {
-                    surverData.push({
-                        name: sv.data[survey]
-                    });
-                }
-            }
-        });
-        const list = surverData.map(svd => (
-            <View key={svd.name} style={styles.list}>
-                <ListItem key={svd.name}>
-                    <Left>
-                        <TouchableOpacity>
-                            <Text>{svd.name}</Text>
-                        </TouchableOpacity>
-                    </Left>
-                    <Right>
-                        <IconRight />
-                    </Right>
-                </ListItem>
-            </View>
-        ))
+        let list = (
+            this.state.surveys.map(sv => (
+                <Consulta 
+                    key={sv.id}
+                    data={sv.data}/>
+            ))
+        );
         let spinner = (
             <Spinner
                 color="blue" />
+        );
+        let bottomSpace = (
+            <View>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+                <Text></Text>
+            </View>
         );
 
         return (
@@ -79,6 +63,7 @@ export default class ConsultaCiudadana extends Component {
                     <StatusBar color="#ff9933" />
                     <ScrollView>
                         {this.state.loading ? spinner : list}
+                        {bottomSpace}
                     </ScrollView>
                 </View>
             </SafeAreaView>
