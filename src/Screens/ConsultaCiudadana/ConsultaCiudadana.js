@@ -21,15 +21,14 @@ export default class ConsultaCiudadana extends Component {
                 for (let key in res.data) {
                     fetchedSurveys.push({
                         ...res.data[key],
-                        id:  key
+                        id: key
                     });
                 }
                 this.setState({ loading: false, surveys: fetchedSurveys });
             })
             .catch(err => {
-                this.setState({loading: false});
+                this.setState({ loading: false });
             });
-
     }
 
     render() {
@@ -40,23 +39,22 @@ export default class ConsultaCiudadana extends Component {
         //             data={sv.data}/>
         //     ))
         // );
-        
-        const itemsList = [];
+        const surverData = [];
         this.state.surveys.map(sv => {
             for (let survey in sv.data) {
-                if (survey === 'nombre'){
-                    itemsList.push({
+                if (survey === 'nombre') {
+                    surverData.push({
                         name: sv.data[survey]
-                    })
+                    });
                 }
             }
-        })
-        const list = itemsList.map(item => (
-            <View key={item.name} style={styles.list}>
-                <ListItem key={item.name}>
+        });
+        const list = surverData.map(svd => (
+            <View key={svd.name} style={styles.list}>
+                <ListItem key={svd.name}>
                     <Left>
                         <TouchableOpacity>
-                            <Text>{item.name}</Text>
+                            <Text>{svd.name}</Text>
                         </TouchableOpacity>
                     </Left>
                     <Right>
@@ -64,7 +62,7 @@ export default class ConsultaCiudadana extends Component {
                     </Right>
                 </ListItem>
             </View>
-        ));
+        ))
         let spinner = (
             <Spinner
                 color="blue" />
@@ -74,11 +72,11 @@ export default class ConsultaCiudadana extends Component {
             <SafeAreaView style={styles.container}>
                 <View>
                     <View>
-                        <HeaderToolbar 
+                        <HeaderToolbar
                             open={this.props}
                             title="Consultas" />
                     </View>
-                    <StatusBar color="#ff9933"/>
+                    <StatusBar color="#ff9933" />
                     <ScrollView>
                         {this.state.loading ? spinner : list}
                     </ScrollView>
@@ -100,8 +98,5 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20,
         fontWeight: 'bold',
-    },
-    list: {
-        padding: 5
     }
 });
