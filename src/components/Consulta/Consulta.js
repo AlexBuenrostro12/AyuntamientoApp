@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { ListItem, Left, Right, Card, CardItem, Body, Radio } from 'native-base';
+import { ListItem, Left, Right, Card, CardItem, Body, CheckBox, Form } from 'native-base';
 import IconRight from '../../UI/IconRight/IconRight';
-import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import CustomQuestion from './CustomQuestion/CustomQuestion';
+import CustomButton from '../CustomButton/CustomButton';
 
 
 export default class Consulta extends Component {
     state = {
         questions: [],
         showCard: false,
-        selected: 'false',
-        value: null
+        survey: null,
+        surveyResult: [],
+        form: {
+
+        }
     }
 
     clickListHandler = (identifier) => {
@@ -18,14 +22,23 @@ export default class Consulta extends Component {
         for (let dataName in this.props.data) {
             if (this.props.data[dataName] !== identifier) {
                 questions.push({
-                    ...this.props.data[dataName]
+                    id: dataName,
+                    config: this.props.data[dataName]
                 });
             }
         }
-        this.setState({ questions: questions, showCard: true });
+        this.setState({ questions: questions, showCard: true, survey: identifier });
     }
     showItemList = () => {
         this.setState({ showCard: false });
+    }
+    clickedAnswerHandler = (question, answer) => {
+        const surveyResult = [];
+        this.setState({ checked1: true })
+    }
+
+    answerSelectedHandler = (indentifier) => {
+
     }
 
     render() {
@@ -51,76 +64,34 @@ export default class Consulta extends Component {
                 </ListItem>
             </View>
         ));
-        const incisosKey = [];
-        for (let inc in this.state.questions) {
-            if (this.state.questions[inc] !== 'pregunta') {
-                incisosKey.push({
-                    ...this.state.questions[inc]
-                })
-            }
-        }
-        // const card = (
-        //     this.state.questions.map(q => (
-        //         <View key={q.pregunta} style={styles.card}>
-        //             <TouchableOpacity onPress={() => this.showItemList()}>
-        //                 <Card>
-        //                     <CardItem>
-        //                         <Text>{q.pregunta}</Text>
-        //                     </CardItem>
-        //                     <CardItem>
-        //                         <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
-        //                             {/* <Text>{Object.values(q).filter(inc => inc !== q.pregunta)}</Text> */}
-        //                             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-        //                                 <Text>{q.inc1}</Text>
-        //                                 <TouchableOpacity onPress={() => this.setState({selected: 'true'})}>
-        //                                     <Text>{this.state.selected}</Text>
-        //                                 </TouchableOpacity>
-        //                             </View>
-        //                             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-        //                                 <Text>{q.inc2}</Text>
-        //                                 <Text>RadioButton</Text>
-        //                             </View>
-        //                             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-        //                                 <Text>{q.inc3}</Text>
-        //                                 <Text>RadioButton</Text>
-        //                             </View>
-        //                         </View>
-        //                     </CardItem>
-        //                 </Card>
-        //             </TouchableOpacity>
-        //         </View>
-        //     ))
-        // );
+        const buttons = (
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginBottom: 5}}>
+                <CustomButton
+                    style="SuccessBorder"
+                    clicked={null}
+                    name="Enviar" />
+                <CustomButton 
+                    style="DangerBorder"
+                    clicked={() => this.showItemList()}
+                    name="Cerrar" />
+            </View>
+        );
         const card = (
             <View key="card" style={styles.card}>
                 <TouchableOpacity onPress={() => this.showItemList()}>
                     <Card>
+                        <View key="surver" style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5 }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{this.state.survey}</Text>
+                        </View>
                         {this.state.questions.map(q => (
-                            <View key={q.pregunta}>
-                                <CardItem>
-                                    <Text>{q.pregunta}</Text>
-                                </CardItem>
-                                <CardItem>
-                                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
-                                        {/* <Text>{Object.values(q).filter(inc => inc !== q.pregunta)}</Text> */}
-                                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                                            <Text>{q.inc1}</Text>
-                                            <TouchableOpacity onPress={() => this.setState({ selected: 'true' })}>
-                                                <Text>{this.state.selected}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                                            <Text>{q.inc2}</Text>
-                                            <Text>RadioButton</Text>
-                                        </View>
-                                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                                            <Text>{q.inc3}</Text>
-                                            <Text>RadioButton</Text>
-                                        </View>
-                                    </View>
-                                </CardItem>
-                            </View>
+                            <CustomQuestion
+                                id={q.id}
+                                question={q.config}
+                                survey={this.state.survey}
+                                selected={() => this.answerSelectedHandler(q.id)} />
                         ))}
+                        {buttons}
+
                     </Card>
                 </TouchableOpacity>
             </View>
@@ -139,5 +110,11 @@ const styles = StyleSheet.create({
     },
     list: {
         padding: 5
+    },
+    hitSlop: {
+        top: 20,
+        bottom: 20,
+        left: 50,
+        right: 50,
     }
 });
