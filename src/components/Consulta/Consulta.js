@@ -32,14 +32,6 @@ export default class Consulta extends Component {
     showItemList = () => {
         this.setState({ showCard: false });
     }
-    clickedAnswerHandler = (question, answer) => {
-        const surveyResult = [];
-        this.setState({ checked1: true })
-    }
-
-    answerSelectedHandler = (indentifier) => {
-
-    }
 
     render() {
         const data = [];
@@ -65,35 +57,40 @@ export default class Consulta extends Component {
             </View>
         ));
         const buttons = (
-            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginBottom: 5}}>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginBottom: 5 }}>
                 <CustomButton
                     style="SuccessBorder"
                     clicked={null}
-                    name="Enviar" />
-                <CustomButton 
+                    name="Enviar"
+                    send={true} />
+                <CustomButton
                     style="DangerBorder"
                     clicked={() => this.showItemList()}
                     name="Cerrar" />
             </View>
         );
         const card = (
-            <View key="card" style={styles.card}>
-                <TouchableOpacity onPress={() => this.showItemList()}>
-                    <Card>
-                        <View key="surver" style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 5 }}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{this.state.survey}</Text>
-                        </View>
-                        {this.state.questions.map(q => (
+            <View>
+                <Card style={styles.card}>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ flex: 1, fontSize: 20, fontWeight: 'bold' }}>{this.state.survey}</Text>
+                    </View>
+                    {this.state.questions.map(q => (
+                        <View key={q.id}>
+                            <CardItem>
+                                <Text>{q.config.pregunta}</Text>
+                            </CardItem>
                             <CustomQuestion
-                                id={q.id}
-                                question={q.config}
-                                survey={this.state.survey}
-                                selected={() => this.answerSelectedHandler(q.id)} />
-                        ))}
-                        {buttons}
+                                key={q.id}
+                                question={q.config.pregunta}
+                                inc1={q.config.inc1}
+                                inc2={q.config.inc2}
+                                inc3={q.config.inc3} />
+                        </View>
 
-                    </Card>
-                </TouchableOpacity>
+                    ))}
+                    {buttons}
+                </Card>
             </View>
         );
         return (
