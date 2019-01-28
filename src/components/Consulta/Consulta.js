@@ -10,11 +10,8 @@ export default class Consulta extends Component {
     state = {
         questions: [],
         showCard: false,
-        survey: null,
-        surveyResult: [],
-        form: {
+        sendSurvey: false
 
-        }
     }
 
     clickListHandler = (identifier) => {
@@ -27,10 +24,13 @@ export default class Consulta extends Component {
                 });
             }
         }
-        this.setState({ questions: questions, showCard: true, survey: identifier });
+        this.setState({ questions: questions, showCard: true, survey: identifier, options: options });
     }
-    showItemList = () => {
-        this.setState({ showCard: false });
+    showItemListHandler = () => {
+        this.setState({ showCard: false, sendSurvey: false });
+    }
+    sendSurveyHandler = () => {
+        this.setState({ sendSurvey: true });
     }
 
     render() {
@@ -60,17 +60,17 @@ export default class Consulta extends Component {
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginBottom: 5 }}>
                 <CustomButton
                     style="SuccessBorder"
-                    clicked={null}
+                    clicked={() => this.sendSurveyHandler()}
                     name="Enviar"
                     send={true} />
                 <CustomButton
                     style="DangerBorder"
-                    clicked={() => this.showItemList()}
+                    clicked={() => this.showItemListHandler()}
                     name="Cerrar" />
             </View>
         );
         const card = (
-            <View>
+            <View style={styles.card}>
                 <Card style={styles.card}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ flex: 1, fontSize: 20, fontWeight: 'bold' }}>{this.state.survey}</Text>
@@ -85,7 +85,9 @@ export default class Consulta extends Component {
                                 question={q.config.pregunta}
                                 inc1={q.config.inc1}
                                 inc2={q.config.inc2}
-                                inc3={q.config.inc3} />
+                                inc3={q.config.inc3}
+                                sendSurvey={this.state.sendSurvey} />
+                                {/* Missing send the survey response */}
                         </View>
 
                     ))}
