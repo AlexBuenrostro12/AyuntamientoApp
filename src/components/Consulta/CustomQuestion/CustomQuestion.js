@@ -1,30 +1,51 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { CardItem, CheckBox } from 'native-base';
+import axios from '../../../../axios-ayuntamiento';
+import CustomButton from '../../CustomButton/CustomButton';
 
 export default class CustomQuestion extends Component {
 
     state = {
-        survey: [],
+        surveyForm: {
+            nombreEncuesta: this.props.survey,
+            questions: []
+        },
         selected1: false,
         selected2: false,
         selected3: false,
-        prueba: ''
+        prueba: '',
+        pruebaFormArray: '):',
+        sendSurvey: true
     }
 
-    answerCheckedHandler = (answer, indexCheckBox) => {
-        if (indexCheckBox === '1') {
-            this.setState({ selected1: true, prueba: answer })
+    loadFormHandler = (question, answer) => {
+        const surveyForm = {...this.state.surveyForm};
+        for (let key in surveyForm) {
+            if (key === 'questions') {
+                surveyForm[key].push({
+                    pregunta: question, 
+                    respuesta: answer
+                });
+            }
         }
+        this.setState({ surveyForm: surveyForm });
+    }
+
+    answerCheckedHandler = (question, answer, indexCheckBox) => {
+
         switch (indexCheckBox) {
             case '1':
-                this.setState({ selected1: true, selected2: false, selected3: false, prueba: answer })
+                this.setState({ selected1: true, selected2: false, selected3: false, prueba: answer, pruebaFormArray: question });
+                this.loadFormHandler(question, answer);
                 break;
             case '2':
-                this.setState({ selected1: false, selected2: true, selected3: false, prueba: answer })
+                this.setState({ selected1: false, selected2: true, selected3: false, prueba: answer, pruebaFormArray: question });
+                this.loadFormHandler(question, answer);
                 break;
             case '3':
-                this.setState({ selected1: false, selected2: false, selected3: true, prueba: answer })
+                this.setState({ selected1: false, selected2: false, selected3: true, prueba: answer, pruebaFormArray: question });
+                this.loadFormHandler(question, answer);
                 break;
 
             default:
@@ -32,9 +53,33 @@ export default class CustomQuestion extends Component {
         }
     }
 
+    sendSurverResponse = (sendSurvey) => {
+        if (sendSurvey) {
+
+            const formData = {};
+            for (let key in this.state.surveyForm) {
+                formData[key] = this.state.surveyForm[key];
+            }
+            
+            const survey = {
+                surveyData: formData
+            };
+
+            axios.post('/surveysResponse.json', survey)
+                .then(response => {
+                    //this.setState({ showSuccessToast: true });
+                    //this.setTimeOut();
+                })
+                .catch(error => {
+                    //this.setState({ showDangerToast: true });
+                    //this.setTimeOut();
+                });
+        }
+    }
+
     render() {
 
-        let body = inc1 = inc2 = inc3 = null;
+        let body = inc1 = inc2 = inc3 = buttons = null;
 
         if (this.props !== null) {
 
@@ -42,7 +87,7 @@ export default class CustomQuestion extends Component {
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text>{"1.- " + this.props.inc1}</Text>
                     <TouchableOpacity
-                        onPress={() => this.answerCheckedHandler(this.props.inc1, '1')}
+                        onPress={() => this.answerCheckedHandler(this.props.question, this.props.inc1, '1')}
                         style={{ marginTop: 2.5, marginBottom: 2.5, marginRight: 10 }}
                         hitSlop={styles.hitSlop} >
                         <CheckBox
@@ -55,11 +100,11 @@ export default class CustomQuestion extends Component {
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text>{"2.- " + this.props.inc2}</Text>
                     <TouchableOpacity
-                        onPress={() => this.answerCheckedHandler(this.props.inc2, '2')}
+                        onPress={() => this.answerCheckedHandler(this.props.question, this.props.inc2, '2')}
                         style={{ marginTop: 2.5, marginBottom: 2.5, marginRight: 10 }}
                         hitSlop={styles.hitSlop} >
                         <CheckBox
-                            onPress={() => this.answerCheckedHandler(this.props.inc2, '2')}
+                            onPress={() => this.answerCheckedHandler(this.props.question, this.props.inc2, '2')}
                             checked={this.state.selected2} />
                     </TouchableOpacity>
                 </View>
@@ -68,11 +113,11 @@ export default class CustomQuestion extends Component {
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text>{"3.- " + this.props.inc3}</Text>
                     <TouchableOpacity
-                        onPress={() => this.answerCheckedHandler(this.props.inc3, '3')}
+                        onPress={() => this.answerCheckedHandler(this.props.question, this.props.inc3, '3')}
                         style={{ marginTop: 2.5, marginBottom: 2.5, marginRight: 10 }}
                         hitSlop={styles.hitSlop} >
                         <CheckBox
-                            onPress={() => this.answerCheckedHandler(this.props.inc3, '3')}
+                            onPress={() => this.answerCheckedHandler(this.props.question, this.props.inc3, '3')}
                             checked={this.state.selected3} />
                     </TouchableOpacity>
                 </View>
@@ -83,27 +128,38 @@ export default class CustomQuestion extends Component {
                         {inc1}
                         {inc2}
                         {inc3}
-                        <Text>{"Answer: "+this.state.prueba+", Send: "+this.props.sendSurvey}</Text>
+                        <Text>{this.props.question + " / " + this.state.prueba + " / " + this.props.sendSurvey + " / " + this.state.pruebaFormArray}</Text>
                     </View>
                 </CardItem>
             );
-
+            buttons = (
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginBottom: 5 }}>
+                    <CustomButton
+                        style="SuccessBorder"
+                        clicked={() => this.sendSurverResponse(true)}
+                        name="Enviar"
+                        send={true} />
+                    <CustomButton
+                        style="DangerBorder"
+                        clicked={null}
+                        name="Cerrar" />
+                </View>
+            );
         }
 
         return (
             <View>
                 {body}
+                {buttons}
             </View>
         );
     }
 }
 
-
-
 styles = StyleSheet.create({
     hitSlop: {
-        top: 8,
-        bottom: 8,
+        top: 5,
+        bottom: 5,
         left: 10,
         right: 10,
     }

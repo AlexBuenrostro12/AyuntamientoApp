@@ -24,7 +24,7 @@ export default class Consulta extends Component {
                 });
             }
         }
-        this.setState({ questions: questions, showCard: true, survey: identifier, options: options });
+        this.setState({ questions: questions, showCard: true, survey: identifier });
     }
     showItemListHandler = () => {
         this.setState({ showCard: false, sendSurvey: false });
@@ -82,6 +82,7 @@ export default class Consulta extends Component {
                             </CardItem>
                             <CustomQuestion
                                 key={q.id}
+                                survey={this.state.survey}
                                 question={q.config.pregunta}
                                 inc1={q.config.inc1}
                                 inc2={q.config.inc2}
@@ -91,7 +92,7 @@ export default class Consulta extends Component {
                         </View>
 
                     ))}
-                    {buttons}
+                    {/* {buttons} */}
                 </Card>
             </View>
         );
