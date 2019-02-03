@@ -92,7 +92,7 @@ export default class Consulta extends Component {
                         </View>
 
                     ))}
-                    {/* {buttons} */}
+                    {buttons}
                 </Card>
             </View>
         );

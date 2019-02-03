@@ -7,10 +7,7 @@ import CustomButton from '../../CustomButton/CustomButton';
 export default class CustomQuestion extends Component {
 
     state = {
-        surveyForm: {
-            nombreEncuesta: this.props.survey,
-            questions: []
-        },
+        questions: [],
         selected1: false,
         selected2: false,
         selected3: false,
@@ -20,20 +17,35 @@ export default class CustomQuestion extends Component {
     }
 
     loadFormHandler = (question, answer) => {
-        const surveyForm = {...this.state.surveyForm};
-        for (let key in surveyForm) {
-            if (key === 'questions') {
-                surveyForm[key].push({
-                    pregunta: question, 
-                    respuesta: answer
-                });
+        //Algorithm to add question and answer
+        const questions = [...this.state.questions];
+        const surveyObject = { pregunta: question, respuesta: answer };
+        let insertObject = false;
+
+        if (questions.length === 0) {
+            questions.push({ ...surveyObject });
+        }
+
+        if (questions.length >= 1) {
+            for (let key in questions) {
+                if (questions[key].pregunta !== surveyObject.pregunta) {
+                    insertObject = true;
+                } else {
+                    questions[key].respuesta = surveyObject.respuesta;
+                    insertObject = false;
+                }
             }
         }
-        this.setState({ surveyForm: surveyForm });
+
+        if (insertObject) {
+            questions.push({ ...surveyObject });
+        }
+
+        this.setState({ questions: questions });
     }
 
     answerCheckedHandler = (question, answer, indexCheckBox) => {
-
+        //Change the position of the checkbox
         switch (indexCheckBox) {
             case '1':
                 this.setState({ selected1: true, selected2: false, selected3: false, prueba: answer, pruebaFormArray: question });
@@ -56,11 +68,11 @@ export default class CustomQuestion extends Component {
     sendSurverResponse = (sendSurvey) => {
         if (sendSurvey) {
 
-            const formData = {};
-            for (let key in this.state.surveyForm) {
-                formData[key] = this.state.surveyForm[key];
-            }
-            
+            const formData = {
+                nombreEncuesta: this.props.survey,
+                preguntas: this.state.questions
+            };
+
             const survey = {
                 surveyData: formData
             };
@@ -78,6 +90,7 @@ export default class CustomQuestion extends Component {
     }
 
     render() {
+        this.sendSurverResponse(this.props.sendSurvey);
 
         let body = inc1 = inc2 = inc3 = buttons = null;
 
@@ -91,7 +104,7 @@ export default class CustomQuestion extends Component {
                         style={{ marginTop: 2.5, marginBottom: 2.5, marginRight: 10 }}
                         hitSlop={styles.hitSlop} >
                         <CheckBox
-                            onPress={() => this.answerCheckedHandler(this.props.inc1, '1')}
+                            onPress={() => this.answerCheckedHandler(this.props.question, this.props.inc1, '1')}
                             checked={this.state.selected1} />
                     </TouchableOpacity>
                 </View>
@@ -128,7 +141,7 @@ export default class CustomQuestion extends Component {
                         {inc1}
                         {inc2}
                         {inc3}
-                        <Text>{this.props.question + " / " + this.state.prueba + " / " + this.props.sendSurvey + " / " + this.state.pruebaFormArray}</Text>
+                        {/* <Text>{this.props.question + " / " + this.state.prueba + " / " + this.props.sendSurvey + " / " + this.state.pruebaFormArray}</Text> */}
                     </View>
                 </CardItem>
             );
@@ -150,7 +163,7 @@ export default class CustomQuestion extends Component {
         return (
             <View>
                 {body}
-                {buttons}
+                {/* {buttons} */}
             </View>
         );
     }
