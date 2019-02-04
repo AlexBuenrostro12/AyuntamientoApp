@@ -1,20 +1,26 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
+import Localizacion from '../../components/Incidencias/Localizacion';
 
 
-const incidencias = ( props ) => (
-    <View style={styles.container}>
-        <View>
-            <HeaderToolbar open={props} />
-        </View>
-        <StatusBar color="#ff9933"/>
-        <View style={styles.view}>
-            <Text style={styles.text}>Incidencias</Text>
-        </View>
-    </View>
-);
+const incidencias = (props) => {
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <View>
+                <View>
+                    <HeaderToolbar open={props} />
+                </View>
+                <StatusBar color="#ff9933" />
+                <ScrollView>
+                    <Localizacion />
+                </ScrollView>
+            </View>
+        </SafeAreaView>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -22,8 +28,6 @@ const styles = StyleSheet.create({
     },
     view: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center', 
     },
     text: {
         fontSize: 20,

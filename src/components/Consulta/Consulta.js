@@ -47,11 +47,11 @@ export default class Consulta extends Component {
                 <ListItem key={dt.name}>
                     <Left>
                         <TouchableOpacity onPress={() => this.clickListHandler(dt.name)}>
-                            <Text>{dt.name}</Text>
+                            <Text style={{ fontSize: 16 }}>{dt.name}</Text>
                         </TouchableOpacity>
                     </Left>
                     <Right>
-                        <IconRight />
+                        <IconRight describe={() => this.clickListHandler(dt.name)} />
                     </Right>
                 </ListItem>
             </View>
