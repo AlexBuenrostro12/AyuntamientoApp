@@ -4,17 +4,19 @@ import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 
 
-const busEscolar = ( props ) => (
-    <View style={styles.container}>
-        <View>
-            <HeaderToolbar open={props} />
+const busEscolar = (props) => {
+    return (
+        <View style={styles.container}>
+            <View>
+                <HeaderToolbar open={props} />
+            </View>
+            <StatusBar color="#ff9933" />
+            <View style={styles.view}>
+                <Text style={styles.text}>Bus Escolar</Text>
+            </View>
         </View>
-        <StatusBar color="#ff9933"/>
-        <View style={styles.view}>
-            <Text style={styles.text}>Bus Escolar</Text>
-        </View>
-    </View>
-);
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
     view: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center', 
+        justifyContent: 'center',
     },
     text: {
         fontSize: 20,

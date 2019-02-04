@@ -2,7 +2,7 @@
 import React from 'react';
 import {createDrawerNavigator, DrawerItems} from 'react-navigation';
 import {StyleSheet, View, Image, SafeAreaView, ScrollView, Dimensions} from 'react-native';
-import iconLogo from '../../../assets/images/Logo/logo.png';
+import iconLogo from '../../../assets/images/Logo/prs-logo.png';
 import GabineteScreen from '../../../Screens/Gabinete/Gabinete';
 import MisionVisionScreen from '../../../Screens/MisionVision/MisionVision';
 import PlanMunicipalDesarrolloScreen from '../../../Screens/PlanMunicipalDesarrollo/PlanMunicipalDesarrollo';
@@ -15,7 +15,6 @@ import DesarrolloUrbanoScreen from '../../../Screens/DesarrolloUrbano/Desarrollo
 import BuzonCiudadanoScreen from '../../../Screens/BuzonCiudadano/BuzonCiudadano';
 import ConsultaCiudadanaScreen from '../../../Screens/ConsultaCiudadana/ConsultaCiudadana';
 import NoticiasScreen from '../../../Screens/Noticias/Noticias';
-import ActividadesScreen from '../../../Screens/Actividades/Actividades';
 import BusEscolarScreen from '../../../Screens/BusEscolar/BusEscolar';
 import HomeScreen from '../../../Screens/Home/Home';
 import IncidenciasScreen from '../../../Screens/Incidencias/Incidencias';
@@ -47,7 +46,6 @@ const DrawerNavigation = createDrawerNavigator({
     'Buzón Ciudadano': BuzonCiudadanoScreen,
     'Consulta Ciudadana': ConsultaCiudadanaScreen,
     'Noticias': NoticiasScreen,
-    'Actividades': ActividadesScreen,
     'Buz Escolar': BusEscolarScreen,
     'Incidencias': IncidenciasScreen,
 },{
@@ -65,9 +63,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     image: {
-        height: 120,
-        width: 120,
-        borderRadius: 2
+        height: 130,
+        width: 110,
     }
 });
 
