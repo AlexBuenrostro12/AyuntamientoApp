@@ -1,17 +1,21 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Header, Left, Right, Container, Body, Title, View } from 'native-base';
+import { StyleSheet, View } from 'react-native';
+import { Header, Left, Right, Body, Title } from 'native-base';
 import IconMenu from '../../UI/IconMenu/IconMenu';
 
-const headerToolbar = ( props ) => (
+const headerToolbar = (props) => (
     <Header>
-        <Left>
-            <IconMenu open={props.open}/>
-        </Left>
-        <Body style={styles.view}>
-            <Title style={styles.text}>{props.title}</Title>
-        </Body>
-        <Right></Right>
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+            <Left>
+                <IconMenu open={props.open} />
+            </Left>
+            <Body style={styles.view}>
+                <Title style={styles.text}>{props.title}</Title>
+            </Body>
+            <Right>
+                {/* Could be other button */}
+            </Right>
+        </View>
     </Header>
 );
 

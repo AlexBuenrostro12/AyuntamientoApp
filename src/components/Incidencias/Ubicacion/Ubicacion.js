@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 import { View, Text, Image } from 'react-native';
 import { Card, CardItem, Body } from 'native-base';
 
-export default class Localizacion extends Component {
+export default class Ubicacion extends Component {
 
     render() {
 
-        const localizacion = (
+        const ubicacion = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
                     <CardItem header bordered>
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
                             <View style={{ flex: 1, marginTop: 18 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Localización</Text>
+                                <Text style={{ color: 'orange', fontSize: 18 }}>Ubicación</Text>
                             </View>
-                            <Image style={{ height: 60, width: 65 }} source={require('../../../assets/images/Localizacion/search.png')} />
+                            <Image style={{ height: 60, width: 65 }} source={require('../../../assets/images/Ubicacion/search.png')} />
                         </View>
                     </CardItem>
                     <CardItem bordered>
@@ -31,7 +31,7 @@ export default class Localizacion extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                {localizacion}
+                {ubicacion}
             </View>
         );
     }
