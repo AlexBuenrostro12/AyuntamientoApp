@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { Card, CardItem, Body } from 'native-base';
 
-export default class Localizacion extends Component {
+export default class Multimedia extends Component {
 
     render() {
 
-        const card = (
-            <View style={{ flex: 1, padding: 5 }}>
+        const multimedia = (
+            <View style={{ flex: 1, margin: 5 }}>
                 <Card>
                     <CardItem header bordered>
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 18 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Localización</Text>
+                            <View style={{ flex: 1, marginTop: 25 }}>
+                                <Text style={{ color: 'orange', fontSize: 18 }}>Multimedia</Text>
                             </View>
-                            <Image style={{ height: 60, width: 65 }} source={require('../../assets/images/Localizacion/search.png')} />
+                            <Image style={{ height: 85, width: 65 }} source={require('../../../assets/images/Multimedia/multimedia.png')} />
                         </View>
                     </CardItem>
                     <CardItem bordered>
                         <Body>
-                            <Text>Aquí debera ir mapa para ubicar incidencia</Text>
+                            <Text>Aquí debera de haber dos botones que permitan tomar
+                                fotos desde la camara o seleccionar desde la galeria. </Text>
                         </Body>
                     </CardItem>
                     {/* <CardItem footer bordered>
@@ -31,7 +32,7 @@ export default class Localizacion extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                {card}
+                {multimedia}
             </View>
         );
     }
