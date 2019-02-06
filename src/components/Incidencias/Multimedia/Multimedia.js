@@ -1,34 +1,42 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
-import { Card, CardItem, Body } from 'native-base';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 
 export default class Multimedia extends Component {
 
     render() {
 
-        const multimedia = (
-            <View style={{ flex: 1, margin: 5 }}>
-                <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 25 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Multimedia</Text>
-                            </View>
-                            <Image style={{ height: 85, width: 65 }} source={require('../../../assets/images/Multimedia/multimedia.png')} />
-                        </View>
-                    </CardItem>
-                    <CardItem bordered>
-                        <Body>
-                            <Text>Aquí debera de haber dos botones que permitan tomar
-                                fotos desde la camara o seleccionar desde la galeria. </Text>
-                        </Body>
-                    </CardItem>
-                    {/* <CardItem footer bordered>
-                    <Text>GeekyAnts</Text>
-                </CardItem> */}
-                </Card>
+        let multimedia = null;
+        let image = (
+            <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+                <Image
+                    source={this.props.image}
+                    style={{ height: 160, width: 200 }} />
+                <Text style={{ fontSize: 16, color: 'grey' }}>{this.props.name}</Text>
             </View>
         );
+        switch (this.props.itemType) {
+            case 'ImageButton':
+                multimedia = (
+                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+                        {this.props.image ? image : null}
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#F3F2F1', borderRadius: 5, paddingLeft: 10, paddingRight: 10 }}>
+                            <Image
+                                style={{ height: 30, width: 30 }}
+                                source={require('../../../assets/images/Imagen/image.png')} />
+                            <Text style={{ fontSize: 20 }}>{this.props.holder}</Text>
+                            <TouchableOpacity onPress={this.props.loadPhoto}>
+                                <Image
+                                    style={{ height: 30, width: 30 }}
+                                    source={require('../../../assets/images/Add/add.png')} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                );
+                break;
+
+            default:
+                break;
+        }
 
         return (
             <View style={{ flex: 1 }}>

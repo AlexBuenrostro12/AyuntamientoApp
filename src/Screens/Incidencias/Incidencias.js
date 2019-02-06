@@ -9,6 +9,7 @@ import Descripcion from '../../components/Incidencias/Descripcion/Descripcion';
 import DatosPersonales from '../../components/Incidencias/DatosPersonales/DatosPersonales';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import axios from '../../../axios-ayuntamiento';
+import ImagePicker from 'react-native-image-picker';
 
 export default class Incidencias extends Component {
     state = {
@@ -69,9 +70,24 @@ export default class Incidencias extends Component {
                 valid: false
             }
         },
+        formMultimedia: {
+            imagen: {
+                itemType: 'ImageButton',
+                value: '',
+                holder: 'IMAGEN',
+                valid: true
+            }
+        },
         formDescripcionIsValid: false,
         formDatosPersonalesIsValid: false,
-        loading: false
+        loading: false,
+        options: {
+            title: 'Elige una opción',
+            takePhotoButtonTitle: 'Toma una foto desde tu camara.',
+            chooseFromLibraryButtonTitle: 'Elige una foto desde la galeria.'
+        },
+        incidentImage: null,
+        fileNameImage: null
     }
 
     incidentsHandler = () => {
@@ -171,6 +187,29 @@ export default class Incidencias extends Component {
         }
         this.setState({ formDatosPersonales: updatedPersonalDataForm, formDatosPersonalesIsValid: formIsValid });
     }
+    loadPhotoHandler = () => {
+        ImagePicker.showImagePicker(this.state.options, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } 
+            
+            else {
+                const source = { uri: response.uri };
+                const fileNameImage = response.fileName;
+                // You can also display the image using data:
+                // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+                this.setState({
+                    incidentImage: source,
+                    fileNameImage: fileNameImage
+                });
+            }
+        });
+    }
 
     render() {
         const formElementsDescripcion = [];
@@ -187,6 +226,42 @@ export default class Incidencias extends Component {
                 config: this.state.formDatosPersonales[key]
             });
         }
+        const formElementsMultimedia = [];
+        for (let key in this.state.formMultimedia) {
+            formElementsMultimedia.push({
+                id: key,
+                config: this.state.formMultimedia[key]
+            });
+        }
+        const multimedia = (
+            <View style={{ flex: 1, margin: 5 }}>
+                <Card>
+                    <CardItem header bordered>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View style={{ flex: 1, marginTop: 25 }}>
+                                <Text style={{ color: 'orange', fontSize: 18 }}>Multimedia</Text>
+                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Seleccione una imagen desde su galeria
+                                o directamente de la camara para conocer la incidencia.</Text>
+                            </View>
+                            <Image style={{ height: 85, width: 65 }} source={require('../../assets/images/Multimedia/multimedia.png')} />
+                        </View>
+                    </CardItem>
+                    <CardItem bordered>
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            {formElementsMultimedia.map(element => (
+                                <Multimedia
+                                    key={element.id}
+                                    itemType={element.config.itemType}
+                                    holder={element.config.holder}
+                                    loadPhoto={() => this.loadPhotoHandler()}
+                                    image={this.state.incidentImage}
+                                    name={this.state.fileNameImage} />
+                            ))}
+                        </View>
+                    </CardItem>
+                </Card>
+            </View>
+        );
         const description = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
@@ -256,7 +331,7 @@ export default class Incidencias extends Component {
 
             <Form>
                 <Ubicacion />
-                <Multimedia />
+                {multimedia}
                 {description}
                 {datosPersonales}
                 {button}
