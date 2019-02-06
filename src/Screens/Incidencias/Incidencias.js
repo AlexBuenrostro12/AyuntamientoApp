@@ -7,6 +7,8 @@ import Ubicacion from '../../components/Incidencias/Ubicacion/Ubicacion';
 import Multimedia from '../../components/Incidencias/Multimedia/Multimedia';
 import Descripcion from '../../components/Incidencias/Descripcion/Descripcion';
 import DatosPersonales from '../../components/Incidencias/DatosPersonales/DatosPersonales';
+import CustomButton from '../../components/CustomButton/CustomButton';
+import axios from '../../../axios-ayuntamiento';
 
 export default class Incidencias extends Component {
     state = {
@@ -61,7 +63,7 @@ export default class Incidencias extends Component {
                 value: '',
                 holder: 'Telefono',
                 validation: {
-                    minLength: 10,
+                    minLength: 7,
                     maxLength: 10
                 },
                 valid: false
@@ -69,6 +71,38 @@ export default class Incidencias extends Component {
         },
         formDescripcionIsValid: false,
         formDatosPersonalesIsValid: false,
+        loading: false
+    }
+
+    incidentsHandler = () => {
+        this.setState({ loading: true })
+        if (this.state.formDescripcionIsValid && this.state.formDatosPersonalesIsValid) {
+            const descripcionFormData = {};
+            const datosPersonalesFormData = {};
+            for (let formElementIdentifier in this.state.formDescripcion) {
+                descripcionFormData[formElementIdentifier] = this.state.formDescripcion[formElementIdentifier].value;
+            }
+            for (let formElementIdentifier in this.state.formDatosPersonales) {
+                datosPersonalesFormData[formElementIdentifier] = this.state.formDatosPersonales[formElementIdentifier].value;
+            }
+            const incident = {
+                descripcionData: descripcionFormData,
+                datosPersonalesData: datosPersonalesFormData
+            }
+
+            axios.post('/incidents.json', incident)
+                .then(response => {
+                    //this.setState({ showSuccessToast: true });
+                    //this.setTimeOut();
+                })
+                .catch(error => {
+                    //this.setState({ showDangerToast: true });
+                    //this.setTimeOut();
+                });
+        } else {
+            //this.setState({ showWarningToast: true });
+            //this.setTimeOut();
+        }
     }
 
     checkValidity(value, rules) {
@@ -116,6 +150,26 @@ export default class Incidencias extends Component {
             formIsValid = updatedDescriptionForm[inputIdentifier].valid && formIsValid;
         }
         this.setState({ formDescripcion: updatedDescriptionForm, formDescripcionIsValid: formIsValid });
+    }
+    inputChangePersonalDataHandler = (text, inputIdentifier) => {
+        const updatedPersonalDataForm = {
+            ...this.state.formDatosPersonales
+        };
+        const updatedFormElement = {
+            ...updatedPersonalDataForm[inputIdentifier]
+        };
+
+        updatedFormElement.value = text;
+        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+
+        updatedPersonalDataForm[inputIdentifier] = updatedFormElement;
+
+        let formIsValid = true;
+
+        for (let inputIdentifier in updatedPersonalDataForm) {
+            formIsValid = updatedPersonalDataForm[inputIdentifier].valid && formIsValid;
+        }
+        this.setState({ formDatosPersonales: updatedPersonalDataForm, formDatosPersonalesIsValid: formIsValid });
     }
 
     render() {
@@ -182,12 +236,20 @@ export default class Incidencias extends Component {
                                     itemType={element.config.itemType}
                                     value={element.config.value}
                                     holder={element.config.holder}
-                                    isValid={this.state.formDescripcionIsValid}
-                                    changed={null} />
+                                    isValid={this.state.formDatosPersonalesIsValid}
+                                    changed={(text) => this.inputChangePersonalDataHandler(text, element.id)} />
                             ))}
                         </View>
                     </CardItem>
                 </Card>
+            </View>
+        );
+        const button = (
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginBottom: 5 }}>
+                <CustomButton
+                    style="Success"
+                    name="Enviar"
+                    clicked={() => this.incidentsHandler()} />
             </View>
         );
         let form = (
@@ -197,6 +259,7 @@ export default class Incidencias extends Component {
                 <Multimedia />
                 {description}
                 {datosPersonales}
+                {button}
             </Form>
         );
 
