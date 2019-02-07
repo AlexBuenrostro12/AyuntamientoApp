@@ -95,15 +95,20 @@ export default class Incidencias extends Component {
         if (this.state.formDescripcionIsValid && this.state.formDatosPersonalesIsValid) {
             const descripcionFormData = {};
             const datosPersonalesFormData = {};
+        
             for (let formElementIdentifier in this.state.formDescripcion) {
                 descripcionFormData[formElementIdentifier] = this.state.formDescripcion[formElementIdentifier].value;
             }
             for (let formElementIdentifier in this.state.formDatosPersonales) {
                 datosPersonalesFormData[formElementIdentifier] = this.state.formDatosPersonales[formElementIdentifier].value;
             }
+
             const incident = {
                 descripcionData: descripcionFormData,
-                datosPersonalesData: datosPersonalesFormData
+                datosPersonalesData: datosPersonalesFormData,
+                multimediaData: {
+                    nombreImagen: this.state.fileNameImage
+                }
             }
 
             axios.post('/incidents.json', incident)
@@ -146,7 +151,6 @@ export default class Incidencias extends Component {
 
         return isValid;
     }
-
     inputChangeDescriptionHandler = (text, inputIdentifier) => {
         const updatedDescriptionForm = {
             ...this.state.formDescripcion
@@ -203,9 +207,10 @@ export default class Incidencias extends Component {
                 // You can also display the image using data:
                 // const source = { uri: 'data:image/jpeg;base64,' + response.data };
 
+
                 this.setState({
                     incidentImage: source,
-                    fileNameImage: fileNameImage
+                    fileNameImage: fileNameImage,
                 });
             }
         });
