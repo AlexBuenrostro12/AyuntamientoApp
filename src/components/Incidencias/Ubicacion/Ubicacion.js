@@ -1,33 +1,48 @@
 import React, { Component } from 'react';
 import { View, Text, Image } from 'react-native';
-import { Card, CardItem, Body } from 'native-base';
+import { Picker, Item, Label, Input } from 'native-base';
 
 export default class Ubicacion extends Component {
 
     render() {
+        let ubicacion = null;
 
-        const ubicacion = (
-            <View style={{ flex: 1, margin: 5 }}>
-                <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 18 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Ubicación</Text>
-                            </View>
-                            <Image style={{ height: 60, width: 65 }} source={require('../../../assets/images/Ubicacion/search.png')} />
-                        </View>
-                    </CardItem>
-                    <CardItem bordered>
-                        <Body>
-                            <Text>Aquí debera ir mapa para ubicar incidencia</Text>
-                        </Body>
-                    </CardItem>
-                    {/* <CardItem footer bordered>
-                    <Text>GeekyAnts</Text>
-                </CardItem> */}
-                </Card>
-            </View>
-        );
+        switch (this.props.itemType) {
+            case 'Picker':
+                ubicacion = (
+                    <View style={{ flex: 1, marginTop: 15, flexDirection: 'column', justifyContent: 'center' }}>
+                        <Text style={{ fontWeight: 'bold' }}>Seleccione localidad:</Text>
+                        <Picker
+                            mode="dropdown"
+                            iosHeader={this.props.value}
+                            iosIcon={<Image style={{ width: 25, height: 25 }} source={require('../../../assets/images/ArrowDown/arrow-down.png')} />}
+                            style={{ width: undefined }}
+                            selectedValue={this.props.value}
+                            onValueChange={this.props.changed}
+                        >
+                            <Picker.Item label="Tecalitlán" value="tecalitlan" />
+                            <Picker.Item label="La Purisima" value="la purisima" />
+                            <Picker.Item label="La Miseria" value="la miseria" />
+                            <Picker.Item label="Santiago" value="santiago" />
+                        </Picker>
+                    </View>
+                );
+                break;
+            case 'FloatingLabel':
+                ubicacion = (
+                    <Item floatingLabel>
+                        <Label>Dirección</Label>
+                        <Input
+                            onChangeText={this.props.changed} />
+                    </Item>
+                );
+                break;
+
+            default:
+                ubicacion = null;
+                break;
+        }
+
 
         return (
             <View style={{ flex: 1 }}>

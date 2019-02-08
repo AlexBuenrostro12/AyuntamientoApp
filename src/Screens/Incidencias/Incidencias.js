@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Platform, Alert } from 'react-native';
 import { Form, Card, CardItem, Body } from 'native-base';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
@@ -9,6 +9,7 @@ import Descripcion from '../../components/Incidencias/Descripcion/Descripcion';
 import DatosPersonales from '../../components/Incidencias/DatosPersonales/DatosPersonales';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import axios from '../../../axios-ayuntamiento';
+import axiosImage from 'axios';
 import ImagePicker from 'react-native-image-picker';
 
 export default class Incidencias extends Component {
@@ -17,7 +18,7 @@ export default class Incidencias extends Component {
             tipo: {
                 itemType: 'Picker',
                 value: 'electricidad',
-                valid: false
+                valid: true
             },
             asunto: {
                 itemType: 'FloatingLabel',
@@ -78,24 +79,47 @@ export default class Incidencias extends Component {
                 valid: true
             }
         },
+        formUbicacion: {
+            direccion: {
+                itemType: 'FloatingLabel',
+                value: '',
+                validation: {
+                    minLength: 5,
+                    maxLength: 50
+                },
+                valid: false
+            },
+            municipio: {
+                itemType: 'Picker',
+                value: 'tecalitlan',
+                valid: true
+            }
+        },
+        formUbicacionIsValid: false,
         formDescripcionIsValid: false,
         formDatosPersonalesIsValid: false,
         loading: false,
         options: {
             title: 'Elige una opción',
-            takePhotoButtonTitle: 'Toma una foto desde tu camara.',
-            chooseFromLibraryButtonTitle: 'Elige una foto desde la galeria.'
+            takePhotoButtonTitle: 'Abrir camara.',
+            chooseFromLibraryButtonTitle: 'Abrir galeria.'
         },
         incidentImage: null,
-        fileNameImage: null
+        fileNameImage: null,
+        incidentFullImage: null,
+        uri: null
     }
 
     incidentsHandler = () => {
         this.setState({ loading: true })
-        if (this.state.formDescripcionIsValid && this.state.formDatosPersonalesIsValid) {
+        if (this.state.formDescripcionIsValid && this.state.formDatosPersonalesIsValid && this.state.formUbicacionIsValid) {
+            const ubicacionFormData = {};
             const descripcionFormData = {};
             const datosPersonalesFormData = {};
-        
+
+            for (let formElementIdentifier in this.state.formUbicacion) {
+                ubicacionFormData[formElementIdentifier] = this.state.formUbicacion[formElementIdentifier].value;
+            }
             for (let formElementIdentifier in this.state.formDescripcion) {
                 descripcionFormData[formElementIdentifier] = this.state.formDescripcion[formElementIdentifier].value;
             }
@@ -104,6 +128,7 @@ export default class Incidencias extends Component {
             }
 
             const incident = {
+                ubicacionData: ubicacionFormData,
                 descripcionData: descripcionFormData,
                 datosPersonalesData: datosPersonalesFormData,
                 multimediaData: {
@@ -113,16 +138,20 @@ export default class Incidencias extends Component {
 
             axios.post('/incidents.json', incident)
                 .then(response => {
-                    //this.setState({ showSuccessToast: true });
-                    //this.setTimeOut();
+                    Alert.alert('Incidentes', '¡Incidencia enviada con exito!', [{text: 'Ok'}], {cancelable: false});
                 })
                 .catch(error => {
-                    //this.setState({ showDangerToast: true });
-                    //this.setTimeOut();
+                    Alert.alert('Incidentes', '¡Error al enviar incidencia!', [{text: 'Ok'}], {cancelable: false});
                 });
+
+            // const fd = new FormData();
+            // fd.append('image', this.state.uri, this.state.fileNameImage);
+            // axiosImage.post('https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/uploadFile', fd)
+            //     .then(res => {
+            //         console.log(res);
+            //     });
         } else {
-            //this.setState({ showWarningToast: true });
-            //this.setTimeOut();
+            Alert.alert('Incidentes', '¡Comlete el formulario correctamente!', [{text: 'Ok'}], {cancelable: false});
         }
     }
 
@@ -150,6 +179,26 @@ export default class Incidencias extends Component {
         }
 
         return isValid;
+    }
+    inputChangeLocationHandler = (text, inputIdentifier) => {
+        const updatedLocationForm = {
+            ...this.state.formUbicacion
+        };
+        const updatedFormElement = {
+            ...updatedLocationForm[inputIdentifier]
+        };
+
+        updatedFormElement.value = text;
+        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+
+        updatedLocationForm[inputIdentifier] = updatedFormElement;
+
+        let formIsValid = true;
+
+        for (let inputIdentifier in updatedLocationForm) {
+            formIsValid = updatedLocationForm[inputIdentifier].valid && formIsValid;
+        }
+        this.setState({ formUbicacion: updatedLocationForm, formUbicacionIsValid: formIsValid });
     }
     inputChangeDescriptionHandler = (text, inputIdentifier) => {
         const updatedDescriptionForm = {
@@ -199,24 +248,31 @@ export default class Incidencias extends Component {
                 console.log('User cancelled image picker');
             } else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
-            } 
-            
+            }
+
             else {
                 const source = { uri: response.uri };
-                const fileNameImage = response.fileName;
                 // You can also display the image using data:
                 // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-
+                // Can't upload the image to the endpoint
                 this.setState({
                     incidentImage: source,
-                    fileNameImage: fileNameImage,
+                    fileNameImage: response.fileName,
+                    incidentFullImage: response.path,
+                    uri: response.uri
                 });
             }
         });
     }
 
     render() {
+        const formElementsUbicacion = [];
+        for (let key in this.state.formUbicacion) {
+            formElementsUbicacion.push({
+                id: key,
+                config: this.state.formUbicacion[key]
+            });
+        }
         const formElementsDescripcion = [];
         for (let key in this.state.formDescripcion) {
             formElementsDescripcion.push({
@@ -238,6 +294,34 @@ export default class Incidencias extends Component {
                 config: this.state.formMultimedia[key]
             });
         }
+        const ubicacion = (
+            <View style={{ flex: 1, margin: 5 }}>
+                <Card>
+                    <CardItem header bordered>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View style={{ flex: 1, marginTop: 18 }}>
+                                <Text style={{ color: 'orange', fontSize: 18 }}>Ubicación</Text>
+                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Seleccione la localidad y
+                                    la direccion de la incidencia.</Text>
+                            </View>
+                            <Image style={{ height: 77, width: 85 }} source={require('../../assets/images/Ubicacion/search.png')} />
+                        </View>
+                    </CardItem>
+                    <CardItem bordered>
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            {formElementsUbicacion.map(element => (
+                                <Ubicacion
+                                    key={element.id}
+                                    itemType={element.config.itemType}
+                                    value={element.config.value}
+                                    isValid={element.config.valid}
+                                    changed={(text) => this.inputChangeLocationHandler(text, element.id)} />
+                            ))}
+                        </View>
+                    </CardItem>
+                </Card>
+            </View>
+        );
         const multimedia = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
@@ -260,7 +344,9 @@ export default class Incidencias extends Component {
                                     holder={element.config.holder}
                                     loadPhoto={() => this.loadPhotoHandler()}
                                     image={this.state.incidentImage}
-                                    name={this.state.fileNameImage} />
+                                    name={this.state.fileNameImage}
+                                    response={this.state.incidentFullImage}
+                                    uri={this.state.uri} />
                             ))}
                         </View>
                     </CardItem>
@@ -335,7 +421,7 @@ export default class Incidencias extends Component {
         let form = (
 
             <Form>
-                <Ubicacion />
+                {ubicacion}
                 {multimedia}
                 {description}
                 {datosPersonales}
