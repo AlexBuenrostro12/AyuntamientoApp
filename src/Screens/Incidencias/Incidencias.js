@@ -34,7 +34,7 @@ export default class Incidencias extends Component {
                 value: '',
                 validation: {
                     minLength: 1,
-                    maxLength: 55
+                    maxLength: 100
                 },
                 valid: false
             },
@@ -45,8 +45,8 @@ export default class Incidencias extends Component {
                 value: '',
                 holder: 'Nombre',
                 validation: {
-                    minLength: 5,
-                    maxLength: 35
+                    minLength: 3,
+                    maxLength: 50
                 },
                 valid: false
             },
@@ -93,6 +93,10 @@ export default class Incidencias extends Component {
                 itemType: 'Picker',
                 value: 'tecalitlan',
                 valid: true
+            },
+            fecha: {
+                value: '',
+                valid: true
             }
         },
         formUbicacionIsValid: false,
@@ -106,8 +110,26 @@ export default class Incidencias extends Component {
         },
         incidentImage: null,
         fileNameImage: null,
-        incidentFullImage: null,
-        uri: null
+        imageData: null,
+        date: null
+    }
+
+    getCurrentDate(){
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        today = mm + '/' + dd + '/' + yyyy;
+        this.setState({date: today});
     }
 
     incidentsHandler = () => {
@@ -138,20 +160,21 @@ export default class Incidencias extends Component {
 
             axios.post('/incidents.json', incident)
                 .then(response => {
-                    Alert.alert('Incidentes', '¡Incidencia enviada con exito!', [{text: 'Ok'}], {cancelable: false});
+                    Alert.alert('Incidencias', '¡Incidencia enviada con exito!', [{ text: 'Ok' }], { cancelable: false });
                 })
                 .catch(error => {
-                    Alert.alert('Incidentes', '¡Error al enviar incidencia!', [{text: 'Ok'}], {cancelable: false});
+                    Alert.alert('Incidencias', '¡Error al enviar incidencia!', [{ text: 'Ok' }], { cancelable: false });
                 });
 
-            // const fd = new FormData();
-            // fd.append('image', this.state.uri, this.state.fileNameImage);
-            // axiosImage.post('https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/uploadFile', fd)
-            //     .then(res => {
-            //         console.log(res);
-            //     });
+            axiosImage.post('https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/uploadFile', this.state.imageData)
+                .then(res => {
+                    console.log(res);
+                })
+                .catch(err => {
+                    Alert.alert('Incidencias', '¡Error subir imagen!', [{ text: 'Ok' }], { cancelable: false });
+                });
         } else {
-            Alert.alert('Incidentes', '¡Comlete el formulario correctamente!', [{text: 'Ok'}], {cancelable: false});
+            Alert.alert('Incidencias', '¡Comlete el formulario correctamente!', [{ text: 'Ok' }], { cancelable: false });
         }
     }
 
@@ -181,17 +204,23 @@ export default class Incidencias extends Component {
         return isValid;
     }
     inputChangeLocationHandler = (text, inputIdentifier) => {
+        this.getCurrentDate();
         const updatedLocationForm = {
             ...this.state.formUbicacion
         };
         const updatedFormElement = {
             ...updatedLocationForm[inputIdentifier]
         };
+        const updatedDateElement = {
+            ...updatedLocationForm['fecha']
+        }
 
         updatedFormElement.value = text;
+        updatedDateElement.value = this.state.date
         updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
 
         updatedLocationForm[inputIdentifier] = updatedFormElement;
+        updatedLocationForm['fecha'] = updatedDateElement;
 
         let formIsValid = true;
 
@@ -254,12 +283,19 @@ export default class Incidencias extends Component {
                 const source = { uri: response.uri };
                 // You can also display the image using data:
                 // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-                // Can't upload the image to the endpoint
+
+                const imageData = new FormData();
+                imageData.append('name', 'image');
+                imageData.append('image', {
+                    uri: response.uri,
+                    type: response.type,
+                    name: response.fileName,
+                    data: response.data
+                });
                 this.setState({
                     incidentImage: source,
                     fileNameImage: response.fileName,
-                    incidentFullImage: response.path,
-                    uri: response.uri
+                    imageData: imageData
                 });
             }
         });
@@ -344,9 +380,7 @@ export default class Incidencias extends Component {
                                     holder={element.config.holder}
                                     loadPhoto={() => this.loadPhotoHandler()}
                                     image={this.state.incidentImage}
-                                    name={this.state.fileNameImage}
-                                    response={this.state.incidentFullImage}
-                                    uri={this.state.uri} />
+                                    name={this.state.fileNameImage} />
                             ))}
                         </View>
                     </CardItem>
