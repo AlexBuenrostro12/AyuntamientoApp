@@ -25,7 +25,7 @@ export default class Incidencias extends Component {
                 value: '',
                 validation: {
                     minLength: 1,
-                    maxLength: 20
+                    maxLength: 35
                 },
                 valid: false
             },

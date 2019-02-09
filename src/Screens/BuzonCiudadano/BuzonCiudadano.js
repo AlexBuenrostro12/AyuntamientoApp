@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { Form } from 'native-base';
+import { View, StyleSheet, ScrollView, SafeAreaView, Image, Text, Alert } from 'react-native';
+import { Form, Card, CardItem } from 'native-base';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import CustomToast from '../../components/CustomToast/CustomToast';
 import axios from '../../../axios-ayuntamiento';
 
 export default class BuzonCiudadano extends Component {
@@ -14,7 +13,7 @@ export default class BuzonCiudadano extends Component {
         btnStyle: 'Success',
         btnName: 'Enviar',
         form: {
-            nombre:{
+            nombre: {
                 itemType: 'FloatingLabel',
                 holder: 'Nombre',
                 value: '',
@@ -54,7 +53,7 @@ export default class BuzonCiudadano extends Component {
                 },
                 valid: false,
             },
-            fecha:  {
+            fecha: {
                 itemType: 'Fecha',
                 value: '',
                 valid: true,
@@ -62,27 +61,11 @@ export default class BuzonCiudadano extends Component {
         },
         loading: false,
         formIsValid: false,
-        toastConfiguration: {
-            type: {
-                success: 'success',
-                warning: 'warning',
-                danger: 'danger'
-            },
-            text: {
-                sText: '¡Comentario enviado!',
-                wText: '¡Complete el formulario correctamente!',
-                dText: '¡Sugerencia fallida al enviar!'
-            },
-        },
-        toasts: null,
-        showSuccessToast: false,
-        showWarningToast: false,
-        showDangerToast: false,
         date: 'null',
 
     }
 
-    getCurrentDate(){
+    getCurrentDate() {
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth() + 1; //January is 0!
@@ -97,11 +80,11 @@ export default class BuzonCiudadano extends Component {
         }
 
         today = mm + '/' + dd + '/' + yyyy;
-        this.setState({date: today});
+        this.setState({ date: today });
     }
 
     orderHandler = () => {
-        this.setState({loading: true})
+        this.setState({ loading: true })
         if (this.state.formIsValid) {
             const formData = {};
             for (let formElementIdentifier in this.state.form) {
@@ -110,58 +93,23 @@ export default class BuzonCiudadano extends Component {
             const suggetion = {
                 suggestionData: formData
             }
-            
+
             axios.post('/suggestions.json', suggetion)
                 .then(response => {
-                    this.setState( { showSuccessToast: true } );
-                    this.setTimeOut();
-                } )
+                    Alert.alert('Buzón ciudadano', '¡Sugerencia enviada con exito!', [{text: 'Ok'}], {cancelable: false});
+                })
                 .catch(error => {
-                    this.setState( { showDangerToast: true } );
-                    this.setTimeOut();
-                });   
+                    Alert.alert('Buzón ciudadano', '¡Sugerencia fallida al enviar!', [{text: 'Ok'}], {cancelable: false});
+                });
         } else {
-            this.setState({ showWarningToast: true });
-            this.setTimeOut();
+            Alert.alert('Buzón ciudadano', '¡Complete correctamente el formulario!', [{text: 'Ok'}], {cancelable: false});
         }
-    }
-
-    componentDidMount() {
-        let success = (
-                <CustomToast
-                    type={this.state.toastConfiguration.type.success}
-                    text={this.state.toastConfiguration.text.sText} />
-        ); 
-        let warning = (
-                <CustomToast
-                    type={this.state.toastConfiguration.type.warning}
-                    text={this.state.toastConfiguration.text.wText} />
-        );
-        let danger = (
-                <CustomToast
-                    type={this.state.toastConfiguration.type.danger}
-                    text={this.state.toastConfiguration.text.dText} />
-        );
-        let toasts = {
-            success: success,
-            warning: warning,
-            danger: danger
-        }
-
-        this.setState({ toasts: toasts });
-    }
-
-    setTimeOut = () => {
-        let that = this;
-        setTimeout(function(){
-            that.setState({ showSuccessToast: false, showWarningToast: false, showDangerToast: false });
-        }, 3000);
     }
 
     checkValidity(value, rules) {
         let isValid = true;
 
-        if(!rules) {
+        if (!rules) {
             return true;
         }
 
@@ -177,23 +125,23 @@ export default class BuzonCiudadano extends Component {
             isValid = value.trim() !== '' && isValid;
         }
         if (rules.email) {
-            let valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
+            let valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
             isValid = valid.test(value) && isValid;
         }
 
-        return isValid; 
+        return isValid;
     }
 
-    inputChangedHandler = ( text, inputIdentifier ) => {
+    inputChangedHandler = (text, inputIdentifier) => {
         this.getCurrentDate();
         const updatedSuggestionForm = {
             ...this.state.form
         };
         const updatedFormElement = {
-            ...updatedSuggestionForm[inputIdentifier] 
+            ...updatedSuggestionForm[inputIdentifier]
         };
         const updatedDateElement = {
-            ...updatedSuggestionForm['fecha'] 
+            ...updatedSuggestionForm['fecha']
         };
         updatedFormElement.value = text;
         updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
@@ -202,61 +150,71 @@ export default class BuzonCiudadano extends Component {
         updatedDateElement.value = fecha;
 
         updatedSuggestionForm[inputIdentifier] = updatedFormElement;
-        
+
         updatedSuggestionForm['fecha'] = updatedDateElement;
 
         let formIsValid = true;
 
-        for(let inputIdentifier in updatedSuggestionForm) {
+        for (let inputIdentifier in updatedSuggestionForm) {
             formIsValid = updatedSuggestionForm[inputIdentifier].valid && formIsValid;
         }
-        this.setState({form: updatedSuggestionForm, formIsValid: formIsValid});
+        this.setState({ form: updatedSuggestionForm, formIsValid: formIsValid });
     }
 
-    render(){
+    render() {
         const formElementsArray = [];
-        for (let key in this.state.form){
+        for (let key in this.state.form) {
             formElementsArray.push({
                 id: key,
                 config: this.state.form[key]
             });
         }
 
-        
-        let form = (
-            <Form>
-                {formElementsArray.map(formElement => (
-                    <CustomInput 
-                        key={formElement.id}    
-                        itemType={formElement.config.itemType} 
-                        holder={formElement.config.holder}
-                        changed={(text) => this.inputChangedHandler(text, formElement.id)} />
-                ))}
+        const buzonCiudadano = (
+            <View style={{ flex: 1, margin: 5 }}>
+                <Card>
+                    <CardItem header bordered>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View style={{ flex: 1, marginTop: 18 }}>
+                                <Text style={{ color: 'orange', fontSize: 18 }}>Buzón ciudadano</Text>
+                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Realice cualquier queja 
+                                    o sugerencia.</Text>
+                            </View>
+                            <Image style={{ height: 85, width: 81 }} source={require('../../assets/images/Buzon/buzon.png')} />
+                        </View>
+                    </CardItem>
+                    <CardItem bordered>
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            {formElementsArray.map(formElement => (
+                                <CustomInput
+                                    key={formElement.id}
+                                    itemType={formElement.config.itemType}
+                                    holder={formElement.config.holder}
+                                    changed={(text) => this.inputChangedHandler(text, formElement.id)} />
+                            ))}
 
-                <CustomButton 
-                        style={this.state.btnStyle}
-                        name={this.state.btnName}
-                        clicked={() => this.orderHandler()} />
+                            <CustomButton
+                                style={this.state.btnStyle}
+                                name={this.state.btnName}
+                                clicked={() => this.orderHandler()} />
 
-                {this.state.showSuccessToast ? this.state.toasts.success : null}
-                {this.state.showWarningToast ? this.state.toasts.warning : null}
-                {this.state.showDangerToast ? this.state.toasts.danger : null}
-
-            </Form>
+                        </View>
+                    </CardItem>
+                </Card>
+            </View>
         );
-
         return (
             <SafeAreaView style={styles.container}>
                 <View>
                     <ScrollView>
                         <View>
-                            <HeaderToolbar 
+                            <HeaderToolbar
                                 open={this.props}
                                 title="Sugerencias" />
                         </View>
-                        <StatusBar color="#ff9933"/>
+                        <StatusBar color="#ff9933" />
                         <View>
-                            {form}
+                            {buzonCiudadano}
                         </View>
                     </ScrollView>
                 </View>
@@ -273,7 +231,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 5 
+        paddingTop: 5
     },
     text: {
         fontSize: 20,
