@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { ListItem, Text, Left, Right, Button, Card, CardItem, Body } from 'native-base';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
+import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
 import IconRight from '../../UI/IconRight/IconRight';
+import CustomButton from '../CustomButton/CustomButton';
 
 export default class Noticia extends Component {
     state = {
@@ -39,9 +40,9 @@ export default class Noticia extends Component {
                 })
             }
         }
-        const list = data.map(dt => {
-            return (
-                <View key={dt.name} style={styles.list}>
+        const listNews = (
+            <View style={{ marginTop: 5, marginLeft: 2, marginRight: 2, marginBottom: 5 }}>
+                {data.map(dt => (
                     <ListItem key={dt.name}>
                         <Left>
                             <TouchableOpacity onPress={() => this.clickedListHandler(dt.name)}>
@@ -52,42 +53,37 @@ export default class Noticia extends Component {
                             <IconRight describe={() => this.clickedListHandler(dt.name)} />
                         </Right>
                     </ListItem>
-                </View>
-            );
-        })
+                ))}
+            </View>
+        );
         const card = (
             <View style={styles.card}>
-                <TouchableOpacity onPress={() => this.showItemList()}>
-                    <Card>
-                        <CardItem header>
-                            <Text>{this.state.nombre} / {this.state.categoria}</Text>
-                        </CardItem>
-                        <CardItem>
-                            <Body>
-                                <Text>{this.state.descripcion}</Text>
-                            </Body>
-                        </CardItem>
-                        <CardItem footer>
-                            <Text>{this.state.fecha}</Text>
-                        </CardItem>
-                    </Card>
-                </TouchableOpacity>
+                <Card>
+                    <CardItem header>
+                        <Text>{this.state.nombre} / {this.state.categoria}</Text>
+                    </CardItem>
+                    <CardItem>
+                        <Body>
+                            <Text>{this.state.descripcion}</Text>
+                        </Body>
+                    </CardItem>
+                    <CardItem footer>
+                        <Text>{this.state.fecha}</Text>
+                    </CardItem>
+                    <View style={{ flex: 1, flexGrow: 1, marginTop: 5, marginBottom: 5 }}>
+                        <CustomButton
+                            style="DangerBorder"
+                            name="Cerrar"
+                            clicked={() => this.showItemList()} />
+                    </View>
+                </Card>
             </View>
         );
 
         return (
             <ScrollView>
-                {!this.state.showItemCard ? list : card}
+                {!this.state.showItemCard ? listNews : card}
             </ScrollView>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    card: {
-        padding: 5
-    },
-    list: {
-        padding: 5
-    }
-});

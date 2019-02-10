@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image } from 'react-native';
-import { ListItem, Left, Right, Card, CardItem } from 'native-base';
+import { Card, CardItem } from 'native-base';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
 import Spinner from '../../components/CustomSpinner/CustomSpinner';
 import Consulta from '../../components/Consulta/Consulta';
-import IconRight from '../../UI/IconRight/IconRight';
 
 export default class ConsultaCiudadana extends Component {
     state = {
@@ -39,6 +38,10 @@ export default class ConsultaCiudadana extends Component {
                     data={sv.data} />
             ))
         );
+        const spinner = (
+            <Spinner
+                color="blue" />
+        );
         const consultaCiudadana = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
@@ -59,10 +62,6 @@ export default class ConsultaCiudadana extends Component {
                     </CardItem>
                 </Card>
             </View>
-        );
-        const spinner = (
-            <Spinner
-                color="blue" />
         );
 
         return (

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView, Text, Image } from 'react-native';
+import { Card, CardItem } from 'native-base';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
@@ -30,23 +31,36 @@ export default class Noticias extends Component {
     }
     
     render() {
-        let list = (
+        const list = (
             this.state.news.map(nw => (
                 <Noticia 
                     key={nw.id}
                     data={nw.data} />
                 ))
         );
-        let spinner = (
+        const spinner = (
             <CustomSpinner 
                 color="blue"/>
         );
-        let bottomSpace = (
-            <View>
-                <Text></Text>
-                <Text></Text>
-                <Text></Text>
-                <Text></Text>
+        const noticias = (
+            <View style={{ flex: 1, margin: 10, marginBottom: 50 }}>
+                <Card>
+                    <CardItem header bordered>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View style={{ flex: 1, marginTop: 18 }}>
+                                <Text style={{ color: 'orange', fontSize: 18 }}>Noticias</Text>
+                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Las noticias más 
+                                    relebantes de Tecalitlán a tu alcance.</Text>
+                            </View>
+                            <Image style={{ height: 95, width: 55 }} source={require('../../assets/images/Noticia/noticia.png')} />
+                        </View>
+                    </CardItem>
+                    <CardItem bordered>
+                        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+                            {this.state.loading ? spinner : list}
+                        </View>
+                    </CardItem>
+                </Card>
             </View>
         );
 
@@ -60,8 +74,7 @@ export default class Noticias extends Component {
                     </View>
                     <StatusBar color="#ff9933"/>
                     <ScrollView>
-                        {this.state.loading ? spinner : list}
-                        {bottomSpace}
+                        {noticias}
                     </ScrollView>
                 </View>
             </SafeAreaView>
