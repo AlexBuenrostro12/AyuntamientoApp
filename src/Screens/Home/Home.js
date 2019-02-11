@@ -51,8 +51,11 @@ export default class Home extends Component {
                             title="Home" />
                     </View>
                     <StatusBar color="#ff9933"/>
-                    <View>
-                        {this.state.loading ? spinner : swiperBanner}
+                    <View style={{ flex: 1 }}>
+                        {/* {this.state.loading ? spinner : swiperBanner} */}
+                        <ScrollView>
+                            {this.state.loading ? spinner : swiperBanner}
+                        </ScrollView>
                     </View>
                 </View>
                 <View>
