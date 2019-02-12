@@ -11,6 +11,7 @@ import CustomButton from '../../components/CustomButton/CustomButton';
 import axios from '../../../axios-ayuntamiento';
 import axiosImage from 'axios';
 import ImagePicker from 'react-native-image-picker';
+import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 
 export default class Incidencias extends Component {
     state = {
@@ -333,16 +334,12 @@ export default class Incidencias extends Component {
         const ubicacion = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 18 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Ubicación</Text>
-                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Seleccione la localidad y
-                                    la direccion de la incidencia.</Text>
-                            </View>
-                            <Image style={{ height: 77, width: 85 }} source={require('../../assets/images/Ubicacion/search.png')} />
-                        </View>
-                    </CardItem>
+                    <CustomCardItemTitle
+                        title="Ubicación"
+                        description="Seleccione la localidad y
+                            la direccion de la incidencia."
+                        image={require('../../assets/images/Ubicacion/search.png')} />
+
                     <CardItem bordered>
                         <View style={{ flex: 1, flexDirection: 'column' }}>
                             {formElementsUbicacion.map(element => (
@@ -361,16 +358,12 @@ export default class Incidencias extends Component {
         const multimedia = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 25 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Multimedia</Text>
-                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Seleccione una imagen desde su galeria
-                                o directamente de la camara para conocer la incidencia.</Text>
-                            </View>
-                            <Image style={{ height: 85, width: 65 }} source={require('../../assets/images/Multimedia/multimedia.png')} />
-                        </View>
-                    </CardItem>
+                    <CustomCardItemTitle
+                        title="Multimedia"
+                        description="Seleccione una imagen desde su galeria
+                            o directamente de la camara para conocer la incidencia."
+                        image={require('../../assets/images/Multimedia/multimedia.png')} />
+
                     <CardItem bordered>
                         <View style={{ flex: 1, flexDirection: 'column' }}>
                             {formElementsMultimedia.map(element => (
@@ -390,16 +383,12 @@ export default class Incidencias extends Component {
         const description = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 25 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Descripción</Text>
-                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Llena los siguientes campos
-                                    para describir la incidencia.</Text>
-                            </View>
-                            <Image style={{ height: 85, width: 75 }} source={require('../../assets/images/Descripcion/descripcion.png')} />
-                        </View>
-                    </CardItem>
+                    <CustomCardItemTitle
+                        title="Descripción"
+                        description="Llena los siguientes campos
+                            para describir la incidencia."
+                        image={require('../../assets/images/Descripcion/descripcion.png')} />
+
                     <CardItem bordered>
                         <View style={{ flex: 1, flexDirection: 'column' }}>
                             {formElementsDescripcion.map(element => (
@@ -418,16 +407,12 @@ export default class Incidencias extends Component {
         const datosPersonales = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 25 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Datos personales</Text>
-                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Llena los siguientes campos
-                                    para llevar un control de incidencias.</Text>
-                            </View>
-                            <Image style={{ height: 85, width: 85 }} source={require('../../assets/images/Email/email.png')} />
-                        </View>
-                    </CardItem>
+                    <CustomCardItemTitle
+                        title="Datos personales"
+                        description="Llena los siguientes campos
+                            para llevar un control de incidencias."
+                        image={require('../../assets/images/Email/email.png')} />
+
                     <CardItem bordered>
                         <View style={{ flex: 1, flexDirection: 'column' }}>
                             {formElementsDatosPersonales.map(element => (

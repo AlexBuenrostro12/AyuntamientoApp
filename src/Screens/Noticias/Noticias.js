@@ -6,6 +6,7 @@ import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
 import Noticia from '../../components/Noticia/Noticia';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
+import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 
 export default class Noticias extends Component {
     state = {
@@ -45,16 +46,11 @@ export default class Noticias extends Component {
         const noticias = (
             <View style={{ flex: 1, margin: 10, marginBottom: 50 }}>
                 <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 18 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Noticias</Text>
-                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Las noticias más 
-                                    relebantes de Tecalitlán a tu alcance.</Text>
-                            </View>
-                            <Image style={{ height: 95, width: 55 }} source={require('../../assets/images/Noticia/noticia.png')} />
-                        </View>
-                    </CardItem>
+                    <CustomCardItemTitle
+                        title="Noticias"
+                        description="Las noticias más 
+                            relebantes de Tecalitlán a tu alcance."
+                        image={require('../../assets/images/Noticia/noticia.png')} />
                     <CardItem bordered>
                         <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
                             {this.state.loading ? spinner : list}

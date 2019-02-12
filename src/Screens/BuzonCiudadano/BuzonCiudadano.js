@@ -6,6 +6,7 @@ import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
+import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 
 export default class BuzonCiudadano extends Component {
 
@@ -173,16 +174,11 @@ export default class BuzonCiudadano extends Component {
         const buzonCiudadano = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 18 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Buzón ciudadano</Text>
-                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Realice cualquier queja 
-                                    o sugerencia.</Text>
-                            </View>
-                            <Image style={{ height: 85, width: 81 }} source={require('../../assets/images/Buzon/buzon.png')} />
-                        </View>
-                    </CardItem>
+                    <CustomCardItemTitle
+                            title="Buzón ciudadano"
+                            description="Realice cualquier queja 
+                                o sugerencia."
+                            image={require('../../assets/images/Buzon/buzon.png')} />
                     <CardItem bordered>
                         <View style={{ flex: 1, flexDirection: 'column' }}>
                             {formElementsArray.map(formElement => (

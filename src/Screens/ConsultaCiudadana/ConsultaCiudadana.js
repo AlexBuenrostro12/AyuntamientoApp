@@ -6,6 +6,7 @@ import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
 import Spinner from '../../components/CustomSpinner/CustomSpinner';
 import Consulta from '../../components/Consulta/Consulta';
+import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 
 export default class ConsultaCiudadana extends Component {
     state = {
@@ -45,16 +46,11 @@ export default class ConsultaCiudadana extends Component {
         const consultaCiudadana = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 18 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Consulta ciudadana</Text>
-                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Ayude mejorar aspectos 
-                                    de cada tema, contestanto las consultas.</Text>
-                            </View>
-                            <Image style={{ height: 90, width: 81 }} source={require('../../assets/images/Descripcion/descripcion.png')} />
-                        </View>
-                    </CardItem>
+                    <CustomCardItemTitle
+                        title="Consulta ciudadana"
+                        description="Ayude mejorar aspectos 
+                            de cada tema, contestanto las consultas."
+                        image={require('../../assets/images/Descripcion/descripcion.png')} />
                     <CardItem bordered>
                         <View style={{ flex: 1, flexDirection: 'column', marginBottom: 50, justifyContent: 'center' }}>
                             {this.state.loading ? spinner : list}

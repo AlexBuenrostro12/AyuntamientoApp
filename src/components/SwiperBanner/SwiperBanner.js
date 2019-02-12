@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { Card, CardItem, Thumbnail, Left, Body } from 'native-base';
 import CustomButton from '../../components/CustomButton/CustomButton';
+import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 
 export default class SwiperBanner extends Component {
     state = {
@@ -43,20 +44,14 @@ export default class SwiperBanner extends Component {
     }
 
     render() {
-
-        const titleDescription = (
+        const titleBanner = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
-                    <CardItem header bordered>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flex: 1, marginTop: 18 }}>
-                                <Text style={{ color: 'orange', fontSize: 18 }}>Banner de noticias</Text>
-                                <Text style={{ color: 'grey', fontStyle: 'italic', fontSize: 14 }}>Deslice y conozca
-                                    las noticias mas relevantes dando clic en la imagen.</Text>
-                            </View>
-                            <Image style={{ resizeMode: 'contain', height: 90, width: 70 }} source={require('../../assets/images/Home/home.png')} />
-                        </View>
-                    </CardItem>
+                    <CustomCardItemTitle
+                        title="Banner de noticias"
+                        description="Deslice y conozca
+                            las noticias mas relevantes dando clic en la imagen."
+                        image={require('../../assets/images/Home/home.png')} />
                 </Card>
             </View>
         );
@@ -90,8 +85,8 @@ export default class SwiperBanner extends Component {
             </View>
         );
         return (
-            <View style={{ flex: 1, flexDirection: 'column', }}>
-                {titleDescription}
+            <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
+                {titleBanner}
                 <ScrollView style={{ flex: 1, marginLeft: 5, marginRight: 5, marginBottom: 5 }} horizontal={true} showsHorizontalScrollIndicator={false}>
                     {scrollBanner}
                 </ScrollView>
