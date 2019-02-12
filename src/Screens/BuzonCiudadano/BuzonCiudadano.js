@@ -172,7 +172,7 @@ export default class BuzonCiudadano extends Component {
         }
 
         const buzonCiudadano = (
-            <View style={{ flex: 1, margin: 5 }}>
+            <View style={{ flex: 1, margin: 5, marginBottom: 60 }}>
                 <Card>
                     <CustomCardItemTitle
                             title="Buzón ciudadano"
@@ -202,16 +202,14 @@ export default class BuzonCiudadano extends Component {
         return (
             <SafeAreaView style={styles.container}>
                 <View>
-                    <ScrollView>
-                        <View>
-                            <HeaderToolbar
-                                open={this.props}
-                                title="Sugerencias" />
-                        </View>
+                    <View>
+                        <HeaderToolbar
+                            open={this.props}
+                            title="Sugerencias" />
+                    </View>
                         <StatusBar color="#ff9933" />
-                        <View>
-                            {buzonCiudadano}
-                        </View>
+                    <ScrollView>
+                        {buzonCiudadano}
                     </ScrollView>
                 </View>
             </SafeAreaView>
