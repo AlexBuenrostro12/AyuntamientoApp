@@ -1,20 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
+import { Card } from 'native-base';
 import StatusBar from '../../UI/StatusBar/StatusBar';
-
+import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 
 const busEscolar = (props) => {
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View>
-                <HeaderToolbar open={props} />
+                <HeaderToolbar 
+                    open={props}
+                    title="Bus escolar" />
             </View>
             <StatusBar color="#ff9933" />
-            <View style={styles.view}>
-                <Text style={styles.text}>Bus Escolar</Text>
-            </View>
-        </View>
+            <ScrollView style={styles.container}>
+                <View style={{ flex: 1, margin: 5 }}>
+                    <Card>
+                        <CustomCardItemTitle
+                            title="Bus escolar"
+                            description="Consulta los horarios y destinos de tus camiones."
+                            image={require('../../assets/images/Ubicacion/search.png')} />
+                    </Card>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
