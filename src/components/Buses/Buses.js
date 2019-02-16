@@ -7,14 +7,15 @@ import CustomButton from '../CustomButton/CustomButton';
 export default class Buses extends Component {
 
     state = {
+        data: [],
         bus: [],
         showItemCard: false
     }
 
-    clickedListHandler = (identifier) => {
+    clickedListHandler = (salida, destino) => {
         const bus = [];
         for (let dataName in this.props.data) {
-            if (this.props.data[dataName].horaSalida === identifier) {
+            if (this.props.data[dataName].horaSalida === salida && this.props.data[dataName].destino === destino) {
                 bus.push({
                     ...this.props.data[dataName]
                 });
@@ -26,30 +27,35 @@ export default class Buses extends Component {
         this.setState({ showItemCard: false });
     }
 
-    render() {
+    componentDidMount() {
         const data = [];
         for (let dataName in this.props.data) {
             data.push({
+                key: this.props.data[dataName].chofer + this.props.data[dataName].horaSalida,
                 destino: this.props.data[dataName].destino,
                 horaSalida: this.props.data[dataName].horaSalida
-            });
+            })
         }
+        this.setState({ data: data });
+    }
+
+    render() {
         const listBuses = (
-            <View style={{ flex: 1 }}>
-                {data.map(dt => (
-                    <ListItem key={dt.destino}>
+            <View>
+                {this.state.data.map(dt => (
+                    <ListItem key={dt.key}>
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.horaSalida)}>
+                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.horaSalida, dt.destino)}>
                                 <Text>{dt.destino} - {dt.horaSalida}</Text>
                             </TouchableOpacity>
-                            <IconRight describe={() => this.clickedListHandler(dt.horaSalida)} />
+                            <IconRight describe={() => this.clickedListHandler(dt.horaSalida, dt.destino)} />
                         </View>
                     </ListItem>
                 ))}
             </View>
         );
         const cardBuses = (
-            <View style={{ flex: 1, marginBottom: 50 }}>
+            <View style={{ flex: 1, marginBottom: 20, marginTop: 20 }}>
                 {this.state.bus.map(bs => (
                     <Card key={bs.chofer}>
                         <CardItem header>

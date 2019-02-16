@@ -23,7 +23,7 @@ export default class Noticia extends Component {
                 this.setState({ fecha: this.props.data['fecha'] });
             }
         }
-        this.setState({ noticia: noticia, showItemCard: true });
+        this.setState({ showItemCard: true });
     }
 
     showItemList = () => {
