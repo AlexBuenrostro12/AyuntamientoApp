@@ -46,7 +46,7 @@ const DrawerNavigation = createDrawerNavigator({
     'Buzón Ciudadano': BuzonCiudadanoScreen,
     'Consulta Ciudadana': ConsultaCiudadanaScreen,
     'Noticias': NoticiasScreen,
-    'Buz Escolar': BusEscolarScreen,
+    'Bus Escolar': BusEscolarScreen,
     'Incidencias': IncidenciasScreen,
 },{
     contentComponent: CustomDrawerComponent
