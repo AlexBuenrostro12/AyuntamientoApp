@@ -44,7 +44,7 @@ export default class Noticias extends Component {
                 color="blue"/>
         );
         const noticias = (
-            <View style={{ flex: 1, margin: 10, marginBottom: 50 }}>
+            <View style={{ flex: 1, margin: 5 }}>
                 <Card>
                     <CustomCardItemTitle
                         title="Noticias"
@@ -61,8 +61,8 @@ export default class Noticias extends Component {
         );
 
         return(
-            <SafeAreaView style={styles.container}>
-                <View>
+            <SafeAreaView style={{ flex: 1 }}>
+                <View style={styles.container}>
                     <View>
                         <HeaderToolbar 
                             open={this.props}
@@ -82,6 +82,9 @@ export default class Noticias extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
+        flexWrap: 'wrap',
+        overflow: 'scroll',
     },
     view: {
         flex: 1, 

@@ -61,8 +61,8 @@ export default class ConsultaCiudadana extends Component {
         );
 
         return (
-            <SafeAreaView style={styles.container}>
-                <View>
+            <SafeAreaView style={{ flex: 1 }}>
+                <View style={styles.container}>
                     <View>
                         <HeaderToolbar
                             open={this.props}
@@ -81,6 +81,9 @@ export default class ConsultaCiudadana extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
+        flexWrap: 'wrap',
+        overflow: 'scroll',
     },
     view: {
         flex: 1,

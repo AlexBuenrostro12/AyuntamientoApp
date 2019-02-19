@@ -1,23 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 
-const misionVision = ( props ) => (
-    <View style={styles.container}>
-        <View>
-            <HeaderToolbar open={props} />
+const misionVision = (props) => (
+    <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+            <View>
+                <HeaderToolbar 
+                    open={props}
+                    title="Mision y visión" />
+            </View>
+            <StatusBar color="#ff9933" />
+            <View style={styles.view}>
+                <Text style={styles.text}>MISION Y VISION</Text>
+            </View>
         </View>
-        <StatusBar color="#ff9933"/>
-        <View style={styles.view}>
-            <Text style={styles.text}>MISION Y VISION</Text>
-        </View>
-    </View>
+    </SafeAreaView>
 );
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
+        flexWrap: 'wrap',
+        overflow: 'scroll',
     },
     view: {
         flex: 1,

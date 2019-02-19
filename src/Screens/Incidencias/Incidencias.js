@@ -449,8 +449,8 @@ export default class Incidencias extends Component {
         );
 
         return (
-            <SafeAreaView style={styles.container}>
-                <View>
+            <SafeAreaView style={{ flex: 1 }}>
+                <View style={styles.container}>
                     <View>
                         <HeaderToolbar
                             open={this.props}
@@ -469,7 +469,9 @@ export default class Incidencias extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginBottom: '11%'
+        flexDirection: 'column',
+        flexWrap: 'wrap',
+        overflow: 'scroll',
     },
     view: {
         flex: 1,

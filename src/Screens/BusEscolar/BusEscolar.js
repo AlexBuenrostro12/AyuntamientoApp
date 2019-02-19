@@ -25,7 +25,7 @@ export default class BusEscolar extends Component {
                         id: key
                     });
                 }
-                this.setState({ loading: false, buses: fetchedBuses});
+                this.setState({ loading: false, buses: fetchedBuses });
             })
             .catch(err => {
                 this.setState({ loading: false });
@@ -47,28 +47,29 @@ export default class BusEscolar extends Component {
         );
 
         return (
-            <SafeAreaView style={styles.container}>
-                <View>
+            <SafeAreaView style={{ flex: 1 }}>
+                <View style={styles.container}>
                     <HeaderToolbar
                         open={this.props}
                         title="Bus escolar" />
+
+                    <StatusBar color="#ff9933" />
+                    <ScrollView>
+                        <View style={{ flex: 1, margin: 5 }}>
+                            <Card>
+                                <CustomCardItemTitle
+                                    title="Bus escolar"
+                                    description="Consulta los horarios y destinos de tus camiones."
+                                    image={require('../../assets/images/Ubicacion/search.png')} />
+                                <CardItem>
+                                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+                                        {this.state.loading ? spinner : busesList}
+                                    </View>
+                                </CardItem>
+                            </Card>
+                        </View>
+                    </ScrollView>
                 </View>
-                <StatusBar color="#ff9933" />
-                <ScrollView style={styles.container}>
-                    <View style={{ flex: 1, margin: 5 }}>
-                        <Card>
-                            <CustomCardItemTitle
-                                title="Bus escolar"
-                                description="Consulta los horarios y destinos de tus camiones."
-                                image={require('../../assets/images/Ubicacion/search.png')} />
-                            <CardItem>
-                                <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-                                    {this.state.loading ? spinner : busesList}
-                                </View>
-                            </CardItem>
-                        </Card>
-                    </View>
-                </ScrollView>
             </SafeAreaView>
         );
     }
@@ -77,6 +78,9 @@ export default class BusEscolar extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
+        flexWrap: 'wrap',
+        overflow: 'scroll',
     },
     view: {
         flex: 1,

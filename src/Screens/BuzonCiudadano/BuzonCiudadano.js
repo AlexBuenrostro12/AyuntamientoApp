@@ -172,7 +172,7 @@ export default class BuzonCiudadano extends Component {
         }
 
         const buzonCiudadano = (
-            <View style={{ flex: 1, margin: 5, marginBottom: 60 }}>
+            <View style={{ flex: 1, margin: 5 }}>
                 <Card>
                     <CustomCardItemTitle
                             title="Buzón ciudadano"
@@ -200,8 +200,8 @@ export default class BuzonCiudadano extends Component {
             </View>
         );
         return (
-            <SafeAreaView style={styles.container}>
-                <View>
+            <SafeAreaView style={{ flex: 1 }}>
+                <View style={styles.container}>
                     <View>
                         <HeaderToolbar
                             open={this.props}
@@ -220,6 +220,9 @@ export default class BuzonCiudadano extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
+        flexWrap: 'wrap',
+        overflow: 'scroll',
     },
     view: {
         flex: 1,
