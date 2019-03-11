@@ -1,42 +1,49 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
-import DeckSwiper from '../../components/DeckSwipe/DeckSwipe';
+import DeckSwipe from '../../components/DeckSwipe/DeckSwipe';
+import styled, { ThemeProvider } from 'styled-components/native';
+
+const theme = {
+    margin: '5px',
+    flex: '1'
+}
+
+const StyledSafeArea = styled.SafeAreaView`
+    flex: 1;
+`;
+
+const StyledContainer = styled.View`
+    flex: 1;
+    flex-direction: column;
+    flex-wrap: wrap;
+    overflow: scroll;
+`;
+
+const StyledHeaderView = styled.View``;
+
+const StyledViewDeck = styled.View`
+    flex: 1;
+    flex-direction: column;
+`;
+
 
 const gabinete = (props) => (
-    <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-            <View>
+    <StyledSafeArea style={{ flex: 1 }}>
+        <StyledContainer>
+            <StyledHeaderView>
                 <HeaderToolbar
                     open={props}
                     title="Gabinete" />
-            </View>
+            </StyledHeaderView>
             <StatusBar color="#ff9933" />
-            <View>
-                <DeckSwiper />
-            </View>
-            {/* better way to do it */}
-        </View>
-    </SafeAreaView>
+            <StyledViewDeck>
+                <ThemeProvider theme={theme}>
+                    <DeckSwipe />
+                </ThemeProvider>
+            </StyledViewDeck>
+        </StyledContainer>
+    </StyledSafeArea>
 );
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        flexWrap: 'wrap',
-        overflow: 'scroll',
-    },
-    view: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    text: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    }
-});
 
 export default gabinete;

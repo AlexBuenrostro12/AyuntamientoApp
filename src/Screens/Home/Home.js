@@ -58,9 +58,6 @@ export default class Home extends Component {
                         </ScrollView>
                     </View>
                 </View>
-                <View>
-                    <FABsRadio />
-                </View>
             </SafeAreaView>
         );
     }
