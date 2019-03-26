@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Dimensions } from 'react-native';
 import { Card, ListItem, CardItem } from 'native-base';
 import styled from 'styled-components';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 import IconRight from '../../UI/IconRight/IconRight';
+import CustomButton from '../../components/CustomButton/CustomButton';
 import Manual from '../../components/Manual/Manual';
 
 const StyledViewManuales = styled.View`
@@ -40,7 +41,7 @@ export default class Manuales extends Component {
 
     render() {
 
-        const title = (
+        const cardBody = (
             <View style={{ flex: 1, margin: 5 }}>
                 <Card>
                     <CustomCardItemTitle
@@ -65,22 +66,40 @@ export default class Manuales extends Component {
             </View>
         );
 
+        const button = (
+            <CustomButton
+                style="DangerBorder"
+                clicked={() => this.hiddeManualHandler()}
+                name="Cerrar" />
+        );
+
         const manual = (
-            <Manual
-                url={this.state.url} />
+           <View style={{ 
+                    flex: 1,
+                    height: Dimensions.get('window').height }}>
+                <Manual
+                    url={this.state.url} />
+                <View style={{ margin: 1.5 }}>
+                    {this.state.show ? button : null}
+                </View>
+           </View>
+        );
+
+        const body = (
+            <View style={styles.container}>
+                <View>
+                    <HeaderToolbar
+                        open={this.props}
+                        title="Manuales" />
+                </View>
+                <StatusBar color="#ff9933" />
+                {cardBody}
+            </View>
         );
 
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                <View style={styles.container}>
-                    <View>
-                        <HeaderToolbar
-                            open={this.props}
-                            title="Manuales" />
-                    </View>
-                    <StatusBar color="#ff9933" />
-                    {!this.state.show ? title : manual}
-                </View>
+                {this.state.show ? manual : body}
             </SafeAreaView>
         );
     }
