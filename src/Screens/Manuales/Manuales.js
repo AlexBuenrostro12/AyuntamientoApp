@@ -74,9 +74,7 @@ export default class Manuales extends Component {
         );
 
         const manual = (
-           <View style={{ 
-                    flex: 1,
-                    height: Dimensions.get('window').height }}>
+           <View style={{ flex: 1, height: Dimensions.get('window').height }}>
                 <Manual
                     url={this.state.url} />
                 <View style={{ margin: 1.5 }}>
