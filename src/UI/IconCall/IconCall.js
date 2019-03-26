@@ -1,7 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 import call from '../../assets/images/Call/call.png';
-import Communications from 'react-native-communications';
 
 const iconCall = ( props ) => (
     <TouchableOpacity onPress={() => Communications.phonecall(props.number, props.called)}>

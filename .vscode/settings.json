@@ -2,5 +2,6 @@
     "workbench.colorCustomizations": {
         "titleBar.activeBackground": "#FF8800",
         "titleBar.activeForeground": "#ffffff"
-    }
+    },
+    "editor.fontSize": 16
 }
