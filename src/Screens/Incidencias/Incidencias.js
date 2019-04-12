@@ -159,7 +159,8 @@ export default class Incidencias extends Component {
                 }
             }
 
-            axios.post('/incidents.json', incident)
+            const { token } = this.props.screenProps;
+            axios.post('/incidents.json?auth=' + token, incident)
                 .then(response => {
                     Alert.alert('Incidencias', '¡Incidencia enviada con exito!', [{ text: 'Ok' }], { cancelable: false });
                 })
@@ -167,13 +168,16 @@ export default class Incidencias extends Component {
                     Alert.alert('Incidencias', '¡Error al enviar incidencia!', [{ text: 'Ok' }], { cancelable: false });
                 });
 
-            axiosImage.post('https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/uploadFile', this.state.imageData)
+            // Check if token exist
+            if(token) {
+                axiosImage.post('https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/uploadFile', this.state.imageData)
                 .then(res => {
                     console.log(res);
                 })
                 .catch(err => {
                     Alert.alert('Incidencias', '¡Error subir imagen!', [{ text: 'Ok' }], { cancelable: false });
                 });
+            }
         } else {
             Alert.alert('Incidencias', '¡Comlete el formulario correctamente!', [{ text: 'Ok' }], { cancelable: false });
         }

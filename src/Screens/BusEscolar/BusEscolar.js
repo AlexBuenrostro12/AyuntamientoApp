@@ -16,7 +16,8 @@ export default class BusEscolar extends Component {
     }
 
     componentDidMount() {
-        axios.get('/bus.json')
+        const { token } = this.props.screenProps;
+        axios.get('/bus.json?auth=' + token)
             .then(res => {
                 const fetchedBuses = [];
                 for (let key in res.data) {

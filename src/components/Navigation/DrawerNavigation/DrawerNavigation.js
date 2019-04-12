@@ -1,17 +1,9 @@
 
 import React from 'react';
 import {createDrawerNavigator, DrawerItems} from 'react-navigation';
-import {StyleSheet, View, Image, SafeAreaView, ScrollView, Dimensions} from 'react-native';
+import {StyleSheet, View, Image, SafeAreaView, ScrollView } from 'react-native';
 import iconLogo from '../../../assets/images/Logo/prs-logo.png';
-import GabineteScreen from '../../../Screens/Gabinete/Gabinete';
-import MisionVisionScreen from '../../../Screens/MisionVision/MisionVision';
-import PlanMunicipalDesarrolloScreen from '../../../Screens/PlanMunicipalDesarrollo/PlanMunicipalDesarrollo';
-import ReglamentosScreen from '../../../Screens/Reglamentos/Reglamentos';
-import OrganizacionScreen from '../../../Screens/Organizacion/Organizacion';
 import ManualesScreen from '../../../Screens/Manuales/Manuales';
-import GestionPublicaScreen from '../../../Screens/GestionPublica/GestionPublica';
-import OrganizacionesCivilesScreen from '../../../Screens/OrganizacionesCiviles/OrganizacionesCiviles';
-import DesarrolloUrbanoScreen from '../../../Screens/DesarrolloUrbano/DesarrolloUrbano';
 import BuzonCiudadanoScreen from '../../../Screens/BuzonCiudadano/BuzonCiudadano';
 import ConsultaCiudadanaScreen from '../../../Screens/ConsultaCiudadana/ConsultaCiudadana';
 import NoticiasScreen from '../../../Screens/Noticias/Noticias';
@@ -21,28 +13,20 @@ import IncidenciasScreen from '../../../Screens/Incidencias/Incidencias';
 import { Root } from 'native-base';
 
 const CustomDrawerComponent = ( props ) => (
-    <SafeAreaView style={styles.sAV}>
-        <View style={styles.view}>
-            <Image style={styles.image} source={iconLogo} />
-        </View>
-        <ScrollView>
-            <DrawerItems {...props} />
-        </ScrollView>
-    </SafeAreaView>
-);
+        <SafeAreaView style={styles.sAV}>
+            <View style={styles.view}>
+                <Image style={styles.image} source={iconLogo} />
+            </View>
+            <ScrollView>
+                <DrawerItems {...props} />
+            </ScrollView>
+        </SafeAreaView>
+    );
 
 
 const DrawerNavigation = createDrawerNavigator({
     'Home':  HomeScreen,
-    //'Gabinete': GabineteScreen,
-    //'Misión y Visión': MisionVisionScreen,
-    //'Plan Municipal de Desarrollo': PlanMunicipalDesarrolloScreen,
-    //'Reglamentos': ReglamentosScreen,
-    //'Organización': OrganizacionScreen,
     'Manuales': ManualesScreen,
-    //'Gestión Pública': GestionPublicaScreen,
-    //'Organizaciones Civiles': OrganizacionesCivilesScreen,
-    //'Desarrollo Urbano': DesarrolloUrbanoScreen,
     'Buzón Ciudadano': BuzonCiudadanoScreen,
     'Consulta Ciudadana': ConsultaCiudadanaScreen,
     'Noticias': NoticiasScreen,
@@ -51,6 +35,13 @@ const DrawerNavigation = createDrawerNavigator({
 },{
     contentComponent: CustomDrawerComponent
 });
+
+const MyNavigation = (props) => {
+    // Receive token and pass as screenProps to DrawerNavigation
+    return (
+        <DrawerNavigation screenProps={{ token: props.token }}/>
+    );
+}
 
 const styles = StyleSheet.create({
     sAV: {
@@ -68,8 +59,9 @@ const styles = StyleSheet.create({
     }
 });
 
-export default () =>
-    <Root>
-        <DrawerNavigation />
-    </Root>;
+export default MyNavigation;
+// export default () =>
+//     <Root>
+//         {/* <DrawerNavigation /> */}
+//     </Root>;
     

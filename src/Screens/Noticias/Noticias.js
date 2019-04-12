@@ -47,7 +47,8 @@ export default class Noticias extends Component {
     }
 
     componentDidMount() {
-        axios.get('/news.json')
+        const { token } = this.props.screenProps;
+        axios.get('/news.json?auth=' + token)
             .then(res => {
                 const fetchedNews = [];
                 for (let key in res.data) {

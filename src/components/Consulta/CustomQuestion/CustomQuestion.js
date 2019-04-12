@@ -77,7 +77,7 @@ export default class CustomQuestion extends Component {
                 surveyData: formData
             };
 
-            axios.post('/surveysResponse.json', survey)
+            axios.post('/surveysResponse.json?auth=' + this.props.token, survey)
                 .then(response => {
                     //this.setState({ showSuccessToast: true });
                     //this.setTimeOut();

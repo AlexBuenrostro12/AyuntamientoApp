@@ -12,10 +12,13 @@ export default class ConsultaCiudadana extends Component {
     state = {
         surveys: [],
         loading: true,
+        token: null
     }
 
     componentDidMount() {
-        axios.get('/surveys.json')
+        const { token } = this.props.screenProps;
+        this.setState({ token: token });
+        axios.get('/surveys.json?auth=' + token)
             .then(res => {
                 const fetchedSurveys = [];
                 for (let key in res.data) {
@@ -36,7 +39,8 @@ export default class ConsultaCiudadana extends Component {
             this.state.surveys.map(sv => (
                 <Consulta
                     key={sv.id}
-                    data={sv.data} />
+                    data={sv.data}
+                    token={this.state.token}/>
             ))
         );
         const spinner = (

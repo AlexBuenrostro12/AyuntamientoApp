@@ -89,7 +89,13 @@ export default class BuzonCiudadano extends Component {
         loading: false,
         formIsValid: false,
         date: 'null',
+        token: null
 
+    }
+
+    componentDidMount() {
+        const { token } = this.props.screenProps;
+        this.setState({ token: token });
     }
 
     getCurrentDate() {
@@ -121,7 +127,7 @@ export default class BuzonCiudadano extends Component {
                 suggestionData: formData
             }
 
-            axios.post('/suggestions.json', suggetion)
+            axios.post('/suggestions.json?auth=' + this.state.token, suggetion)
                 .then(response => {
                     Alert.alert('Buzón ciudadano', '¡Sugerencia enviada con exito!', [{text: 'Ok'}], {cancelable: false});
                 })
