@@ -1,11 +1,9 @@
-
 import React from 'react';
 import {createDrawerNavigator, DrawerItems} from 'react-navigation';
 import {StyleSheet, View, Image, SafeAreaView, ScrollView } from 'react-native';
 import iconLogo from '../../../assets/images/Logo/prs-logo.png';
 import ManualesScreen from '../../../Screens/Manuales/Manuales';
 import BuzonCiudadanoScreen from '../../../Screens/BuzonCiudadano/BuzonCiudadano';
-import ConsultaCiudadanaScreen from '../../../Screens/ConsultaCiudadana/ConsultaCiudadana';
 import NoticiasScreen from '../../../Screens/Noticias/Noticias';
 import BusEscolarScreen from '../../../Screens/BusEscolar/BusEscolar';
 import HomeScreen from '../../../Screens/Home/Home';
@@ -28,7 +26,6 @@ const DrawerNavigation = createDrawerNavigator({
     'Home':  HomeScreen,
     'Manuales': ManualesScreen,
     'Buzón Ciudadano': BuzonCiudadanoScreen,
-    'Consulta Ciudadana': ConsultaCiudadanaScreen,
     'Noticias': NoticiasScreen,
     'Bus Escolar': BusEscolarScreen,
     'Incidencias': IncidenciasScreen,
@@ -37,9 +34,8 @@ const DrawerNavigation = createDrawerNavigator({
 });
 
 const MyNavigation = (props) => {
-    // Receive token and pass as screenProps to DrawerNavigation
     return (
-        <DrawerNavigation screenProps={{ token: props.token }}/>
+        <DrawerNavigation />
     );
 }
 

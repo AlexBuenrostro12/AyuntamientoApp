@@ -62,6 +62,7 @@ class Login extends Component {
 		try {
 			await AsyncStorage.setItem('@storage_token', this.state.idToken);
 			await AsyncStorage.setItem('@storage_expiresIn', this.state.expiresIn.toString());
+			this.setState({ login: false });
 		} catch (e) {
 			Alert.alert('Login', '¡Error al almacenar token!', [{text: 'Ok'}], {cancelable: false});
 		}
@@ -96,9 +97,8 @@ class Login extends Component {
 					const now = new Date();
 					const expiryDate = now.getTime() + expiresIn * 1000;
 					console.log(now, new Date(expiryDate));
-					this.setState({ idToken: idToken, login: false, expiresIn: expiryDate });
+					this.setState({ idToken: idToken, expiresIn: expiryDate });
 					this.storeToken();
-					//Storage token left
 				} 
 				if(error){
 					Alert.alert('Login', '¡Error: ' + error.code + ', ' + error.message, [{text: 'Ok'}], {cancelable: false});
@@ -174,7 +174,7 @@ class Login extends Component {
 			</SafeAreaView>
 		);
 
-	const drawer = <DraweNavigation token={this.state.idToken}/>;
+	const drawer = <DraweNavigation />;
 		return <Aux>{this.state.login ? form : drawer}</Aux>;
 	}
 }

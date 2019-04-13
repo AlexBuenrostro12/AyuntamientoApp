@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Platform, Alert } from 'react-native';
 import { Form, Card, CardItem, Body } from 'native-base';
+import ImagePicker from 'react-native-image-picker';
+import axiosImage from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import Ubicacion from '../../components/Incidencias/Ubicacion/Ubicacion';
@@ -9,9 +12,8 @@ import Descripcion from '../../components/Incidencias/Descripcion/Descripcion';
 import DatosPersonales from '../../components/Incidencias/DatosPersonales/DatosPersonales';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import axios from '../../../axios-ayuntamiento';
-import axiosImage from 'axios';
-import ImagePicker from 'react-native-image-picker';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
+import Login from '../Login/Login';
 
 export default class Incidencias extends Component {
     state = {
@@ -112,7 +114,9 @@ export default class Incidencias extends Component {
         incidentImage: null,
         fileNameImage: null,
         imageData: null,
-        date: null
+        date: null,
+        token: null,
+        tokenIsValid: true
     }
 
     getCurrentDate(){
@@ -131,6 +135,43 @@ export default class Incidencias extends Component {
 
         today = mm + '/' + dd + '/' + yyyy;
         this.setState({date: today});
+    }
+
+    async componentDidMount() {
+        //Get the token and time of expiration
+		let token = (expiresIn = null);
+		try {
+			console.log('Entro al try');
+			token = await AsyncStorage.getItem('@storage_token');
+			expiresIn = await AsyncStorage.getItem('@storage_expiresIn');
+			//Use the expires in
+			const parseExpiresIn = new Date(parseInt(expiresIn));
+			const now = new Date();
+			console.log('Incidencias.js: ', token);
+            console.log('Incidencias.js: ', parseExpiresIn, now);
+            console.log('Incidencias.js: ', this.state.tokenIsValid);
+			if (token && parseExpiresIn > now) {
+				this.setState({ token: token });
+			} else {
+				//Restrict screens if there's no token
+				try {
+					console.log('Entro al try');
+					await AsyncStorage.removeItem('@storage_token');
+					await AsyncStorage.removeItem('@storage_expiresIn');
+					//Use the expires in
+				} catch (e) {
+					//Catch posible errors
+				}
+				Alert.alert(
+					'Incidencias',
+					'¡Tiempo de espera agotado, inicie sesion de nuevo!',
+					[ { text: 'Ok', onPress: () => this.setState({ tokenIsValid: false }) } ],
+					{ cancelable: false }
+				);
+			}
+		} catch (e) {
+			//Catch posible errors
+		}
     }
 
     incidentsHandler = () => {
@@ -159,7 +200,7 @@ export default class Incidencias extends Component {
                 }
             }
 
-            const { token } = this.props.screenProps;
+            const { token } = this.state;
             axios.post('/incidents.json?auth=' + token, incident)
                 .then(response => {
                     Alert.alert('Incidencias', '¡Incidencia enviada con exito!', [{ text: 'Ok' }], { cancelable: false });
@@ -175,7 +216,7 @@ export default class Incidencias extends Component {
                     console.log(res);
                 })
                 .catch(err => {
-                    Alert.alert('Incidencias', '¡Error subir imagen!', [{ text: 'Ok' }], { cancelable: false });
+                    Alert.alert('Incidencias', '¡Error al subir imagen!', [{ text: 'Ok' }], { cancelable: false });
                 });
             }
         } else {
@@ -454,7 +495,7 @@ export default class Incidencias extends Component {
 
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                <View style={styles.container}>
+                {this.state.tokenIsValid ? <View style={styles.container}>
                     <View>
                         <HeaderToolbar
                             open={this.props}
@@ -464,7 +505,7 @@ export default class Incidencias extends Component {
                     <ScrollView>
                         {form}
                     </ScrollView>
-                </View>
+                </View> : <Login />}
             </SafeAreaView>
         );
     }
