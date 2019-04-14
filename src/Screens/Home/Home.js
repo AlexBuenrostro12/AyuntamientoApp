@@ -6,7 +6,7 @@ import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import SwiperBanner from '../../components/SwiperBanner/SwiperBanner';
-import Login from '../Login/Login';
+
 
 export default class Home extends Component {
 	state = {
@@ -18,17 +18,19 @@ export default class Home extends Component {
 	//Obtiene el token y tiempo de expiracion almacenado globalmente en la app
 	async componentDidMount() {
 		//Get the token and time of expiration
-		let token = (expiresIn = null);
+		let token = expiresIn = email = null;
 		try {
 			console.log('Entro al try');
 			token = await AsyncStorage.getItem('@storage_token');
 			expiresIn = await AsyncStorage.getItem('@storage_expiresIn');
+			email = await AsyncStorage.getItem('@storage_email');
 			//Use the expires in
 			const parseExpiresIn = new Date(parseInt(expiresIn));
 			const now = new Date();
 			console.log('Home.js: ', token);
 			console.log('Home.js: ', parseExpiresIn, now);
 			console.log('Home.js: ', this.state.tokenIsValid);
+			console.log('Home.js: ', email);
 			if (token && parseExpiresIn > now) {
 				axios
 					.get('/news.json?auth=' + token)
@@ -52,6 +54,7 @@ export default class Home extends Component {
 					console.log('Entro al try');
 					await AsyncStorage.removeItem('@storage_token');
 					await AsyncStorage.removeItem('@storage_expiresIn');
+					await AsyncStorage.removeItem('@storage_email');
 					//Use the expires in
 				} catch (e) {
 					//Catch posible errors
@@ -87,7 +90,8 @@ export default class Home extends Component {
 						</View>
 					</View>
 				) : (
-					<Login />
+					this.props.navigation.navigate('Auth')
+					//Returns to Auth screen if the token isn's valid
 				)}
 			</SafeAreaView>
 		);

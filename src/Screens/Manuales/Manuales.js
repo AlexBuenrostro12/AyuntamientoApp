@@ -9,7 +9,6 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import IconRight from '../../UI/IconRight/IconRight';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import Manual from '../../components/Manual/Manual';
-import Login from '../Login/Login';
 
 const StyledViewManuales = styled.View`
 	flex: 1;
@@ -137,7 +136,7 @@ export default class Manuales extends Component {
 				{this.state.tokenIsValid ? (
 					<View style={{ flex: 1 }}>{this.state.show ? manual : body}</View>
 				) : (
-					<Login />
+					this.props.navigation.navigate('Auth')
 				)}
 			</SafeAreaView>
 		);

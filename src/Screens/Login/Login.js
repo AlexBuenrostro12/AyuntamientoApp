@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ImageBackground, Dimensions, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import StatusBar from '../../UI/StatusBar/StatusBar';
-import DraweNavigation from '../../components/Navigation/DrawerNavigation/DrawerNavigation';
 import Aux from '../../hoc/Auxiliar/Auxiliar';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomButton from '../../components/CustomButton/CustomButton';
@@ -25,6 +24,7 @@ class Login extends Component {
 		},
 		idToken: null,
 		expiresIn: null,
+		email: null
 	};
 	//Cambia de formulario dependiendo click de cada boton
 	changeFormHandler = (ban, identifier) => {
@@ -41,6 +41,10 @@ class Login extends Component {
 				null;
 				break;
 		}
+	};
+
+	static navigationOptions = {
+		header: null
 	};
 	
 	//Controla el valor de los input
@@ -62,29 +66,37 @@ class Login extends Component {
 		try {
 			await AsyncStorage.setItem('@storage_token', this.state.idToken);
 			await AsyncStorage.setItem('@storage_expiresIn', this.state.expiresIn.toString());
+			await AsyncStorage.setItem('@storage_email', this.state.email.toString());
 			this.setState({ login: false });
+			this.props.navigation.navigate(!this.state.login && 'App')
+
 		} catch (e) {
 			Alert.alert('Login', '¡Error al almacenar token!', [{text: 'Ok'}], {cancelable: false});
 		}
 	}
 	//Ingresa usuario con sus credenciales
 	signInUser = (isAdmin) => {
-		const url ='https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyBix5LF2utfHvWl6VB2cjdvZKtjXdbLz98';
-		let email = password = null;
+		let url = null;
+		const { email, password } = this.state.form;
+		let body = null;
 		if(isAdmin) {
-			email = this.state.form.email.value;
-			password = this.state.form.password.value;
+			url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyBix5LF2utfHvWl6VB2cjdvZKtjXdbLz98';
+			//email = this.state.form.email.value;
+			//password = this.state.form.password.value;
+			body = {
+				email: email.value,
+				password: password.value,
+				returnSecureToken: true
+			}
 		} else {
-			email = 'user@user.com';
-			password = 'user123';
+			url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyBix5LF2utfHvWl6VB2cjdvZKtjXdbLz98';
+			body = {
+				returnSecureToken: true
+			}
 		}
 		fetch(url, {
 			method: 'POST',
-			body: JSON.stringify({
-				email: email,
-				password: password,
-				returnSecureToken: true
-			}),
+			body: JSON.stringify(body),
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -92,12 +104,12 @@ class Login extends Component {
 			.then((res) => res.json())
 			.then((parsedRes) => {
 				console.log(parsedRes);
-				const { idToken, error, expiresIn } = parsedRes;
+				const { idToken, error, expiresIn, email } = parsedRes;
 				if (idToken) {
 					const now = new Date();
 					const expiryDate = now.getTime() + expiresIn * 1000;
 					console.log(now, new Date(expiryDate));
-					this.setState({ idToken: idToken, expiresIn: expiryDate });
+					this.setState({ idToken: idToken, expiresIn: expiryDate, email: email ? 'true' : 'false' });
 					this.storeToken();
 				} 
 				if(error){
@@ -174,8 +186,7 @@ class Login extends Component {
 			</SafeAreaView>
 		);
 
-	const drawer = <DraweNavigation />;
-		return <Aux>{this.state.login ? form : drawer}</Aux>;
+	return <Aux>{form}</Aux>;
 	}
 }
 

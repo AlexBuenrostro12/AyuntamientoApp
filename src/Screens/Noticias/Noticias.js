@@ -9,7 +9,6 @@ import axios from '../../../axios-ayuntamiento';
 import Noticia from '../../components/Noticia/Noticia';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
-import Login from '../Login/Login';
 
 const theme = {
 	commonFlex: '1',
@@ -125,7 +124,7 @@ export default class Noticias extends Component {
 					<StyledMainScroll>
 						<ThemeProvider theme={theme}>{noticias}</ThemeProvider>
 					</StyledMainScroll>
-				</StyledContainer> : <Login />}
+				</StyledContainer> : this.props.navigation.navigate('Auth')}
 			</StyledSafeArea>
 		);
 	}

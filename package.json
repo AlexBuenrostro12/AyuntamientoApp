@@ -13,9 +13,10 @@
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-native": "^0.58.5",
+    "react-native-gesture-handler": "^1.1.0",
     "react-native-image-picker": "^0.28.0",
     "react-native-pdf": "^5.0.12",
-    "react-navigation": "^2.6.2",
+    "react-navigation": "^3.0.0-rc.5",
     "rn-fetch-blob": "^0.10.15",
     "styled-components": "^4.1.3"
   },

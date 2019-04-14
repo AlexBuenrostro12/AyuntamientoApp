@@ -8,7 +8,6 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import CustommSpinner from '../../components/CustomSpinner/CustomSpinner';
 import axios from '../../../axios-ayuntamiento';
 import Buses from '../../components/Buses/Buses';
-import Login from '../Login/Login';
 
 export default class BusEscolar extends Component {
 
@@ -103,7 +102,7 @@ export default class BusEscolar extends Component {
                             </Card>
                         </View>
                     </ScrollView>
-                </View> : <Login />}
+                </View> : this.props.navigation.navigate('Auth')}
             </SafeAreaView>
         );
     }

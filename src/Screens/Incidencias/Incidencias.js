@@ -13,7 +13,6 @@ import DatosPersonales from '../../components/Incidencias/DatosPersonales/DatosP
 import CustomButton from '../../components/CustomButton/CustomButton';
 import axios from '../../../axios-ayuntamiento';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
-import Login from '../Login/Login';
 
 export default class Incidencias extends Component {
     state = {
@@ -505,7 +504,7 @@ export default class Incidencias extends Component {
                     <ScrollView>
                         {form}
                     </ScrollView>
-                </View> : <Login />}
+                </View> : this.props.navigation.navigate('Auth')}
             </SafeAreaView>
         );
     }

@@ -9,7 +9,6 @@ import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
-import Login from '../Login/Login';
 
 const StyledSafeArea = styled.SafeAreaView`flex: 1;`;
 
@@ -281,7 +280,7 @@ export default class BuzonCiudadano extends Component {
 						<StyledMainScroll>{buzonCiudadano}</StyledMainScroll>
 					</StyledContainer>
 				) : (
-					<Login />
+					this.props.navigation.navigate('Auth')
 				)}
 			</StyledSafeArea>
 		);

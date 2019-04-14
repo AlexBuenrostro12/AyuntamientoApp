@@ -1,21 +1,15 @@
 import React from 'react';
-import {
-	createDrawerNavigator,
-	DrawerItems,
-	createSwitchNavigator,
-	createStackNavigator,
-	createAppContainer
-} from 'react-navigation';
-import { StyleSheet, View, Image, SafeAreaView, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, SafeAreaView } from 'react-native';
+import { DrawerItems, createSwitchNavigator, createStackNavigator, createAppContainer, createDrawerNavigator } from 'react-navigation';
 import iconLogo from '../../../assets/images/Logo/prs-logo.png';
+import LoginScreen from '../../../Screens/Login/Login';
 import ManualesScreen from '../../../Screens/Manuales/Manuales';
 import BuzonCiudadanoScreen from '../../../Screens/BuzonCiudadano/BuzonCiudadano';
 import NoticiasScreen from '../../../Screens/Noticias/Noticias';
 import BusEscolarScreen from '../../../Screens/BusEscolar/BusEscolar';
 import HomeScreen from '../../../Screens/Home/Home';
 import IncidenciasScreen from '../../../Screens/Incidencias/Incidencias';
-import LoginScreen from '../../../Screens/Login/Login';
-import { Root } from 'native-base';
+import LogoutScreen from '../../../Screens/Logout/Logout';
 
 const CustomDrawerComponent = (props) => (
 	<SafeAreaView style={styles.sAV}>
@@ -28,23 +22,32 @@ const CustomDrawerComponent = (props) => (
 	</SafeAreaView>
 );
 
-const DrawerNavigation = createDrawerNavigator(
-	{
-		Home: HomeScreen,
-		Manuales: ManualesScreen,
-		'Buzón Ciudadano': BuzonCiudadanoScreen,
-		Noticias: NoticiasScreen,
-		'Bus Escolar': BusEscolarScreen,
-		Incidencias: IncidenciasScreen
-	},
-	{
-		contentComponent: CustomDrawerComponent
-	}
-);
+const AppDrawer = createDrawerNavigator({
+  'Home':  HomeScreen,
+  'Manuales': ManualesScreen,
+  'Buzón Ciudadano': BuzonCiudadanoScreen,
+  'Noticias': NoticiasScreen,
+  'Bus Escolar': BusEscolarScreen,
+  'Incidencias': IncidenciasScreen,
+  'Salir': LogoutScreen,
+},{
+  contentComponent: CustomDrawerComponent
+});
 
-const MyNavigation = (props) => {
-	return <DrawerNavigation />;
-};
+const AuthStack = createStackNavigator({ Auth: LoginScreen });
+
+
+export default createAppContainer(
+	createSwitchNavigator(
+		{
+			App: AppDrawer,
+			Auth: AuthStack
+		},
+		{
+			initialRouteName: 'Auth'
+		}
+  )
+);
 
 const styles = StyleSheet.create({
 	sAV: {
@@ -61,9 +64,3 @@ const styles = StyleSheet.create({
 		width: 110
 	}
 });
-
-export default MyNavigation;
-// export default () =>
-//     <Root>
-//         {/* <DrawerNavigation /> */}
-//     </Root>;
