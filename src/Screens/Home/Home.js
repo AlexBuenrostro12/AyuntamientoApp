@@ -56,15 +56,15 @@ export default class Home extends Component {
 					await AsyncStorage.removeItem('@storage_expiresIn');
 					await AsyncStorage.removeItem('@storage_email');
 					//Use the expires in
+						Alert.alert(
+							'Home',
+							'¡Tiempo de espera agotado, inicie sesion de nuevo!',
+							[ { text: 'Ok', onPress: () => this.props.navigation.navigate('Auth') } ],
+							{ cancelable: false }
+						);
 				} catch (e) {
 					//Catch posible errors
 				}
-				Alert.alert(
-					'Home',
-					'¡Tiempo de espera agotado, inicie sesion de nuevo!',
-					[ { text: 'Ok', onPress: () => this.setState({ tokenIsValid: false }) } ],
-					{ cancelable: false }
-				);
 			}
 		} catch (e) {
 			//Catch posible errors
@@ -78,21 +78,15 @@ export default class Home extends Component {
 
 		return (
 			<SafeAreaView style={styles.container}>
-				{/* Chek if the token is valid yet if it's not return to the login */}
-				{this.state.tokenIsValid ? (
-					<View style={styles.view}>
-						<View>
-							<HeaderToolbar open={this.props} title="Home" />
-						</View>
-						<StatusBar color="#ff9933" />
-						<View style={{ flex: 1 }}>
-							<ScrollView>{this.state.loading ? spinner : swiperBanner}</ScrollView>
-						</View>
+				<View style={styles.view}>
+					<View>
+						<HeaderToolbar open={this.props} title="Home" />
 					</View>
-				) : (
-					this.props.navigation.navigate('Auth')
-					//Returns to Auth screen if the token isn's valid
-				)}
+					<StatusBar color="#ff9933" />
+					<View style={{ flex: 1 }}>
+						<ScrollView>{this.state.loading ? spinner : swiperBanner}</ScrollView>
+					</View>
+				</View>
 			</SafeAreaView>
 		);
 	}

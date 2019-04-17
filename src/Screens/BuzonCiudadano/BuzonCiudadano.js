@@ -88,7 +88,6 @@ export default class BuzonCiudadano extends Component {
 		formIsValid: false,
 		date: 'null',
 		token: null,
-		tokenIsValid: true
 	};
 
 	async componentDidMount() {
@@ -105,7 +104,7 @@ export default class BuzonCiudadano extends Component {
             console.log('BuzonCiudadano.js: ', parseExpiresIn, now);
             console.log('BuzonCiudadano.js: ', this.state.tokenIsValid);
 			if (token && parseExpiresIn > now) {
-				this.setState({ token: token, tokenIsValid: true });
+				this.setState({ token: token });
 			} else {
 				//Restrict screens if there's no token
 				try {
@@ -119,7 +118,7 @@ export default class BuzonCiudadano extends Component {
 				Alert.alert(
 					'Buzón ciudadano',
 					'¡Tiempo de espera agotado, inicie sesion de nuevo!',
-					[ { text: 'Ok', onPress: () => this.setState({ tokenIsValid: false }) } ],
+					[ { text: 'Ok', onPress: () => this.props.navigation.navigate('Auth') } ],
 					{ cancelable: false }
 				);
 			}
@@ -271,17 +270,13 @@ export default class BuzonCiudadano extends Component {
 		);
 		return (
 			<StyledSafeArea>
-				{this.state.tokenIsValid ? (
-					<StyledContainer>
-						<StyledHeader>
-							<HeaderToolbar open={this.props} title="Sugerencias" />
-						</StyledHeader>
-						<StatusBar color="#ff9933" />
-						<StyledMainScroll>{buzonCiudadano}</StyledMainScroll>
-					</StyledContainer>
-				) : (
-					this.props.navigation.navigate('Auth')
-				)}
+				<StyledContainer>
+					<StyledHeader>
+						<HeaderToolbar open={this.props} title="Sugerencias" />
+					</StyledHeader>
+					<StatusBar color="#ff9933" />
+					<StyledMainScroll>{buzonCiudadano}</StyledMainScroll>
+				</StyledContainer>
 			</StyledSafeArea>
 		);
 	}

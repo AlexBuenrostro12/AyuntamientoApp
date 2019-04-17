@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import { Card, CardItem } from 'native-base';
@@ -14,7 +14,6 @@ export default class BusEscolar extends Component {
     state = {
         buses: [],
         loading: true,
-        tokenIsValid: true
     }
 
     async componentDidMount() {
@@ -56,7 +55,7 @@ export default class BusEscolar extends Component {
 				Alert.alert(
 					'Bus Escolar',
 					'¡Tiempo de espera agotado, inicie sesion de nuevo!',
-					[ { text: 'Ok', onPress: () => this.setState({ tokenIsValid: false }) } ],
+					[ { text: 'Ok', onPress: () => this.props.navigation.navigate('Auth') } ],
 					{ cancelable: false }
 				);
             }
@@ -81,7 +80,7 @@ export default class BusEscolar extends Component {
 
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                {this.state.tokenIsValid ? <View style={styles.container}>
+                <View style={styles.container}>
                     <HeaderToolbar
                         open={this.props}
                         title="Bus escolar" />
@@ -102,7 +101,7 @@ export default class BusEscolar extends Component {
                             </Card>
                         </View>
                     </ScrollView>
-                </View> : this.props.navigation.navigate('Auth')}
+                </View>
             </SafeAreaView>
         );
     }

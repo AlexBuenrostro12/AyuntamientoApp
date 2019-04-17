@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView, Text, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView, Text, Image, Alert } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -43,10 +43,10 @@ export default class Noticias extends Component {
 	state = {
 		news: [],
 		loading: true,
-		tokenIsValid: true
 	};
 
 	async componentDidMount() {
+		let token = expiresIn = null;
 		try {
 			console.log('Entro al try');
 			token = await AsyncStorage.getItem('@storage_token');
@@ -86,7 +86,7 @@ export default class Noticias extends Component {
 				Alert.alert(
 					'Noticias',
 					'¡Tiempo de espera agotado, inicie sesion de nuevo!',
-					[ { text: 'Ok', onPress: () => this.setState({ tokenIsValid: false }) } ],
+					[ { text: 'Ok', onPress: () => this.props.navigation.navigate('Auth') } ],
 					{ cancelable: false }
 				);
 			}
@@ -116,7 +116,7 @@ export default class Noticias extends Component {
 
 		return (
 			<StyledSafeArea>
-				{this.state.tokenIsValid ? <StyledContainer>
+				<StyledContainer>
 					<StyledHeader>
 						<HeaderToolbar open={this.props} title="Noticias" />
 					</StyledHeader>
@@ -124,7 +124,7 @@ export default class Noticias extends Component {
 					<StyledMainScroll>
 						<ThemeProvider theme={theme}>{noticias}</ThemeProvider>
 					</StyledMainScroll>
-				</StyledContainer> : this.props.navigation.navigate('Auth')}
+				</StyledContainer>
 			</StyledSafeArea>
 		);
 	}

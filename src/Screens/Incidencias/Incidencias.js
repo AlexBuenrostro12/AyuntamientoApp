@@ -115,7 +115,6 @@ export default class Incidencias extends Component {
         imageData: null,
         date: null,
         token: null,
-        tokenIsValid: true
     }
 
     getCurrentDate(){
@@ -164,7 +163,7 @@ export default class Incidencias extends Component {
 				Alert.alert(
 					'Incidencias',
 					'¡Tiempo de espera agotado, inicie sesion de nuevo!',
-					[ { text: 'Ok', onPress: () => this.setState({ tokenIsValid: false }) } ],
+					[ { text: 'Ok', onPress: () => this.props.navigation.navigate('Auth') } ],
 					{ cancelable: false }
 				);
 			}
@@ -494,7 +493,7 @@ export default class Incidencias extends Component {
 
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                {this.state.tokenIsValid ? <View style={styles.container}>
+                <View style={styles.container}>
                     <View>
                         <HeaderToolbar
                             open={this.props}
@@ -504,7 +503,7 @@ export default class Incidencias extends Component {
                     <ScrollView>
                         {form}
                     </ScrollView>
-                </View> : this.props.navigation.navigate('Auth')}
+                </View>
             </SafeAreaView>
         );
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { Card, ListItem, CardItem } from 'native-base';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -38,7 +38,6 @@ export default class Manuales extends Component {
 		show: false,
 		url: 'nothing',
 		token: null,
-		tokenIsValid: true
 	};
 
 	showManualHandler = (url) => {
@@ -64,7 +63,6 @@ export default class Manuales extends Component {
 			if (token && parseExpiresIn > now) {
 				this.setState({ token: token });
 			} else {
-				this.setState({ tokenIsValid: false });
 				try {
 					console.log('Entro al try');
 					await AsyncStorage.removeItem('@storage_token');
@@ -76,7 +74,7 @@ export default class Manuales extends Component {
 				Alert.alert(
 					'Manuales',
 					'¡Tiempo de espera agotado, inicie sesion de nuevo!',
-					[ { text: 'Ok', onPress: () => this.setState({ tokenIsValid: false }) } ],
+					[ { text: 'Ok', onPress: () => this.props.navigation.navigate('Auth') } ],
 					{ cancelable: false }
 				);
 			}
@@ -133,11 +131,7 @@ export default class Manuales extends Component {
 
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
-				{this.state.tokenIsValid ? (
-					<View style={{ flex: 1 }}>{this.state.show ? manual : body}</View>
-				) : (
-					this.props.navigation.navigate('Auth')
-				)}
+				<View style={{ flex: 1 }}>{this.state.show ? manual : body}</View>
 			</SafeAreaView>
 		);
 	}

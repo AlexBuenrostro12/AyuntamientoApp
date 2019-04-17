@@ -26,7 +26,8 @@ const customButton = (props) => {
 
         case ('Danger'):
             button = (
-                <Button block danger>
+                <Button block danger
+                    onPress={props.clicked}>
                     <Text style={styles.text}>{props.name}</Text>
                 </Button>
             );

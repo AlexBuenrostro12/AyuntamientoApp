@@ -9,6 +9,7 @@ import NoticiasScreen from '../../../Screens/Noticias/Noticias';
 import BusEscolarScreen from '../../../Screens/BusEscolar/BusEscolar';
 import HomeScreen from '../../../Screens/Home/Home';
 import IncidenciasScreen from '../../../Screens/Incidencias/Incidencias';
+import ActividadesScreen from '../../../Screens/Actividades/Actividades';
 import LogoutScreen from '../../../Screens/Logout/Logout';
 
 const CustomDrawerComponent = (props) => (
@@ -29,6 +30,7 @@ const AppDrawer = createDrawerNavigator({
   'Noticias': NoticiasScreen,
   'Bus Escolar': BusEscolarScreen,
   'Incidencias': IncidenciasScreen,
+  'Actividades': ActividadesScreen,
   'Salir': LogoutScreen,
 },{
   contentComponent: CustomDrawerComponent
@@ -41,7 +43,7 @@ export default createAppContainer(
 	createSwitchNavigator(
 		{
 			App: AppDrawer,
-			Auth: AuthStack
+			Auth: AuthStack,
 		},
 		{
 			initialRouteName: 'Auth'

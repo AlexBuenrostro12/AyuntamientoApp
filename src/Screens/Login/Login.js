@@ -19,7 +19,8 @@ class Login extends Component {
 			password: {
 				itemType: 'FloatingLabel',
 				holder: 'Contraseña',
-				value: ''
+				value: '',
+				password: true
 			}
 		},
 		idToken: null,
@@ -167,6 +168,7 @@ class Login extends Component {
 								itemType={e.config.itemType}
 								holder={e.config.holder}
 								changed={(text) => this.inputChangeHandler(text, e.id)}
+								password={e.config.password}
 							/>
 						))}
 						{/* Ingresar (botón verde) admin*/}
