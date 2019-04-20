@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Item, Input, Label, Textarea, Content, DatePicker } from 'native-base';
+import { View, StyleSheet, Image } from 'react-native';
+import { Item, Input, Label, Textarea, DatePicker, Picker } from 'native-base';
 
 const customInput = ( props ) => {
     
@@ -53,6 +53,21 @@ const customInput = ( props ) => {
                             value={props.value}
                             onTouchStart={props.changed1}/>
                     </Item>
+                );
+        break;
+        case 'PickerSchedule':
+                input = (
+                    <Picker
+                            mode="dropdown"
+                            iosHeader={props.value}
+                            iosIcon={<Image style={{ width: 25, height: 25 }} source={require('../../assets/images/ArrowDown/arrow-down.png')} />}
+                            style={{ width: undefined }}
+                            selectedValue={props.value}
+                            onValueChange={props.changed}
+                        >
+                            <Picker.Item label="Matutino" value="Matutino" />
+                            <Picker.Item label="Vespertino" value="Vespertino" />
+                    </Picker>
                 );
         break;
         default:

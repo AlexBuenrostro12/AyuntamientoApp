@@ -24,7 +24,6 @@ import Actividad from '../../components/Actividad/Actividad';
 export default class Actividades extends Component {
 	state = {
 		token: null,
-		tokenIsValid: null,
 		loading: true,
 		addAct: false,
 		form: {
@@ -69,7 +68,7 @@ export default class Actividades extends Component {
 		},
 		formIsValid: false,
 		activities: [],
-		isAdmin: null,
+		isAdmin: true,
 	};
 
 	async componentDidMount() {
@@ -84,12 +83,11 @@ export default class Actividades extends Component {
 			const now = new Date();
 			console.log('Actividades.js: ', token);
 			console.log('Actividades.js: ', parseExpiresIn, now);
-			console.log('Actividades.js: ', this.state.tokenIsValid);
 			console.log('Actividades.js: ', email);
 			console.log('Actividades.js: ', this.props);
 			if (token && parseExpiresIn > now) {
 				// charge actividades
-				this.setState({ token: token, tokenIsValid: true });
+				this.setState({ token: token });
 				if (email !== 'false')
 					this.setState({ isAdmin: true });
 				else
@@ -203,7 +201,7 @@ export default class Actividades extends Component {
 			axios
 				.post('/activities.json?auth=' + this.state.token, activity)
 				.then((response) => {
-					Alert.alert('Actividades', 'Actividad enviada con exito!', [ { text: 'Ok' } ], {
+					Alert.alert('Actividades', 'Actividad enviada con exito!', [ { text: 'Ok', onPress: () => this.getActivities() } ], {
 						cancelable: false
 					});
 				})
@@ -264,7 +262,13 @@ export default class Actividades extends Component {
 			});
 		}
 		spinner = <CustomSpinner color="blue" />;
-		const list = this.state.activities.map((act) => <Actividad key={act.id} data={act.activityData} />);
+		const list = this.state.activities.map((act) => <Actividad 
+															key={act.id} 
+															id={act.id} 
+															token={this.state.token}
+															isAdmin={this.state.isAdmin} 
+															refresh={this.getActivities} 
+															data={act.activityData} />);
 
 		const body = (
 			<View style={styles.body}>
