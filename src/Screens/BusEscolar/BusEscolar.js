@@ -70,7 +70,7 @@ export default class BusEscolar extends Component {
 			horario: {
 				itemType: 'PickerSchedule',
 				holder: 'Horario',
-				value: 'Matutino',
+				value: '',
 				validation: {
 					haveValue: true
 				},

@@ -50,19 +50,33 @@ export default class Noticia extends Component {
         this.setState({ showItemCard: false })
     }
 
+    alertCheckDeleteItem = () => {
+        Alert.alert(
+            'Actividad', 
+            '¿Desea eliminar esta noticia?', 
+            [ 
+                { text: 'Si', onPress: () => this.deleteItemListHandler() }, 
+                { text: 'No', }, 
+            ], 
+            {
+                cancelable: false
+            },
+        )
+    }
+
     deleteItemListHandler = () => {
         console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
         axios
 			.delete('/news' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
 			.then((response) => {
                 console.log('deleteItemListHandler:res: ', response);
-				Alert.alert('Noticia', 'Noticia eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+				Alert.alert('Noticia', '¡Noticia eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
 					cancelable: false
 				});
 			})
 			.catch((error) => {
                 console.log('deleteItemListHandler:res: ', error)
-				Alert.alert('Noticia', 'Noticia fallida al eliminar!', [ { text: 'Ok' } ], {
+				Alert.alert('Noticia', '¡Noticia fallida al eliminar!', [ { text: 'Ok' } ], {
 					cancelable: false
 				});
 			});
@@ -106,7 +120,7 @@ export default class Noticia extends Component {
                         <View style={styles.btnsContainer}>
                             <Text>{this.state.noticia} / {this.state.categoria}</Text>
                             {this.props.isAdmin && <View style={styles.btnsAdm}>
-                                <TouchableOpacity onPress={() => this.deleteItemListHandler()}>
+                                <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
                                     <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
                                 </TouchableOpacity>
                             </View>}

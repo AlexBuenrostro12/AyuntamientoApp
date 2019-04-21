@@ -52,19 +52,33 @@ export default class Buses extends Component {
         this.setState({ showItemCard: false });
     }
 
+    alertCheckDeleteItem = () => {
+        Alert.alert(
+            'Actividad', 
+            '¿Desea eliminar esta horario del bus?', 
+            [ 
+                { text: 'Si', onPress: () => this.deleteItemListHandler() }, 
+                { text: 'No', }, 
+            ], 
+            {
+                cancelable: false
+            },
+        )
+    }
+
     deleteItemListHandler = () => {
         console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
         axios
 			.delete('/buses' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
 			.then((response) => {
                 console.log('deleteItemListHandler:res: ', response);
-				Alert.alert('Bus escolar', 'Bus escolar eliminado con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+				Alert.alert('¡Bus escolar', 'Bus escolar eliminado con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
 					cancelable: false
 				});
 			})
 			.catch((error) => {
                 console.log('deleteItemListHandler:res: ', error)
-				Alert.alert('Bus escolar', 'Bus escolar fallido al eliminar!', [ { text: 'Ok' } ], {
+				Alert.alert('¡Bus escolar', 'Bus escolar fallido al eliminar!', [ { text: 'Ok' } ], {
 					cancelable: false
 				});
 			});
@@ -122,7 +136,7 @@ export default class Buses extends Component {
                             <View style={styles.btnsContainer}>
                                 <Text style={styles.textTitle}>{bs.destino} - {bs.horario}</Text>
                                 {this.props.isAdmin && <View style={styles.btnsAdm}>
-                                    <TouchableOpacity onPress={() => this.deleteItemListHandler()}>
+                                    <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
                                         <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
                                     </TouchableOpacity>
                                 </View>}

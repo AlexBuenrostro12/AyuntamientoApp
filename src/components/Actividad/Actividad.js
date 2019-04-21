@@ -12,7 +12,8 @@ export default class Noticia extends Component {
         descripcion: null,
         fecha: null,
         itemKey: null,
-        showItemCard: false
+        showItemCard: false,
+        deleted: null
     }
 
     clickedListHandler = (identifier, key) => {
@@ -34,22 +35,36 @@ export default class Noticia extends Component {
         this.setState({ showItemCard: false })
     }
 
+    alertCheckDeleteItem = () => {
+        Alert.alert(
+            'Actividad', 
+            '¿Desea eliminar esta actividad?', 
+            [ 
+                { text: 'Si', onPress: () => this.deleteItemListHandler() }, 
+                { text: 'No', }, 
+            ], 
+            {
+                cancelable: false
+            },
+        )
+    }
+
     deleteItemListHandler = () => {
         console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
         axios
-			.delete('/activities' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
-			.then((response) => {
-                console.log('deleteItemListHandler:res: ', response);
-				Alert.alert('Actividad', 'Actividad eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
-					cancelable: false
-				});
-			})
-			.catch((error) => {
-                console.log('deleteItemListHandler:res: ', error)
-				Alert.alert('Actividad', 'Actividad fallida al eliminar!', [ { text: 'Ok' } ], {
-					cancelable: false
-				});
+		.delete('/activities' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
+		.then((response) => {
+            console.log('deleteItemListHandler:res: ', response);
+			Alert.alert('Actividad', '¡Actividad eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+				cancelable: false
 			});
+		})
+		.catch((error) => {
+            console.log('deleteItemListHandler:res: ', error)
+			Alert.alert('Actividad', '¡Actividad fallida al eliminar!', [ { text: 'Ok' } ], {
+				cancelable: false
+			});
+		});
     }
 
     refreshItemsHandler = () => {
@@ -83,6 +98,7 @@ export default class Noticia extends Component {
                 ))}
             </View>
         );
+        
         const card = (
             <View>
                 <Card>
@@ -90,7 +106,7 @@ export default class Noticia extends Component {
                         <View style={styles.btnsContainer}>
                             <Text>{this.state.actividad}</Text>
                             {this.props.isAdmin && <View style={styles.btnsAdm}>
-                                <TouchableOpacity onPress={() => this.deleteItemListHandler()}>
+                                <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
                                     <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
                                 </TouchableOpacity>
                             </View>}
