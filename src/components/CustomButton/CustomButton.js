@@ -7,6 +7,14 @@ const customButton = (props) => {
     let button = null;
 
     switch (props.style) {
+        case ('Info'):
+            button = (
+                <Button block info
+                    onPress={props.clicked}>
+                    <Text style={styles.text}>{props.name}</Text>
+                </Button>
+            );
+            break;
         case ('Success'):
             button = (
                 <Button block success
@@ -18,7 +26,8 @@ const customButton = (props) => {
 
         case ('Danger'):
             button = (
-                <Button block danger>
+                <Button block danger
+                    onPress={props.clicked}>
                     <Text style={styles.text}>{props.name}</Text>
                 </Button>
             );

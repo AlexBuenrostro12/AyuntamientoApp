@@ -87,7 +87,8 @@ export default class Consulta extends Component {
                                 inc1={q.config.inc1}
                                 inc2={q.config.inc2}
                                 inc3={q.config.inc3}
-                                sendSurvey={this.state.sendSurvey} />
+                                sendSurvey={this.state.sendSurvey}
+                                token={this.props.token} />
                                 {/* Missing send the survey response */}
                         </View>
 
