@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import Aux from '../Auxiliar/Auxiliar';
-import DrawerNavigation from '../../components/Navigation/DrawerNavigation/DrawerNavigation';
-import FAB from '../../UI/FAB/FAB';
+import AppContainer from '../../components/Navigation/DrawerNavigation/AppContainer';
 
 export default class Layout extends Component {
     render () {
         return (
             <Aux>
-                <DrawerNavigation />
+                <AppContainer />
             </Aux>
         );
     }

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, ScrollView } from 'react-native';
+import { TouchableOpacity, ScrollView, StyleSheet, View, Image, Alert } from 'react-native';
 import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
+import styled from 'styled-components';
 import IconRight from '../../UI/IconRight/IconRight';
 import CustomButton from '../CustomButton/CustomButton';
-import styled from 'styled-components';
+import axios from '../../../axios-ayuntamiento';
 
 const StyledListNews = styled.View`
     margin-left: 2px;
@@ -23,21 +24,23 @@ const StyledButton = styled.View`
 
 export default class Noticia extends Component {
     state = {
-        nombre: null,
+        noticia: null,
         categoria: null,
         descripcion: null,
         fecha: null,
+        itemKey: null,
         showItemCard: false
     }
 
-    clickedListHandler = (identifier) => {
-        let noticia = [];
+    clickedListHandler = (identifier, key) => {
         for (let dataName in this.props.data) {
+            const fecha = this.props.data['fecha'].split("T", 1);
             if (this.props.data[dataName] === identifier) {
-                this.setState({ nombre: this.props.data[dataName] });
+                this.setState({ noticia: this.props.data[dataName] });
                 this.setState({ categoria: this.props.data['categoria'] });
                 this.setState({ descripcion: this.props.data['descripcion'] });
-                this.setState({ fecha: this.props.data['fecha'] });
+                this.setState({ fecha: fecha });
+                this.setState({ itemKey: key });
             }
         }
         this.setState({ showItemCard: true });
@@ -47,27 +50,64 @@ export default class Noticia extends Component {
         this.setState({ showItemCard: false })
     }
 
+    alertCheckDeleteItem = () => {
+        Alert.alert(
+            'Actividad', 
+            '¿Desea eliminar esta noticia?', 
+            [ 
+                { text: 'Si', onPress: () => this.deleteItemListHandler() }, 
+                { text: 'No', }, 
+            ], 
+            {
+                cancelable: false
+            },
+        )
+    }
+
+    deleteItemListHandler = () => {
+        console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
+        axios
+			.delete('/news' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
+			.then((response) => {
+                console.log('deleteItemListHandler:res: ', response);
+				Alert.alert('Noticia', '¡Noticia eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+					cancelable: false
+				});
+			})
+			.catch((error) => {
+                console.log('deleteItemListHandler:res: ', error)
+				Alert.alert('Noticia', '¡Noticia fallida al eliminar!', [ { text: 'Ok' } ], {
+					cancelable: false
+				});
+			});
+    }
+
+    refreshItemsHandler = () => {
+        this.setState({ showItemCard: false });
+        this.props.refresh();
+    }
+
     render() {
 
         const data = [];
         for (let dataName in this.props.data) {
-            if (dataName === 'nombre') {
+            if (dataName === 'noticia') {
                 data.push({
-                    name: this.props.data[dataName]
+                    noticia: this.props.data[dataName]
                 })
             }
         }
         const listNews = (
             <StyledListNews>
                 {data.map(dt => (
-                    <ListItem key={dt.name}>
+                    <ListItem key={dt.noticia}>
                         <Left>
-                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.name)}>
-                                <Text>{dt.name}</Text>
+                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.noticia, this.props.id)}>
+                                <Text>{dt.noticia}</Text>
                             </TouchableOpacity>
                         </Left>
                         <Right>
-                            <IconRight describe={() => this.clickedListHandler(dt.name)} />
+                            <IconRight describe={() => this.clickedListHandler(dt.noticia, this.props.id)} />
                         </Right>
                     </ListItem>
                 ))}
@@ -77,7 +117,14 @@ export default class Noticia extends Component {
             <StyledCard>
                 <Card>
                     <CardItem header>
-                        <Text>{this.state.nombre} / {this.state.categoria}</Text>
+                        <View style={styles.btnsContainer}>
+                            <Text>{this.state.noticia} / {this.state.categoria}</Text>
+                            {this.props.isAdmin && <View style={styles.btnsAdm}>
+                                <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
+                                    <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
+                                </TouchableOpacity>
+                            </View>}
+                        </View>
                     </CardItem>
                     <CardItem>
                         <Body>
@@ -85,7 +132,7 @@ export default class Noticia extends Component {
                         </Body>
                     </CardItem>
                     <CardItem footer>
-                        <Text>{this.state.fecha}</Text>
+                        <Text>Fecha: {this.state.fecha}</Text>
                     </CardItem>
                     <StyledButton>
                         <CustomButton
@@ -103,3 +150,22 @@ export default class Noticia extends Component {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    btnsAdm: { 
+        flex: 1, 
+        flexDirection: 'row', 
+        justifyContent: 'flex-end' ,
+    },
+    btnsContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    btnsAdmImg: {
+        height: 30,
+        width: 30,
+        resizeMode: 'contain',
+        marginLeft: 2,
+    }
+})
