@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ImageBackground, Dimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ImageBackground, Dimensions, Alert, Image, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Communications from 'react-native-communications';
 import StatusBar from '../../UI/StatusBar/StatusBar';
@@ -108,6 +108,7 @@ class Login extends Component {
 		})
 			.then((res) => res.json())
 			.then((parsedRes) => {
+				this.setState({ loading: false });
 				console.log(parsedRes);
 				const { idToken, error, expiresIn, email } = parsedRes;
 				if (idToken) {
@@ -118,10 +119,12 @@ class Login extends Component {
 					this.storeToken();
 				} 
 				if(error){
+					this.setState({ loading: false });
 					Alert.alert('Login', '¡Error: ' + error.code + ', ' + error.message, [{text: 'Ok'}], {cancelable: false});
 				}
 			})
 			.catch((err) => {
+				this.setState({ loading: false });
 				alert('Authentication failed, please try again, catch');
 			});
 	};
@@ -139,69 +142,76 @@ class Login extends Component {
 		console.log(this.state);
 
 		const spinner = (
-			<View style={styles.spinner}>
 				<Spinner color="blue" />			
-			</View>
+			// <View style={styles.spinner}>
+			// </View>
 
 		);
 
 		const content = (
+			
 			<ImageBackground
-				imageStyle={{ resizeMode: 'stretch' }}
-				source={require('../../assets/images/Ayuntamiento/ayuntamiento.jpg')}
-				style={{ flex: 1, justifyContent: 'center' }}
+			imageStyle={{ resizeMode: 'stretch' }}
+			source={require('../../assets/images/Ayuntamiento/fondo.jpg')}
+			style={styles.container}
 			>
-				{!this.state.loading ? <View style={{ flex: 1, justifyContent: 'center' }}>
-					<View style={{ alignSelf: 'center' }}>
-						<Text style={styles.text}>Inicio de sesión</Text>
-					</View>
-					<View style={styles.blueButton}>
-						{/* Administrador */}
-						{this.state.index && <CustomButton
-													style="Login"
-													name="Administrador"
-													clicked={() => this.changeFormHandler(false, 'index')}/>}
-						{/* Invitado */}
-						{this.state.index && <CustomButton
-													style="Login"
-													name="Invitado"
-													clicked={() => this.changeFormHandler(false, 'login')}/>}
-						{/* Invitado */}
-						{this.state.index && <CustomButton
-													style="Emergencia"
-													name="Emergencia"
-													clicked={() => Communications.phonecall('911', true)}/>}
-						{/* Regresar al inicio */}
-						{!this.state.index && <CustomButton
-													style="Login"
-													name="Regresar al inicio"
-													clicked={() => this.changeFormHandler(true, 'index')}/>}
-					</View>
-					{/* Form */}
-					<View style={styles.bckgrnd}>
-						{formElements.map((e) => (
-							<CustomInput
+			<ScrollView style={styles.scroll}>
+				<Image 
+					style={styles.image} 
+					source={require('../../assets/images/Ayuntamiento/logo.png')} />
+
+				{!this.state.loading ? <View style={styles.form}>
+						<View style={{ alignSelf: 'center' }}>
+							<Text style={styles.text}>Inicio de sesión</Text>
+						</View>
+						<View style={styles.loginBtns}>
+							{/* Administrador */}
+							{this.state.index && <CustomButton
+														style="Login"
+														name="Administrador"
+														clicked={() => this.changeFormHandler(false, 'index')}/>}
+							{/* Invitado */}
+							{this.state.index && <CustomButton
+														style="Login"
+														name="Invitado"
+														clicked={() => this.changeFormHandler(false, 'login')}/>}
+							{/* Invitado */}
+							{this.state.index && <CustomButton
+														style="Emergencia"
+														name="Emergencia"
+														clicked={() => Communications.phonecall('911', true)}/>}
+							{/* Regresar al inicio */}
+							{!this.state.index && <CustomButton
+														style="Login"
+														name="Regresar al inicio"
+														clicked={() => this.changeFormHandler(true, 'index')}/>}
+						</View>
+						{/* Form */}
+						<View style={styles.bckgrnd}>
+							{formElements.map((e) => (
+								<CustomInput
 								key={e.id}
 								itemType={e.config.itemType}
 								holder={e.config.holder}
 								changed={(text) => this.inputChangeHandler(text, e.id)}
 								password={e.config.password}
-							/>
-						))}
-						{/* Ingresar (botón verde) admin*/}
-						{!this.state.index && <CustomButton
-													style="Success"
-													name="Ingresar"
-													clicked={() => this.signInUser(true)}/>}
-					</View>
-				</View> : spinner}
+								/>
+								))}
+							{/* Ingresar (botón verde) admin*/}
+							{!this.state.index && <CustomButton
+														style="Success"
+														name="Ingresar"
+														clicked={() => this.signInUser(true)}/>}
+						</View>
+					</View> : spinner}
+				</ScrollView>
 			</ImageBackground>
 		);
 
 		const form = (
 			<SafeAreaView style={{ flex: 1 }}>
-				<StatusBar color="#FEA621" />
-				<View style={{ flex: 1 }}>{content}</View>
+					<StatusBar color="#FEA621" />
+					<View style={{ flex: 1 }}>{content}</View>
 			</SafeAreaView>
 		);
 
@@ -215,29 +225,37 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'space-between',	
+	},
+	form: {
+		flex: 1,
+	},
+	image: {
+		resizeMode: 'contain',
+		height: height / 2,
+		width: width / 2,
+		alignSelf: 'center',
 	},
 	text: {
 		fontFamily: 'sans serif',
-		fontSize: 35,
+		fontSize: 30,
 		fontWeight: 'bold',
-		color: 'orange',
-		backgroundColor: 'whitesmoke',
+		color: 'white',
 		borderRadius: 5
 	},
 	bckgrnd: {
-		backgroundColor: 'whitesmoke',
 		borderRadius: 5
 	},
-	blueButton: {
+	loginBtns: {
 		alignSelf: 'center',
 		width: width / 2,
-		backgroundColor: 'whitesmoke',
 		borderRadius: 5
 	},
 	spinner: {
-		backgroundColor: 'whitesmoke',
+		flex: 1,
+	},
+	scroll: {
+		flex: 1,
 	}
 });
 

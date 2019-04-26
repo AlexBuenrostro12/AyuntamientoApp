@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, View, Alert, } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Alert, ImageBackground, Image, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 
@@ -43,20 +43,33 @@ export default class Logout extends React.Component {
 		return (
 			<SafeAreaView style={styles.container}>
 				{/* Chek if the token is valid yet if it's not return to the login */}
-				<View style={styles.view}>
-					<StatusBar color="#FEA621" />
-					<View style={{ flex: 1 }}>
-                        {this.state.alert}
-					</View>
+				<StatusBar color="#FEA621" />
+                <ImageBackground
+                    imageStyle={{ resizeMode: 'stretch' }}
+                    source={require('../../assets/images/Ayuntamiento/fondo.jpg')}
+                    style={styles.containerImage}
+                >
+                    <Image 
+						style={styles.image} 
+						source={require('../../assets/images/Ayuntamiento/logo.png')} />
+                </ImageBackground>
+				<View style={null}>
+                    {this.state.alert}
 				</View>
 			</SafeAreaView>
 		);
 	}
 }
+const { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
+    },
+    containerImage: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'space-between',	
 	},
 	text: {
 		justifyContent: 'center',
@@ -72,5 +85,11 @@ const styles = StyleSheet.create({
 	text: {
 		fontSize: 20,
 		fontWeight: 'bold'
-	}
+    },
+    image: {
+		resizeMode: 'contain',
+		height: height / 2,
+		width: width / 2,
+		alignSelf: 'center',
+	},
 });

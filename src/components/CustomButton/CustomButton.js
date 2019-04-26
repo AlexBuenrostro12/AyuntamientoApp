@@ -15,21 +15,22 @@ const customButton = (props) => {
                 </Button>
             );
             break;
+
         case ('Success'):
             button = (
-                <Button block success
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
+                <RN.Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="#869E25" />
             );
             break;
 
         case ('Danger'):
             button = (
-                <Button block danger
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
+                <RN.Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="#E0013F" />
             );
             break;
 
@@ -44,12 +45,13 @@ const customButton = (props) => {
 
         case ('DangerBorder'):
             button = (
-                <Button bordered danger block
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
+                <RN.Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="#E0013F" />
             );
             break;
+
         case 'Login': 
             button = (
                 <RN.Button
@@ -58,6 +60,7 @@ const customButton = (props) => {
                     color="#878787" />
             );
             break;
+
         case 'Emergencia': 
             button = (
                 <RN.Button
@@ -85,7 +88,7 @@ const customButton = (props) => {
 
 const styles = StyleSheet.create({
     text: {
-        fontWeight: 'bold'
+        fontWeight: '500'
     },
     buttonStyle: {
         padding: 5,
