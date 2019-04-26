@@ -44,7 +44,7 @@ export default class Logout extends React.Component {
 			<SafeAreaView style={styles.container}>
 				{/* Chek if the token is valid yet if it's not return to the login */}
 				<View style={styles.view}>
-					<StatusBar color="#ff9933" />
+					<StatusBar color="#FEA621" />
 					<View style={{ flex: 1 }}>
                         {this.state.alert}
 					</View>

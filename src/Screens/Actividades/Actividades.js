@@ -353,7 +353,7 @@ export default class Actividades extends Component {
 							title={!this.state.addAct ? 'Actividades' : 'Agregar actividad'}
 						/>
 					</View>
-					<StatusBar color="#ff9933" />
+					<StatusBar color="#FEA621" />
 					<ScrollView>{!this.state.addAct ? body : addAct}</ScrollView>
 				</View>
 			</SafeAreaView>

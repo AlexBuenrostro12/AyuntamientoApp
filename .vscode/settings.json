@@ -3,5 +3,12 @@
         "titleBar.activeBackground": "#FF8800",
         "titleBar.activeForeground": "#ffffff"
     },
-    "editor.fontSize": 16
+    "editor.fontSize": 16,
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

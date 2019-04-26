@@ -499,7 +499,7 @@ export default class Incidencias extends Component {
                             open={this.props}
                             title="Incidencias" />
                     </View>
-                    <StatusBar color="#ff9933" />
+                    <StatusBar color="#FEA621" />
                     <ScrollView>
                         {form}
                     </ScrollView>

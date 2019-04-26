@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ImageBackground, Dimensions, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import Communications from 'react-native-communications';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import Aux from '../../hoc/Auxiliar/Auxiliar';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomButton from '../../components/CustomButton/CustomButton';
+import Spinner  from '../../components/CustomSpinner/CustomSpinner';
 
 class Login extends Component {
 	state = {
@@ -25,7 +27,8 @@ class Login extends Component {
 		},
 		idToken: null,
 		expiresIn: null,
-		email: null
+		email: null,
+		loading: false,
 	};
 	//Cambia de formulario dependiendo click de cada boton
 	changeFormHandler = (ban, identifier) => {
@@ -95,6 +98,7 @@ class Login extends Component {
 				returnSecureToken: true
 			}
 		}
+		this.setState({ loading: true });
 		fetch(url, {
 			method: 'POST',
 			body: JSON.stringify(body),
@@ -133,30 +137,43 @@ class Login extends Component {
 			}
 		}
 		console.log(this.state);
+
+		const spinner = (
+			<View style={styles.spinner}>
+				<Spinner color="blue" />			
+			</View>
+
+		);
+
 		const content = (
 			<ImageBackground
 				imageStyle={{ resizeMode: 'stretch' }}
 				source={require('../../assets/images/Ayuntamiento/ayuntamiento.jpg')}
-				style={{ flex: 1 }}
+				style={{ flex: 1, justifyContent: 'center' }}
 			>
-				<View style={{ flex: 1, justifyContent: 'center' }}>
+				{!this.state.loading ? <View style={{ flex: 1, justifyContent: 'center' }}>
 					<View style={{ alignSelf: 'center' }}>
 						<Text style={styles.text}>Inicio de sesión</Text>
 					</View>
 					<View style={styles.blueButton}>
 						{/* Administrador */}
 						{this.state.index && <CustomButton
-													style="Info"
+													style="Login"
 													name="Administrador"
 													clicked={() => this.changeFormHandler(false, 'index')}/>}
 						{/* Invitado */}
 						{this.state.index && <CustomButton
-													style="Info"
+													style="Login"
 													name="Invitado"
 													clicked={() => this.changeFormHandler(false, 'login')}/>}
-						{/* Regresar */}
+						{/* Invitado */}
+						{this.state.index && <CustomButton
+													style="Emergencia"
+													name="Emergencia"
+													clicked={() => Communications.phonecall('911', true)}/>}
+						{/* Regresar al inicio */}
 						{!this.state.index && <CustomButton
-													style="Info"
+													style="Login"
 													name="Regresar al inicio"
 													clicked={() => this.changeFormHandler(true, 'index')}/>}
 					</View>
@@ -177,13 +194,13 @@ class Login extends Component {
 													name="Ingresar"
 													clicked={() => this.signInUser(true)}/>}
 					</View>
-				</View>
+				</View> : spinner}
 			</ImageBackground>
 		);
 
 		const form = (
 			<SafeAreaView style={{ flex: 1 }}>
-				<StatusBar color="#ff9933" />
+				<StatusBar color="#FEA621" />
 				<View style={{ flex: 1 }}>{content}</View>
 			</SafeAreaView>
 		);
@@ -218,6 +235,9 @@ const styles = StyleSheet.create({
 		width: width / 2,
 		backgroundColor: 'whitesmoke',
 		borderRadius: 5
+	},
+	spinner: {
+		backgroundColor: 'whitesmoke',
 	}
 });
 

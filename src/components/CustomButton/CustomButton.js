@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import RN ,{ View, Text, StyleSheet } from 'react-native';
 import { Button } from 'native-base';
 
 const customButton = (props) => {
@@ -50,7 +50,22 @@ const customButton = (props) => {
                 </Button>
             );
             break;
-
+        case 'Login': 
+            button = (
+                <RN.Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="#878787" />
+            );
+            break;
+        case 'Emergencia': 
+            button = (
+                <RN.Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="red" />
+            );
+            break;
         default:
             button = (
                 <Button block success

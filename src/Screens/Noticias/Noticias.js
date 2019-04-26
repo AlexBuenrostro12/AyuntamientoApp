@@ -330,7 +330,7 @@ export default class Noticias extends Component {
 					<StyledHeader>
 						<HeaderToolbar open={this.props} title="Noticias" />
 					</StyledHeader>
-					<StatusBar color="#ff9933" />
+					<StatusBar color="#FEA621" />
 					<StyledMainScroll>
 						<ThemeProvider theme={theme}>{!this.state.addNew ? noticias : addNew}</ThemeProvider>
 					</StyledMainScroll>
