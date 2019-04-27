@@ -7,7 +7,7 @@ const { height, width } = Dimensions.get('window');
 const headerToolbar = (props) => {
     const toolbar = (
         <View style={styles.container}>
-            <View style={{ justifyContent: 'center', marginRight: 25 }}>
+            <View style={{ justifyContent: 'center',}}>
                 <IconMenu open={props.open} />
             </View>
             <View style={styles.view}>
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
     },
     view: {
-        padding: 5,
+        paddingTop: 5,
         justifyContent: 'center'
     },
     text: {
@@ -45,9 +45,10 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     image: {
-        height: height / 12,
-        width: width / 3,
+        height: height / 10,
+        width: width / 4,
         resizeMode: 'contain',
+        paddingRight: 1,
     }
 });
 

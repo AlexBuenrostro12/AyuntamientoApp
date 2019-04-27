@@ -1,24 +1,15 @@
 import React from 'react';
-import RN ,{ View, Text, StyleSheet } from 'react-native';
-import { Button } from 'native-base';
+import { View, StyleSheet, Button } from 'react-native';
 
 const customButton = (props) => {
 
     let button = null;
 
     switch (props.style) {
-        case ('Info'):
-            button = (
-                <Button block info
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
-            );
-            break;
 
         case ('Success'):
             button = (
-                <RN.Button
+                <Button
                     onPress={props.clicked}
                     title={props.name}
                     color="#869E25" />
@@ -27,25 +18,16 @@ const customButton = (props) => {
 
         case ('Danger'):
             button = (
-                <RN.Button
+                <Button
                     onPress={props.clicked}
                     title={props.name}
                     color="#E0013F" />
             );
             break;
 
-        case ('SuccessBorder'):
-            button = (
-                <Button bordered success block
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
-            );
-            break;
-
         case ('DangerBorder'):
             button = (
-                <RN.Button
+                <Button
                     onPress={props.clicked}
                     title={props.name}
                     color="#E0013F" />
@@ -54,7 +36,7 @@ const customButton = (props) => {
 
         case 'Login': 
             button = (
-                <RN.Button
+                <Button
                     onPress={props.clicked}
                     title={props.name}
                     color="#878787" />
@@ -63,7 +45,7 @@ const customButton = (props) => {
 
         case 'Emergencia': 
             button = (
-                <RN.Button
+                <Button
                     onPress={props.clicked}
                     title={props.name}
                     color="red" />
@@ -71,10 +53,10 @@ const customButton = (props) => {
             break;
         default:
             button = (
-                <Button block success
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
+                <Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="blue" />
             );
             break;
     }

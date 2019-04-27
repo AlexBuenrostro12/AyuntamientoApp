@@ -7,6 +7,7 @@ import Aux from '../../hoc/Auxiliar/Auxiliar';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import Spinner  from '../../components/CustomSpinner/CustomSpinner';
+import { normalize } from '../../components/AuxiliarFunctions/FontResponsive';
 
 class Login extends Component {
 	state = {
@@ -14,12 +15,12 @@ class Login extends Component {
 		index: true,
 		form: {
 			email: {
-				itemType: 'FloatingLabel',
+				itemType: 'FloatingLabelWhite',
 				holder: 'Email',
 				value: ''
 			},
 			password: {
-				itemType: 'FloatingLabel',
+				itemType: 'FloatingLabelWhite',
 				holder: 'Contraseña',
 				value: '',
 				password: true
@@ -161,7 +162,7 @@ class Login extends Component {
 					source={require('../../assets/images/Ayuntamiento/logo.png')} />
 
 				{!this.state.loading ? <View style={styles.form}>
-						<View style={{ alignSelf: 'center' }}>
+						<View style={{ alignSelf: 'center', width: width / 2, paddingLeft: 2 }}>
 							<Text style={styles.text}>Inicio de sesión</Text>
 						</View>
 						<View style={styles.loginBtns}>
@@ -238,10 +239,10 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		fontFamily: 'sans serif',
-		fontSize: 30,
+		fontSize: normalize(24),
 		fontWeight: 'bold',
 		color: 'white',
-		borderRadius: 5
+		borderRadius: 5,
 	},
 	bckgrnd: {
 		borderRadius: 5
