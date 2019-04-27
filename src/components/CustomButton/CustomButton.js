@@ -11,7 +11,7 @@ const customButton = (props) => {
             button = (
                 <Button
                     onPress={props.clicked}
-                    title={props.name}
+                    title={props.name}  
                     color="#869E25" />
             );
             break;
