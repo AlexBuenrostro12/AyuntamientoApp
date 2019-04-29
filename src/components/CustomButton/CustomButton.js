@@ -1,62 +1,62 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Button } from 'native-base';
+import { View, StyleSheet, Button } from 'react-native';
 
 const customButton = (props) => {
 
     let button = null;
 
     switch (props.style) {
-        case ('Info'):
-            button = (
-                <Button block info
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
-            );
-            break;
+
         case ('Success'):
             button = (
-                <Button block success
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
+                <Button
+                    onPress={props.clicked}
+                    title={props.name}  
+                    color="#869E25" />
             );
             break;
 
         case ('Danger'):
             button = (
-                <Button block danger
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
-            );
-            break;
-
-        case ('SuccessBorder'):
-            button = (
-                <Button bordered success block
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
+                <Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="#E0013F" />
             );
             break;
 
         case ('DangerBorder'):
             button = (
-                <Button bordered danger block
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
+                <Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="#E0013F" />
             );
             break;
 
+        case 'Login': 
+            button = (
+                <Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="#878787" />
+            );
+            break;
+
+        case 'Emergencia': 
+            button = (
+                <Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="red" />
+            );
+            break;
         default:
             button = (
-                <Button block success
-                    onPress={props.clicked}>
-                    <Text style={styles.text}>{props.name}</Text>
-                </Button>
+                <Button
+                    onPress={props.clicked}
+                    title={props.name}
+                    color="blue" />
             );
             break;
     }
@@ -70,7 +70,7 @@ const customButton = (props) => {
 
 const styles = StyleSheet.create({
     text: {
-        fontWeight: 'bold'
+        fontWeight: '500'
     },
     buttonStyle: {
         padding: 5,

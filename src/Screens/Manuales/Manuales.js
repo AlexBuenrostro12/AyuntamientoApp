@@ -124,7 +124,7 @@ export default class Manuales extends Component {
 				<View>
 					<HeaderToolbar open={this.props} title="Manuales" />
 				</View>
-				<StatusBar color="#ff9933" />
+				<StatusBar color="#FEA621" />
 				{cardBody}
 			</View>
 		);

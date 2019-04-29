@@ -356,7 +356,7 @@ export default class BusEscolar extends Component {
 				<View style={styles.container}>
 					<HeaderToolbar open={this.props} title={!this.state.addBus ? "Bus escolar" : "Agregar Bus"} />
 
-					<StatusBar color="#ff9933" />
+					<StatusBar color="#FEA621" />
 					<ScrollView>{!this.state.addBus ? bus : addBus}</ScrollView>
 				</View>
 			</SafeAreaView>

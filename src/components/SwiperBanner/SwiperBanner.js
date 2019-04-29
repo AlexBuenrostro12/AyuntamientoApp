@@ -3,26 +3,69 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Dimensions
 import { Card, CardItem, Thumbnail, Left, Body } from 'native-base';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 
+const SCROLLVIEW_REF = 'scrollview';
+
 export default class SwiperBanner extends Component {
     state = {
         bannerItems: [],
         heightScreen: 0,
         widthScreen: 0,
+        startAutoPlay: true,
+        timerID: null,
+        currentIndex: 0,
+        childrenCount: 0,
+        width: 0,
+        preScrollX: null,
+        scrollInterval: 2500,
+
     }
 
     componentDidMount() {
         console.log('componentDidMount');
+        if (this.state.startAutoPlay) 
+            this.startAutoPlayHandler();
+        else
+            this.stopAutoPlayHandler();
     }
 
-    componentWillUpdate() {
-        console.log('componentWillUpdate');
+    onScrollHandler = (e) => {
+        let { x } = e.nativeEvent.contentOffset, offset, position = Math.floor(x / this.state.width);
+        if (x === this.state.preScrollX) return;
+        this.setState({ preScrollX: x });
+        offset = x / this.state.width - position;
+
+        if (offset === 0) {
+            let timerid = setInterval(this.goToNextPageHandler, this.state.scrollInterval);
+            this.setState({ currentIndex: position, timerID: timerid });
+        }
     }
+    onScrollViewLayoutHandler = (e) => {
+        let { width } = e.nativeEvent.layout;             
+        this.setState({ width: width });
+    }
+    goToNextPageHandler = () => {
+        this.stopAutoPlayHandler();
+         let nextIndex = (this.state.currentIndex + 1) % this.state.childrenCount;
+         this.refs[SCROLLVIEW_REF].scrollTo({ x: this.state.width * nextIndex })
+    }
+    startAutoPlayHandler = () => {
+        let timerid = setInterval(this.goToNextPageHandler, this.state.scrollInterval);
+        this.setState({ timerID: timerid});
+     }
+    stopAutoPlayHandler = () => {
+         if (this.state.timerID) {
+             clearInterval(this.state.timerID);
+             this.setState({ timerID: null });
+         }
+     }
 
     componentWillMount() {
         console.log('componentWillMount');
         let bannerItems = [];
+        let childrenCount = 0;
         if (this.props.news) {
-            this.props.news.map(nw => {
+            this.props.news.map((nw, index) => {
+                childrenCount = index + 1;
                 bannerItems.push({
                     logo: require('../../assets/images/Ayuntamiento/ayuntamiento.jpg'),
                     noticia: nw.newData.noticia,
@@ -32,7 +75,7 @@ export default class SwiperBanner extends Component {
                 });
             });
             let { height, width } = Dimensions.get('window');
-            this.setState({ bannerItems: bannerItems, heightScreen: height, widthScreen: width });
+            this.setState({ childrenCount: childrenCount , bannerItems: bannerItems, heightScreen: height , widthScreen: width  });
         }
     }
 
@@ -97,7 +140,15 @@ export default class SwiperBanner extends Component {
         return (
             <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
                 {titleBanner}
-                <ScrollView style={{ flex: 1, marginLeft: 5, marginRight: 5, marginBottom: 5 }} horizontal={true} showsHorizontalScrollIndicator={false}>
+                <ScrollView style={styles.scrollView} 
+                            horizontal={true} 
+                            showsHorizontalScrollIndicator={false}
+                            onLayout={this.onScrollViewLayoutHandler}
+                            onScroll={this.onScrollHandler}
+                            ref={SCROLLVIEW_REF}
+                            pagingEnabled={true}
+                            scrollEventThrottle={8}
+                            >
                     {scrollBanner}
                 </ScrollView>
             </View>
@@ -109,6 +160,12 @@ export default class SwiperBanner extends Component {
 const styles = StyleSheet.create({
     view: {
         flex: 1,
+    },
+    scrollView: {
+        flex: 1, 
+        marginLeft: 5, 
+        marginRight: 5, 
+        marginBottom: 5,
     },
     text: {
         fontSize: 15,

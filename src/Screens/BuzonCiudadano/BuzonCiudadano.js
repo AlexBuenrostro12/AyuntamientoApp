@@ -274,7 +274,7 @@ export default class BuzonCiudadano extends Component {
 					<StyledHeader>
 						<HeaderToolbar open={this.props} title="Sugerencias" />
 					</StyledHeader>
-					<StatusBar color="#ff9933" />
+					<StatusBar color="#FEA621" />
 					<StyledMainScroll>{buzonCiudadano}</StyledMainScroll>
 				</StyledContainer>
 			</StyledSafeArea>

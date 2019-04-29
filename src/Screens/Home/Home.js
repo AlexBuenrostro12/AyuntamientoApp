@@ -82,7 +82,7 @@ export default class Home extends Component {
 					<View>
 						<HeaderToolbar open={this.props} title="Home" />
 					</View>
-					<StatusBar color="#ff9933" />
+					<StatusBar color="#FEA621" />
 					<View style={{ flex: 1 }}>
 						<ScrollView>{this.state.loading ? spinner : swiperBanner}</ScrollView>
 					</View>

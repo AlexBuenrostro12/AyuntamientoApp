@@ -65,6 +65,7 @@
 		7D21A35BF84C4DD5894290BC /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 191A29CDB71F43A7B7E885DB /* libRNCAsyncStorage.a */; };
 		BD445426F4A74B48B74F16DD /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C2168CF62C461096F2DDDC /* libRNGestureHandler.a */; };
 		72F627DCE5144D90A93EA82C /* libRNGestureHandler-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0721BCE372184B35A26FE098 /* libRNGestureHandler-tvOS.a */; };
+		FCAA7272F2FD45ABABC24423 /* libRNImmediatePhoneCall.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 119D7B859B9246E6A9F2EF2F /* libRNImmediatePhoneCall.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -405,6 +406,8 @@
 		0A653B725B7C46FFA9197374 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; name = "RNGestureHandler.xcodeproj"; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		E8C2168CF62C461096F2DDDC /* libRNGestureHandler.a */ = {isa = PBXFileReference; name = "libRNGestureHandler.a"; path = "libRNGestureHandler.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		0721BCE372184B35A26FE098 /* libRNGestureHandler-tvOS.a */ = {isa = PBXFileReference; name = "libRNGestureHandler-tvOS.a"; path = "libRNGestureHandler-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		3F98F39EF86A4BBBA7EEE2C6 /* RNImmediatePhoneCall.xcodeproj */ = {isa = PBXFileReference; name = "RNImmediatePhoneCall.xcodeproj"; path = "../node_modules/react-native-immediate-phone-call/ios/RNImmediatePhoneCall.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		119D7B859B9246E6A9F2EF2F /* libRNImmediatePhoneCall.a */ = {isa = PBXFileReference; name = "libRNImmediatePhoneCall.a"; path = "libRNImmediatePhoneCall.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -440,6 +443,7 @@
 				27723BAAA3F840A397FB492D /* libRNAudioPlayer.a in Frameworks */,
 				7D21A35BF84C4DD5894290BC /* libRNCAsyncStorage.a in Frameworks */,
 				BD445426F4A74B48B74F16DD /* libRNGestureHandler.a in Frameworks */,
+				FCAA7272F2FD45ABABC24423 /* libRNImmediatePhoneCall.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -637,6 +641,7 @@
 				40FCF06EE3504179B66FD8DE /* RNAudioPlayer.xcodeproj */,
 				8C5398BDAA3E423A94CDE663 /* RNCAsyncStorage.xcodeproj */,
 				0A653B725B7C46FFA9197374 /* RNGestureHandler.xcodeproj */,
+				3F98F39EF86A4BBBA7EEE2C6 /* RNImmediatePhoneCall.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1317,6 +1322,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1348,6 +1354,7 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AyuntamientoApp.app/AyuntamientoApp";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1460,6 +1467,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1499,6 +1507,7 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1553,6 +1562,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1591,6 +1601,7 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

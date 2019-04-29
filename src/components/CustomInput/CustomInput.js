@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { Item, Input, Label, Textarea, DatePicker, Picker } from 'native-base';
+import { normalize } from '../AuxiliarFunctions/FontResponsive';
 
 const customInput = ( props ) => {
     
@@ -12,6 +13,17 @@ const customInput = ( props ) => {
                 <Item floatingLabel>
                     <Label>{props.holder}</Label>
                     <Input
+                        onChangeText={props.changed}
+                        secureTextEntry={props.password}/>
+                </Item>
+            );
+        break;
+        case 'FloatingLabelWhite':
+            input = (
+                <Item floatingLabel>
+                    <Label style={{ color: 'white', fontSize: normalize(15) }}>{props.holder}</Label>
+                    <Input
+                        style={{ color: 'white' }}
                         onChangeText={props.changed}
                         secureTextEntry={props.password}/>
                 </Item>
