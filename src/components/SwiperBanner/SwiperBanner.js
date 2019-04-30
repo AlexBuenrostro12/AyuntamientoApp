@@ -17,7 +17,6 @@ export default class SwiperBanner extends Component {
         width: 0,
         preScrollX: null,
         scrollInterval: 2500,
-
     }
 
     componentDidMount() {
@@ -29,6 +28,9 @@ export default class SwiperBanner extends Component {
     }
 
     onScrollHandler = (e) => {
+        console.log('onScrollHandler');
+        console.log(this.state);
+        
         let { x } = e.nativeEvent.contentOffset, offset, position = Math.floor(x / this.state.width);
         if (x === this.state.preScrollX) return;
         this.setState({ preScrollX: x });
@@ -40,19 +42,23 @@ export default class SwiperBanner extends Component {
         }
     }
     onScrollViewLayoutHandler = (e) => {
+        console.log('onScrollViewLAyoutHandler');
         let { width } = e.nativeEvent.layout;             
         this.setState({ width: width });
     }
     goToNextPageHandler = () => {
+        console.log('goToNextPageHandler');
         this.stopAutoPlayHandler();
          let nextIndex = (this.state.currentIndex + 1) % this.state.childrenCount;
          this.refs[SCROLLVIEW_REF].scrollTo({ x: this.state.width * nextIndex })
     }
     startAutoPlayHandler = () => {
+        console.log('startAutoPlayHandler');
         let timerid = setInterval(this.goToNextPageHandler, this.state.scrollInterval);
         this.setState({ timerID: timerid});
      }
     stopAutoPlayHandler = () => {
+        console.log('stopAutoPlayHandler');
          if (this.state.timerID) {
              clearInterval(this.state.timerID);
              this.setState({ timerID: null });
@@ -61,24 +67,35 @@ export default class SwiperBanner extends Component {
 
     componentWillMount() {
         console.log('componentWillMount');
+        this.getNewsHandler();
+    }
+    getNewsHandler = () => {
+        console.log('Fire!!!');
         let bannerItems = [];
         let childrenCount = 0;
         if (this.props.news) {
             this.props.news.map((nw, index) => {
-                childrenCount = index + 1;
-                bannerItems.push({
-                    logo: require('../../assets/images/Ayuntamiento/ayuntamiento.jpg'),
-                    noticia: nw.newData.noticia,
-                    categoria: nw.newData.categoria,
-                    fecha: nw.newData.fecha,
-                    logoCategoria: this.choseCategoryLogo(nw.newData.categoria)
-                });
+                let currentDate = new Date(nw.newData.fecha);
+                let expiryDate = new Date(currentDate);
+                expiryDate.setDate(expiryDate.getDate() + 3);
+                let today = new Date();
+                console.log('CurrentDay: ',currentDate, 'ExpiryDate: ', expiryDate, 'Today:', today);
+                if (expiryDate > today) {
+                    console.log('IF: ', nw.newData.noticia, nw.newData.fecha);
+                    childrenCount = childrenCount + 1;
+                    bannerItems.push({
+                        logo: require('../../assets/images/Ayuntamiento/ayuntamiento.jpg'),
+                        noticia: nw.newData.noticia,
+                        categoria: nw.newData.categoria,
+                        fecha: nw.newData.fecha,
+                        logoCategoria: this.choseCategoryLogo(nw.newData.categoria)
+                    });
+                }
             });
             let { height, width } = Dimensions.get('window');
             this.setState({ childrenCount: childrenCount , bannerItems: bannerItems, heightScreen: height , widthScreen: width  });
         }
     }
-
     choseCategoryLogo = (category) => {
         switch (category) {
             case 'Cultura':
