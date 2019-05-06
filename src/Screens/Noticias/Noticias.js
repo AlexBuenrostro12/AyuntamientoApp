@@ -3,9 +3,11 @@ import { View, StyleSheet, ScrollView, SafeAreaView, Text, Image, Alert, Touchab
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
+import ImagePicker from 'react-native-image-picker';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
+import axiosCloudinary from 'axios';
 import Noticia from '../../components/Noticia/Noticia';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
@@ -90,11 +92,28 @@ export default class Noticias extends Component {
 				},
 				valid: false
 			},
+			imagen: {
+				itemType: 'LoadImage',
+				holder: 'IMAGEN',
+				value: '',
+				validation: {
+					haveValue: true
+				},
+				valid: false
+			}
 		},
+		options: {
+			title: 'Elige una opción',
+			takePhotoButtonTitle: 'Abrir camara.',
+			chooseFromLibraryButtonTitle: 'Abrir galeria.'
+		},
+		image: null,
+		largeImage: null,
+		fileNameImage: null
 	};
 
 	async componentDidMount() {
-		let token = expiresIn = null;
+		let token = (expiresIn = null);
 		try {
 			console.log('Entro al try');
 			token = await AsyncStorage.getItem('@storage_token');
@@ -107,13 +126,11 @@ export default class Noticias extends Component {
 			console.log('Noticias.js: ', this.state.tokenIsValid);
 			if (token && parseExpiresIn > now) {
 				this.setState({ token: token, tokenIsValid: true });
-				if (email !== 'false')
-					this.setState({ isAdmin: true });
-				else
-					this.setState({ isAdmin: false });
+				if (email !== 'false') this.setState({ isAdmin: true });
+				else this.setState({ isAdmin: false });
 				this.getNews();
 			} else {
-                //Restrict screens if there's no token
+				//Restrict screens if there's no token
 				try {
 					console.log('Entro al try');
 					await AsyncStorage.removeItem('@storage_token');
@@ -130,8 +147,8 @@ export default class Noticias extends Component {
 				);
 			}
 		} catch (e) {
-            //Catch posible errors
-        }
+			//Catch posible errors
+		}
 	}
 
 	getNews = () => {
@@ -152,7 +169,7 @@ export default class Noticias extends Component {
 			.catch((err) => {
 				this.setState({ loading: false });
 			});
-	}
+	};
 
 	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
@@ -161,6 +178,7 @@ export default class Noticias extends Component {
 		const updatedFormElement = {
 			...updatedForm[inputIdentifier]
 		};
+
 		updatedFormElement.value = text;
 		updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
 
@@ -203,6 +221,63 @@ export default class Noticias extends Component {
 		return isValid;
 	}
 
+	loadPhotoHandler = () => {
+		ImagePicker.showImagePicker(this.state.options, (response) => {
+			console.log('ResponseImagePicker: ', response);
+
+			if (response.didCancel) {
+				console.log('User cancelled image picker');
+			} else if (response.error) {
+				console.log('ImagePicker Error: ', response.error);
+			} else {
+				const source = { uri: response.uri };
+				//Destructuring response object
+				const { fileName, fileSize, type, data, uri } = response;
+
+				//URL endpoint to upload images to cloudinary
+				const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
+				//Preset
+				const UPLOAD_PRESET_NAME = 'ayuntamiento';
+				//Image form data
+				const imageData = new FormData();
+				imageData.append('file', {
+					name: fileName,
+					size: fileSize,
+					type: type,
+					data: data,
+					uri: uri
+				});
+				imageData.append('upload_preset', UPLOAD_PRESET_NAME);
+				//Request endpoint to cloudinary: => it works
+				axiosCloudinary({
+					url: URL_CLOUDINARY,
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					data: imageData
+				})
+					.then((response) => {
+						console.log('ResponseCloudinary: ', response);
+						const { data } = response;
+						console.log('ResponseDataCloudinary: ', data);
+						const { url, eager, original_filename } = data;
+
+						//Set to state de url
+						this.setState({
+							image: { uri: url },
+							largeImage: { uri: eager[0].secure_url },
+							fileNameImage: original_filename
+						}, () => this.inputChangeHandler(url, 'imagen'));
+						console.log('stateofForm: ', this.state.form);
+					})
+					.catch((err) => {
+						console.log('ErrorCloudinary: ', err);
+					});
+			} // else
+		});
+	};
+
 	sendNewHandler = () => {
 		//check if the form is valid
 		this.setState({ loading: true });
@@ -218,9 +293,14 @@ export default class Noticias extends Component {
 			axios
 				.post('/news.json?auth=' + this.state.token, news)
 				.then((response) => {
-					Alert.alert('Noticias', 'Noticia enviada con exito!', [ { text: 'Ok', onPress: () => this.getNews() } ], {
-						cancelable: false
-					});
+					Alert.alert(
+						'Noticias',
+						'Noticia enviada con exito!',
+						[ { text: 'Ok', onPress: () => this.getNews() } ],
+						{
+							cancelable: false
+						}
+					);
 				})
 				.catch((error) => {
 					Alert.alert('Noticias', 'Noticia fallida al enviar!', [ { text: 'Ok' } ], {
@@ -235,13 +315,16 @@ export default class Noticias extends Component {
 	};
 
 	render() {
-		const list = this.state.news.map((nw) => <Noticia 
-													key={nw.id} 
-													id={nw.id}
-													token={this.state.token}
-													isAdmin={this.state.isAdmin}
-													refresh={this.getNews}
-													data={nw.newData} />);
+		const list = this.state.news.map((nw) => (
+			<Noticia
+				key={nw.id}
+				id={nw.id}
+				token={this.state.token}
+				isAdmin={this.state.isAdmin}
+				refresh={this.getNews}
+				data={nw.newData}
+			/>
+		));
 		const spinner = <CustomSpinner color="blue" />;
 		const formElements = [];
 		for (let key in this.state.form) {
@@ -250,7 +333,6 @@ export default class Noticias extends Component {
 				config: this.state.form[key]
 			});
 		}
-		console.log(this.state);
 		const noticias = (
 			<StyledNoticias>
 				<Card>
@@ -272,15 +354,17 @@ export default class Noticias extends Component {
 										/>
 									</TouchableOpacity>
 								</View>
-								{this.state.isAdmin && <View style={styles.btn}>
-									<Text style={{ fontSize: 20 }}>Agregar noticia</Text>
-									<TouchableOpacity onPress={() => this.setState({ addNew: true })}>
-										<Image
-											style={{ height: 30, width: 30, resizeMode: 'contain' }}
-											source={require('../../assets/images/Add/add.png')}
-										/>
-									</TouchableOpacity>
-								</View>}
+								{this.state.isAdmin && (
+									<View style={styles.btn}>
+										<Text style={{ fontSize: 20 }}>Agregar noticia</Text>
+										<TouchableOpacity onPress={() => this.setState({ addNew: true })}>
+											<Image
+												style={{ height: 30, width: 30, resizeMode: 'contain' }}
+												source={require('../../assets/images/Add/add.png')}
+											/>
+										</TouchableOpacity>
+									</View>
+								)}
 							</View>
 							{this.state.loading ? spinner : list}
 						</StyledCardBody>
@@ -304,19 +388,15 @@ export default class Noticias extends Component {
 									itemType={e.config.itemType}
 									holder={e.config.holder}
 									value={e.config.value}
+									loadPhoto={() => this.loadPhotoHandler()}
+									image={this.state.image}
+									name={this.state.fileNameImage}
 									changed={(text) => this.inputChangeHandler(text, e.id)}
 								/>
 							))}
 							<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-								<CustomButton 
-									style="Success" 
-									name="Agregar" 
-									clicked={() => this.sendNewHandler()} />
-								<CustomButton
-									style="Danger"
-									name="Regresar"
-									clicked={() => this.getNews()}
-								/>
+								<CustomButton style="Success" name="Agregar" clicked={() => this.sendNewHandler()} />
+								<CustomButton style="Danger" name="Regresar" clicked={() => this.getNews()} />
 							</View>
 						</View>
 					</CardItem>
@@ -357,5 +437,5 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center'
-	},
+	}
 });

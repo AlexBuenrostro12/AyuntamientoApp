@@ -211,7 +211,7 @@ export default class Incidencias extends Component {
             if(token) {
                 axiosImage.post('https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/uploadFile', this.state.imageData)
                 .then(res => {
-                    console.log(res);
+                    console.log('Incidencias.js:UploadedImageResponse', res);
                 })
                 .catch(err => {
                     Alert.alert('Incidencias', '¡Error al subir imagen!', [{ text: 'Ok' }], { cancelable: false });
