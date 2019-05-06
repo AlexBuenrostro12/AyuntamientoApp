@@ -108,8 +108,8 @@ export default class Noticias extends Component {
 			chooseFromLibraryButtonTitle: 'Abrir galeria.'
 		},
 		image: null,
-		largeImage: null,
-		fileNameImage: null
+		fileNameImage: null,
+		imageFormData: null,
 	};
 
 	async componentDidMount() {
@@ -230,57 +230,59 @@ export default class Noticias extends Component {
 			} else if (response.error) {
 				console.log('ImagePicker Error: ', response.error);
 			} else {
-				const source = { uri: response.uri };
 				//Destructuring response object
 				const { fileName, fileSize, type, data, uri } = response;
-
-				//URL endpoint to upload images to cloudinary
-				const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
 				//Preset
 				const UPLOAD_PRESET_NAME = 'ayuntamiento';
 				//Image form data
-				const imageData = new FormData();
-				imageData.append('file', {
+				const imageFormData = new FormData();
+				imageFormData.append('file', {
 					name: fileName,
 					size: fileSize,
 					type: type,
 					data: data,
 					uri: uri
 				});
-				imageData.append('upload_preset', UPLOAD_PRESET_NAME);
-				//Request endpoint to cloudinary: => it works
-				axiosCloudinary({
-					url: URL_CLOUDINARY,
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded'
-					},
-					data: imageData
-				})
-					.then((response) => {
-						console.log('ResponseCloudinary: ', response);
-						const { data } = response;
-						console.log('ResponseDataCloudinary: ', data);
-						const { url, eager, original_filename } = data;
-
-						//Set to state de url
-						this.setState({
-							image: { uri: url },
-							largeImage: { uri: eager[0].secure_url },
-							fileNameImage: original_filename
-						}, () => this.inputChangeHandler(url, 'imagen'));
-						console.log('stateofForm: ', this.state.form);
-					})
-					.catch((err) => {
-						console.log('ErrorCloudinary: ', err);
-					});
+				imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
+				this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
 			} // else
 		});
 	};
 
+	uploadPhotoHandler = () => {
+		const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
+		this.setState({ loading: true });
+		axiosCloudinary({
+			url: URL_CLOUDINARY,
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			data: this.state.imageFormData
+		})
+			.then((response) => {
+				console.log('ResponseCloudinary: ', response);
+				//Destructurin response
+				const { data } = response;
+				console.log('ResponseDataCloudinary: ', data);
+				//Destructuring data
+				const { url, eager, } = data;
+				//Send to form image the value of url
+				this.inputChangeHandler(url, 'imagen');
+				console.log('stateofForm: ', this.state.form);
+				//Call the method tu upload new
+				this.sendNewHandler();
+			})
+			.catch((err) => {
+				Alert.alert('Noticias', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
+					cancelable: false
+				});
+				console.log('ErrorCloudinary: ', err);
+			});
+	};
+
 	sendNewHandler = () => {
 		//check if the form is valid
-		this.setState({ loading: true });
 		if (this.state.formIsValid) {
 			const formData = {};
 			for (let formElementIdentifier in this.state.form) {
@@ -289,10 +291,11 @@ export default class Noticias extends Component {
 			const news = {
 				newData: formData
 			};
-
+			//Upload new
 			axios
 				.post('/news.json?auth=' + this.state.token, news)
 				.then((response) => {
+					this.setState({ loading: false });
 					Alert.alert(
 						'Noticias',
 						'Noticia enviada con exito!',
@@ -303,11 +306,13 @@ export default class Noticias extends Component {
 					);
 				})
 				.catch((error) => {
+					this.setState({ loading: false });
 					Alert.alert('Noticias', 'Noticia fallida al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});
 				});
 		} else {
+			this.setState({ loading: false });
 			Alert.alert('Actividades', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});
@@ -394,10 +399,10 @@ export default class Noticias extends Component {
 									changed={(text) => this.inputChangeHandler(text, e.id)}
 								/>
 							))}
-							<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-								<CustomButton style="Success" name="Agregar" clicked={() => this.sendNewHandler()} />
+							{!this.state.loading ? <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+								<CustomButton style="Success" name="Agregar" clicked={() => this.uploadPhotoHandler()} />
 								<CustomButton style="Danger" name="Regresar" clicked={() => this.getNews()} />
-							</View>
+							</View> : spinner}
 						</View>
 					</CardItem>
 				</Card>

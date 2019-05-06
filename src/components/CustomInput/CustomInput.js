@@ -2,13 +2,13 @@ import React from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
 import { Item, Input, Label, Textarea, DatePicker, Picker } from 'native-base';
 import { normalize } from '../AuxiliarFunctions/FontResponsive';
-import spinner from '../../components/CustomSpinner/CustomSpinner';
+import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 
 const customInput = ( props ) => {
     
     let input = null;
     let image = (
-        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
+        props.image && <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}>
             <Image
                 source={props.image}
                 style={{ height: 160, width: 200 }} />
@@ -93,7 +93,7 @@ const customInput = ( props ) => {
         case 'LoadImage':
             input = (
                 <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-                    {props.image ? image : spinner}
+                    {image}
                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#F3F2F1', borderRadius: 5, paddingLeft: 10, paddingRight: 10 }}>
                         <Image
                             style={{ height: 30, width: 30 }}

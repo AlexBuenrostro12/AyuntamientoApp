@@ -131,7 +131,7 @@ export default class Noticia extends Component {
                     <CardItem>
                         <Body>
                             <Image 
-                                style={{ resizeMode: 'contain', height: 160, width: 200 }}
+                                style={styles.image}
                                 source={{ uri: this.state.imagen }} />
                             <Text>{this.state.descripcion}</Text>
                         </Body>
@@ -172,5 +172,11 @@ const styles = StyleSheet.create({
         width: 30,
         resizeMode: 'contain',
         marginLeft: 2,
+    },
+    image: {
+        resizeMode: 'contain',
+        height: 160,
+        width: 200,
+        alignSelf: 'center',
     }
 })
