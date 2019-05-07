@@ -90,6 +90,23 @@ const customInput = ( props ) => {
                     </Picker>
                 );
         break;
+        case 'PickerDirection':
+                input = (
+                    <Picker
+                            mode="dropdown"
+                            iosHeader={props.value}
+                            iosIcon={<Image style={{ width: 25, height: 25 }} source={require('../../assets/images/ArrowDown/arrow-down.png')} />}
+                            style={{ width: undefined }}
+                            selectedValue={props.value}
+                            onValueChange={props.changed}
+                        >
+                            <Picker.Item label="Direction 1" value="Direction 1" />
+                            <Picker.Item label="Direction 2" value="Direction 2" />
+                            <Picker.Item label="Direction 3" value="Direction 3" />
+                            <Picker.Item label="Direction 4" value="Direction 4" />
+                    </Picker>
+                );
+        break;
         case 'LoadImage':
             input = (
                 <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>

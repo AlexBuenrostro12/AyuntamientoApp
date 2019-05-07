@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView, Text, Image, Alert, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView, Text, Image, Alert, TouchableOpacity, FlatList } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -63,9 +63,9 @@ export default class Noticias extends Component {
 				},
 				valid: false
 			},
-			categoria: {
-				itemType: 'FloatingLabel',
-				holder: 'Categoria',
+			direccion: {
+				itemType: 'PickerDirection',
+				holder: 'Dirección',
 				value: '',
 				validation: {
 					minLength: 1,
@@ -96,16 +96,15 @@ export default class Noticias extends Component {
 				itemType: 'LoadImage',
 				holder: 'IMAGEN',
 				value: '',
-				validation: {
-					haveValue: true
-				},
-				valid: false
+				valid: true
 			}
 		},
 		options: {
 			title: 'Elige una opción',
 			takePhotoButtonTitle: 'Abrir camara.',
-			chooseFromLibraryButtonTitle: 'Abrir galeria.'
+			chooseFromLibraryButtonTitle: 'Abrir galeria.',
+			maxWidth: 800, 
+			maxHeight: 800
 		},
 		image: null,
 		fileNameImage: null,
@@ -152,7 +151,7 @@ export default class Noticias extends Component {
 	}
 
 	getNews = () => {
-		this.setState({ loading: true, addNew: false });
+		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null });
 		axios
 			.get('/news.json?auth=' + this.state.token)
 			.then((res) => {
@@ -250,35 +249,44 @@ export default class Noticias extends Component {
 	};
 
 	uploadPhotoHandler = () => {
+		//URL cloudinary
 		const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
 		this.setState({ loading: true });
-		axiosCloudinary({
-			url: URL_CLOUDINARY,
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			data: this.state.imageFormData
-		})
-			.then((response) => {
-				console.log('ResponseCloudinary: ', response);
-				//Destructurin response
-				const { data } = response;
-				console.log('ResponseDataCloudinary: ', data);
-				//Destructuring data
-				const { url, eager, } = data;
-				//Send to form image the value of url
-				this.inputChangeHandler(url, 'imagen');
-				console.log('stateofForm: ', this.state.form);
-				//Call the method tu upload new
-				this.sendNewHandler();
+		console.log('Form: ', this.state.form);
+		if (this.state.imageFormData && this.state.formIsValid) {
+			axiosCloudinary({
+				url: URL_CLOUDINARY,
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				data: this.state.imageFormData
 			})
-			.catch((err) => {
-				Alert.alert('Noticias', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
-					cancelable: false
+				.then((response) => {
+					console.log('ResponseCloudinary: ', response);
+					//Destructurin response
+					const { data } = response;
+					console.log('ResponseDataCloudinary: ', data);
+					//Destructuring data
+					const { url, eager, } = data;
+					//Send to form image the value of url
+					this.inputChangeHandler(url, 'imagen');
+					console.log('stateofForm: ', this.state.form);
+					//Call the method to upload new
+					this.sendNewHandler();
+				})
+				.catch((err) => {
+					Alert.alert('Noticias', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+					console.log('ErrorCloudinary: ', err);
 				});
-				console.log('ErrorCloudinary: ', err);
+		} else {
+			this.setState({ loading: false });
+			Alert.alert('Noticias', '¡Complete el formulario correctamente!', [ { text: 'Ok' } ], {
+				cancelable: false
 			});
+		}
 	};
 
 	sendNewHandler = () => {
@@ -295,7 +303,7 @@ export default class Noticias extends Component {
 			axios
 				.post('/news.json?auth=' + this.state.token, news)
 				.then((response) => {
-					this.setState({ loading: false });
+					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
 					Alert.alert(
 						'Noticias',
 						'Noticia enviada con exito!',
@@ -393,10 +401,10 @@ export default class Noticias extends Component {
 									itemType={e.config.itemType}
 									holder={e.config.holder}
 									value={e.config.value}
+									changed={(text) => this.inputChangeHandler(text, e.id)}
 									loadPhoto={() => this.loadPhotoHandler()}
 									image={this.state.image}
 									name={this.state.fileNameImage}
-									changed={(text) => this.inputChangeHandler(text, e.id)}
 								/>
 							))}
 							{!this.state.loading ? <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>

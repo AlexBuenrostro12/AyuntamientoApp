@@ -25,7 +25,7 @@ const StyledButton = styled.View`
 export default class Noticia extends Component {
     state = {
         noticia: null,
-        categoria: null,
+        direccion: null,
         descripcion: null,
         fecha: null,
         imagen: null,
@@ -38,7 +38,7 @@ export default class Noticia extends Component {
             const fecha = this.props.data['fecha'].split("T", 1);
             if (this.props.data[dataName] === identifier) {
                 this.setState({ noticia: this.props.data[dataName] });
-                this.setState({ categoria: this.props.data['categoria'] });
+                this.setState({ direccion: this.props.data['direccion'] });
                 this.setState({ descripcion: this.props.data['descripcion'] });
                 this.setState({ imagen: this.props.data['imagen'] });
                 this.setState({ fecha: fecha });
@@ -119,13 +119,16 @@ export default class Noticia extends Component {
             <StyledCard>
                 <Card>
                     <CardItem header>
-                        <View style={styles.btnsContainer}>
-                            <Text>{this.state.noticia} / {this.state.categoria}</Text>
-                            {this.props.isAdmin && <View style={styles.btnsAdm}>
+                        <View style={styles.header}>
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.title}>{this.state.noticia}</Text>
+                                {this.props.isAdmin && <View style={styles.btnsAdm}>
                                 <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
                                     <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
                                 </TouchableOpacity>
-                            </View>}
+                                </View>}
+                            </View>
+                            <Text style={styles.direction}>{this.state.direccion}</Text>
                         </View>
                     </CardItem>
                     <CardItem>
@@ -162,7 +165,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         justifyContent: 'flex-end' ,
     },
-    btnsContainer: {
+    titleContainer: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -178,5 +181,20 @@ const styles = StyleSheet.create({
         height: 160,
         width: 200,
         alignSelf: 'center',
+    },
+    title: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black'
+    },
+    direction: {
+        fontSize: 14,
+        fontWeight: 'normal',
+        color: 'black'
+    },
+    header: {
+        flex: 1, 
+        flexDirection: 'column', 
+        justifyContent: 'space-between'
     }
 })
