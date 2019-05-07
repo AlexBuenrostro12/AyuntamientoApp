@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
+import ImagePicker from 'react-native-image-picker';
+import axiosCloudinary from 'axios';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
@@ -65,10 +67,26 @@ export default class Actividades extends Component {
 				},
 				valid: false
 			},
+			imagen: {
+				itemType: 'LoadImage',
+				holder: 'IMAGEN',
+				value: '',
+				valid: true
+			}
+		},
+		options: {
+			title: 'Elige una opción',
+			takePhotoButtonTitle: 'Abrir camara.',
+			chooseFromLibraryButtonTitle: 'Abrir galeria.',
+			maxWidth: 800, 
+			maxHeight: 800
 		},
 		formIsValid: false,
 		activities: [],
 		isAdmin: true,
+		image: null,
+		fileNameImage: null,
+		imageFormData: null
 	};
 
 	async componentDidMount() {
@@ -201,16 +219,19 @@ export default class Actividades extends Component {
 			axios
 				.post('/activities.json?auth=' + this.state.token, activity)
 				.then((response) => {
+					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
 					Alert.alert('Actividades', 'Actividad enviada con exito!', [ { text: 'Ok', onPress: () => this.getActivities() } ], {
 						cancelable: false
 					});
 				})
 				.catch((error) => {
+					this.setState({ loading: false });
 					Alert.alert('Actividades', 'Actividad fallida al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});
 				});
 		} else {
+			this.setState({ loading: false });
 			Alert.alert('Actividades', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});
@@ -251,6 +272,76 @@ export default class Actividades extends Component {
 			console.warn('Cannot open time picker', message);
 		}
 	};
+
+	loadPhotoHandler = () => {
+		ImagePicker.showImagePicker(this.state.options, (response) => {
+			console.log('ResponseImagePicker: ', response);
+
+			if (response.didCancel) {
+				console.log('User cancelled image picker');
+			} else if (response.error) {
+				console.log('ImagePicker Error: ', response.error);
+			} else {
+				//Destructuring response object
+				const { fileName, fileSize, type, data, uri } = response;
+				//Preset
+				const UPLOAD_PRESET_NAME = 'ayuntamiento';
+				//Image form data
+				const imageFormData = new FormData();
+				imageFormData.append('file', {
+					name: fileName,
+					size: fileSize,
+					type: type,
+					data: data,
+					uri: uri
+				});
+				imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
+				this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
+			} // else
+		});
+	};
+
+	uploadPhotoHandler = () => {
+		//URL cloudinary
+		const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
+		this.setState({ loading: true });
+		console.log('Form: ', this.state.form);
+		if (this.state.imageFormData && this.state.formIsValid) {
+			axiosCloudinary({
+				url: URL_CLOUDINARY,
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				data: this.state.imageFormData
+			})
+				.then((response) => {
+					console.log('ResponseCloudinary: ', response);
+					//Destructurin response
+					const { data } = response;
+					console.log('ResponseDataCloudinary: ', data);
+					//Destructuring data
+					const { url, eager, } = data;
+					//Send to form image the value of url
+					this.inputChangeHandler(url, 'imagen');
+					console.log('stateofForm: ', this.state.form);
+					//Call the method to upload new
+					this.sendNewActivityHandler();
+				})
+				.catch((err) => {
+					Alert.alert('Actividades', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+					console.log('ErrorCloudinary: ', err);
+				});
+		} else {
+			this.setState({ loading: false });
+			Alert.alert('Actividades', '¡Complete el formulario correctamente!', [ { text: 'Ok' } ], {
+				cancelable: false
+			});
+		}
+	};
+
 
 	render() {
 		console.log(this.state);
@@ -325,19 +416,22 @@ export default class Actividades extends Component {
 									value={e.config.value}
 									changed={(text) => this.inputChangeHandler(text, e.id)}
 									changed1={() => this.getTime(e.id)}
+									loadPhoto={() => this.loadPhotoHandler()}
+									image={this.state.image}
+									name={this.state.fileNameImage}
 								/>
 							))}
-							<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+							{!this.state.loading ? <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
 								<CustomButton 
 									style="Success" 
 									name="Agregar" 
-									clicked={() => this.sendNewActivityHandler()} />
+									clicked={() => this.uploadPhotoHandler()} />
 								<CustomButton
 									style="Danger"
 									name="Regresar"
 									clicked={() => this.getActivities()}
 								/>
-							</View>
+							</View> : spinner}
 						</View>
 					</CardItem>
 				</Card>
