@@ -238,7 +238,7 @@ export default class BuzonCiudadano extends Component {
 				config: this.state.form[key]
 			});
 		}
-		const buzonCiudadano = (
+		const addSugerencia = (
 			<StyledBuzon>
 				<Card>
 					<CustomCardItemTitle
@@ -275,7 +275,7 @@ export default class BuzonCiudadano extends Component {
 						<HeaderToolbar open={this.props} title="Sugerencias" />
 					</StyledHeader>
 					<StatusBar color="#FEA621" />
-					<StyledMainScroll>{buzonCiudadano}</StyledMainScroll>
+					<StyledMainScroll>{addSugerencia}</StyledMainScroll>
 				</StyledContainer>
 			</StyledSafeArea>
 		);

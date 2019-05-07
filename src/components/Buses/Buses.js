@@ -20,8 +20,8 @@ export default class Buses extends Component {
         for (let dataName in this.props.data) {
             console.log(this.props.data[dataName], salida, destino);
             switch (dataName) {
-                case 'camion':
-                    obj.camion =  this.props.data[dataName];
+                case 'placa':
+                    obj.placa =  this.props.data[dataName];
                     break;
                 case 'chofer':
                     obj.chofer =  this.props.data[dataName];
@@ -34,9 +34,6 @@ export default class Buses extends Component {
                     break;
                 case 'horaSalida':
                     obj.horaSalida =  this.props.data[dataName];
-                    break;      
-                case 'horario':
-                    obj.horario =  this.props.data[dataName];
                     break;      
                 default:
                     null
@@ -134,7 +131,7 @@ export default class Buses extends Component {
                     <Card key={bs.chofer  + bs.horaSalida + bs.destino}>
                         <CardItem header>
                             <View style={styles.btnsContainer}>
-                                <Text style={styles.textTitle}>{bs.destino} - {bs.horario}</Text>
+                                <Text style={styles.textTitle}>{bs.destino}</Text>
                                 {this.props.isAdmin && <View style={styles.btnsAdm}>
                                     <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
                                         <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
@@ -144,14 +141,14 @@ export default class Buses extends Component {
                         </CardItem>
                         <CardItem>
                             <Body>
-                                <Text style={styles.text}>Camión: {bs.camion}</Text>
+                                <Text style={styles.text}>Placa del camión: {bs.placa}</Text>
                                 <Text style={styles.text}>Chofer: {bs.chofer}</Text>
                                 <Text style={styles.text}>Salida: {bs.horaSalida}</Text>
                                 <Text style={styles.text}>Regreso: {bs.horaRegreso}</Text>
                             </Body>
                         </CardItem>
                         <CardItem footer>
-                            <Text style={styles.textTitle}>Información.</Text>
+                            <Text style={styles.textTitle}>Horarios.</Text>
                         </CardItem>
                         <View style={{ flex: 1, flexGrow: 1, marginTop: 5, marginBottom: 5 }}>
                             <CustomButton

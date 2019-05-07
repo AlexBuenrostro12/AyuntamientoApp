@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ImageBackground, Dimensions, Alert, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ImageBackground, Dimensions, Alert, Image, ScrollView, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Communications from 'react-native-communications';
 import StatusBar from '../../UI/StatusBar/StatusBar';
@@ -143,14 +143,31 @@ class Login extends Component {
 		console.log(this.state);
 
 		const spinner = (
-				<Spinner color="blue" />			
-			// <View style={styles.spinner}>
-			// </View>
-
+				<Spinner color="blue" />		
 		);
-
+		const principalButtons = (
+			<View style={styles.imageButtonsContainer}>
+				<TouchableOpacity onPress={() => this.changeFormHandler(false, 'login')}>
+					<Image 
+						style={styles.imageButtons}
+						resizeMode='contain'
+						source={require('../../assets/images/Buttons/guest.png')} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={() => this.changeFormHandler(false, 'index')}>
+					<Image 
+						style={styles.imageButtons}
+						resizeMode='contain'
+						source={require('../../assets/images/Buttons/admin.png')} />
+				</TouchableOpacity>
+				<TouchableOpacity onPress={() => Communications.phonecall('911', true)}>
+					<Image 
+						style={styles.imageButtons}
+						resizeMode='contain'
+						source={require('../../assets/images/Buttons/emergency.png')} />
+				</TouchableOpacity>
+			</View>
+		);
 		const content = (
-			
 			<ImageBackground
 			imageStyle={{ resizeMode: 'stretch' }}
 			source={require('../../assets/images/Ayuntamiento/fondo.jpg')}
@@ -165,23 +182,10 @@ class Login extends Component {
 						<View style={{ alignSelf: 'center', width: width / 2, paddingLeft: 2 }}>
 							<Text style={styles.text}>Inicio de sesión</Text>
 						</View>
+						{/* Image Buttons */}
+						{this.state.index && principalButtons}
+						{/* Go Back Button */}
 						<View style={styles.loginBtns}>
-							{/* Administrador */}
-							{this.state.index && <CustomButton
-														style="Login"
-														name="Administrador"
-														clicked={() => this.changeFormHandler(false, 'index')}/>}
-							{/* Invitado */}
-							{this.state.index && <CustomButton
-														style="Login"
-														name="Invitado"
-														clicked={() => this.changeFormHandler(false, 'login')}/>}
-							{/* Invitado */}
-							{this.state.index && <CustomButton
-														style="Emergencia"
-														name="Emergencia"
-														clicked={() => Communications.phonecall('911', true)}/>}
-							{/* Regresar al inicio */}
 							{!this.state.index && <CustomButton
 														style="Login"
 														name="Regresar al inicio"
@@ -236,6 +240,17 @@ const styles = StyleSheet.create({
 		height: height / 2,
 		width: width / 2,
 		alignSelf: 'center',
+		borderRadius: 0
+	},
+	imageButtons: {
+		height: 65, 
+		width: 65
+	},
+	imageButtonsContainer: {
+		flex: 1, 
+		flexDirection: 'row', 
+		justifyContent: 'center',
+		marginTop: 5,
 	},
 	text: {
 		fontFamily: 'sans serif',
