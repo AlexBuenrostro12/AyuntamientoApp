@@ -84,30 +84,16 @@ export default class SwiperBanner extends Component {
                     console.log('IF: ', nw.newData.noticia, nw.newData.fecha);
                     childrenCount = childrenCount + 1;
                     bannerItems.push({
-                        logo: require('../../assets/images/Ayuntamiento/ayuntamiento.jpg'),
+                        logo: require('../../assets/images/Ayuntamiento/logo-naranja.png'),
                         noticia: nw.newData.noticia,
-                        categoria: nw.newData.categoria,
+                        direccion: nw.newData.direccion,
                         fecha: nw.newData.fecha,
-                        logoCategoria: this.choseCategoryLogo(nw.newData.categoria)
+                        imagen: nw.newData.imagen
                     });
                 }
             });
             let { height, width } = Dimensions.get('window');
             this.setState({ childrenCount: childrenCount , bannerItems: bannerItems, heightScreen: height , widthScreen: width  });
-        }
-    }
-    choseCategoryLogo = (category) => {
-        switch (category) {
-            case 'Cultura':
-                return require('../../assets/images/Cultura/cultura.jpg');
-            case 'Deporte':
-                return require('../../assets/images/Deporte/deporte.jpg');
-            case 'Social':
-                return require('../../assets/images/Social/social.jpg');
-            case 'Agua':
-                return require('../../assets/images/Agua/agua.jpg');
-            default:
-                return null;
         }
     }
 
@@ -131,9 +117,9 @@ export default class SwiperBanner extends Component {
                     <Card key={item.noticia} style={{ elevation: 3, height: this.state.heightScreen / 1.6, width: this.state.widthScreen / 1.07 }}>
                         <CardItem header>
                             <Left>
-                                <Thumbnail source={item.logo} />
+                                <Thumbnail resizeMode='contain' source={item.logo} />
                                 <Body>
-                                    <Text style={styles.text}>{item.categoria}</Text>
+                                    <Text style={styles.text}>{item.direccion}</Text>
                                 </Body>
                             </Left>
                         </CardItem>
@@ -143,7 +129,7 @@ export default class SwiperBanner extends Component {
                                 style={styles.border}
                                 onPress={() => this.props.open.navigation.navigate('Noticias')} >
                                 <View style={{ alignItems: 'center' }}>
-                                    <Image resizeMode='contain' style={{ height: this.state.heightScreen / 3, width: this.state.widthScreen / .6 }} source={item.logoCategoria} />
+                                    <Image resizeMode='contain' style={{ height: this.state.heightScreen / 3, width: this.state.widthScreen / .6 }} source={{ uri: item.imagen }} />
                                 </View>
                             </TouchableOpacity>
                         </CardItem>
