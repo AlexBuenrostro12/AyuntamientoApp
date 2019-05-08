@@ -329,6 +329,7 @@ export default class Actividades extends Component {
 					this.sendNewActivityHandler();
 				})
 				.catch((err) => {
+					this.setState({ loading: false });
 					Alert.alert('Actividades', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});

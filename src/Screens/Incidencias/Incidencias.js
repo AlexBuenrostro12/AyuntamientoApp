@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Platform, Alert } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Platform, Alert, TouchableOpacity } from 'react-native';
 import { Form, Card, CardItem, Body } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
 import axiosImage from 'axios';
+import axiosCloudinary from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
@@ -13,6 +14,8 @@ import DatosPersonales from '../../components/Incidencias/DatosPersonales/DatosP
 import CustomButton from '../../components/CustomButton/CustomButton';
 import axios from '../../../axios-ayuntamiento';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
+import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
+import Incidencia from '../../components/Incidencias/Incidencia';
 
 export default class Incidencias extends Component {
     state = {
@@ -47,7 +50,7 @@ export default class Incidencias extends Component {
                 value: '',
                 holder: 'Nombre',
                 validation: {
-                    minLength: 3,
+                    minLength: 1,
                     maxLength: 50
                 },
                 valid: false
@@ -86,7 +89,7 @@ export default class Incidencias extends Component {
                 itemType: 'FloatingLabel',
                 value: '',
                 validation: {
-                    minLength: 5,
+                    minLength: 1,
                     maxLength: 50
                 },
                 valid: false
@@ -108,13 +111,19 @@ export default class Incidencias extends Component {
         options: {
             title: 'Elige una opción',
             takePhotoButtonTitle: 'Abrir camara.',
-            chooseFromLibraryButtonTitle: 'Abrir galeria.'
+            chooseFromLibraryButtonTitle: 'Abrir galeria.',
+            maxWidth: 800, 
+			maxHeight: 800
         },
         incidentImage: null,
         fileNameImage: null,
-        imageData: null,
+        imageFormData: null,
         date: null,
         token: null,
+        addIncident: null,
+        incidents: [],
+        isAdmin: null,
+        urlUploadedImage: null,
     }
 
     getCurrentDate(){
@@ -132,24 +141,33 @@ export default class Incidencias extends Component {
         }
 
         today = mm + '/' + dd + '/' + yyyy;
-        this.setState({date: today});
+        this.setState({ date: today });
     }
 
     async componentDidMount() {
         //Get the token and time of expiration
-		let token = (expiresIn = null);
+		let token = email = (expiresIn = null);
 		try {
 			console.log('Entro al try');
 			token = await AsyncStorage.getItem('@storage_token');
-			expiresIn = await AsyncStorage.getItem('@storage_expiresIn');
+            expiresIn = await AsyncStorage.getItem('@storage_expiresIn');
+            email = await AsyncStorage.getItem('@storage_email');
 			//Use the expires in
 			const parseExpiresIn = new Date(parseInt(expiresIn));
 			const now = new Date();
 			console.log('Incidencias.js: ', token);
             console.log('Incidencias.js: ', parseExpiresIn, now);
             console.log('Incidencias.js: ', this.state.tokenIsValid);
+            console.log('Incidencias.js: ', email);
 			if (token && parseExpiresIn > now) {
-				this.setState({ token: token });
+                this.setState({ token: token });
+                
+                if (email !== 'false')
+					this.setState({ isAdmin: true });
+				else
+					this.setState({ isAdmin: false });
+
+				this.getIncidents();
 			} else {
 				//Restrict screens if there's no token
 				try {
@@ -172,9 +190,9 @@ export default class Incidencias extends Component {
 		}
     }
 
-    incidentsHandler = () => {
+    sendIncidentHandler = () => {
         this.setState({ loading: true })
-        if (this.state.formDescripcionIsValid && this.state.formDatosPersonalesIsValid && this.state.formUbicacionIsValid) {
+        if (this.state.imageFormData && this.state.formDescripcionIsValid && this.state.formDatosPersonalesIsValid && this.state.formUbicacionIsValid) {
             const ubicacionFormData = {};
             const descripcionFormData = {};
             const datosPersonalesFormData = {};
@@ -192,32 +210,25 @@ export default class Incidencias extends Component {
             const incident = {
                 ubicacionData: ubicacionFormData,
                 descripcionData: descripcionFormData,
-                datosPersonalesData: datosPersonalesFormData,
+                personalData: datosPersonalesFormData,
                 multimediaData: {
-                    nombreImagen: this.state.fileNameImage
+                    imagen: this.state.urlUploadedImage
                 }
             }
 
             const { token } = this.state;
             axios.post('/incidents.json?auth=' + token, incident)
                 .then(response => {
-                    Alert.alert('Incidencias', '¡Incidencia enviada con exito!', [{ text: 'Ok' }], { cancelable: false });
+                    this.setState({ loading: false });
+                    Alert.alert('Incidencias', '¡Incidencia enviada con exito!', [{ text: 'Ok', onPress:  () => this.getIncidents() }], { cancelable: false });
                 })
                 .catch(error => {
+                    this.setState({ loading: false });
                     Alert.alert('Incidencias', '¡Error al enviar incidencia!', [{ text: 'Ok' }], { cancelable: false });
                 });
 
-            // Check if token exist
-            if(token) {
-                axiosImage.post('https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/uploadFile', this.state.imageData)
-                .then(res => {
-                    console.log('Incidencias.js:UploadedImageResponse', res);
-                })
-                .catch(err => {
-                    Alert.alert('Incidencias', '¡Error al subir imagen!', [{ text: 'Ok' }], { cancelable: false });
-                });
-            }
         } else {
+            this.setState({ loading: false });
             Alert.alert('Incidencias', '¡Comlete el formulario correctamente!', [{ text: 'Ok' }], { cancelable: false });
         }
     }
@@ -272,7 +283,7 @@ export default class Incidencias extends Component {
             formIsValid = updatedLocationForm[inputIdentifier].valid && formIsValid;
         }
         this.setState({ formUbicacion: updatedLocationForm, formUbicacionIsValid: formIsValid });
-    }
+    };
     inputChangeDescriptionHandler = (text, inputIdentifier) => {
         const updatedDescriptionForm = {
             ...this.state.formDescripcion
@@ -324,26 +335,89 @@ export default class Incidencias extends Component {
             }
 
             else {
-                const source = { uri: response.uri };
-                // You can also display the image using data:
-                // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-                const imageData = new FormData();
-                imageData.append('name', 'image');
-                imageData.append('image', {
-                    uri: response.uri,
-                    type: response.type,
-                    name: response.fileName,
-                    data: response.data
+                //Preset
+                const UPLOAD_PRESET_NAME = 'ayuntamiento';
+                const { fileName, fileSize, type, data, uri } = response;
+                //Image form data
+                const imageFormData = new FormData();
+				imageFormData.append('file', {
+					name: fileName,
+					size: fileSize,
+					type: type,
+					data: data,
+					uri: uri
                 });
+                imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
                 this.setState({
-                    incidentImage: source,
+                    incidentImage: { uri: uri },
                     fileNameImage: response.fileName,
-                    imageData: imageData
+                    imageFormData: imageFormData
                 });
             }
         });
     }
+    //Get incidents
+    getIncidents = () => {
+		this.setState({ loading: true, addIncident: false });
+		axios
+			.get('/incidents.json?auth=' + this.state.token)
+			.then((res) => {
+				const fetchedIncidents = [];
+				for (let key in res.data) {
+					fetchedIncidents.push({
+						...res.data[key],
+						id: key
+					});
+				}
+                this.setState({ loading: false, incidents: fetchedIncidents });
+                console.log('Incidents: ', this.state.incidents);
+			})
+			.catch((err) => {
+				this.setState({ loading: false });
+			});
+    }
+    
+    uploadPhotoHandler = () => {
+		//URL cloudinary
+		const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
+		this.setState({ loading: true });
+		console.log('Form: ', this.state.imageFormData, this.state.formDatosPersonales, this.state.formDatosPersonalesIsValid, this.state.formDescripcion, this.state.formDescripcionIsValid, this.state.formUbicacion, this.state.formUbicacionIsValid);
+		if (this.state.imageFormData && this.state.formDatosPersonalesIsValid && this.state.formDescripcionIsValid && this.state.formUbicacionIsValid) {
+			axiosCloudinary({
+				url: URL_CLOUDINARY,
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				data: this.state.imageFormData
+			})
+				.then((response) => {
+					console.log('ResponseCloudinary: ', response);
+					//Destructurin response
+					const { data } = response;
+					console.log('ResponseDataCloudinary: ', data);
+					//Destructuring data
+					const { url, eager, } = data;
+					//Send to state url response
+					this.setState({ urlUploadedImage: url })
+					console.log('stateofForm: ', this.state.form);
+					//Call the method to upload new
+					this.sendIncidentHandler();
+				})
+				.catch((err) => {
+                    this.setState({ loading: false });
+					Alert.alert('Actividades', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+					console.log('ErrorCloudinary: ', err);
+				});
+		} else {
+			this.setState({ loading: false });
+			Alert.alert('Actividades', '¡Complete el formulario correctamente!', [ { text: 'Ok' } ], {
+				cancelable: false
+			});
+		}
+	};
 
     render() {
         const formElementsUbicacion = [];
@@ -472,24 +546,76 @@ export default class Incidencias extends Component {
                 </Card>
             </View>
         );
-        const button = (
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginBottom: 5 }}>
-                <CustomButton
-                    style="Success"
-                    name="Enviar"
-                    clicked={() => this.incidentsHandler()} />
-            </View>
+        const spinner = <CustomSpinner color="blue" />;
+        const buttons =  (
+            !this.state.loading ? (
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+				<CustomButton 
+					style="Success" 
+					name="Agregar" 
+					clicked={() => this.uploadPhotoHandler()} />
+				<CustomButton
+					style="Danger"
+					name="Regresar"
+					clicked={() => this.getIncidents()} />
+            </View>) : spinner
         );
-        let form = (
-
+        const addIncident = (
             <Form>
                 {ubicacion}
                 {multimedia}
                 {description}
                 {datosPersonales}
-                {button}
+                {buttons}
             </Form>
         );
+        const list = this.state.incidents.map((inct) => <Incidencia 
+															key={inct.id} 
+															id={inct.id} 
+															token={this.state.token}
+															isAdmin={this.state.isAdmin} 
+															refresh={this.getIncidents} 
+                                                            personalData={inct.personalData}
+                                                            descripcionData={inct.descripcionData}
+                                                            multimediaData={inct.multimediaData}
+                                                            ubicacionData={inct.ubicacionData} />);
+        const body = (
+			<View style={styles.body}>
+				<Card>
+					<CustomCardItemTitle
+						title="Incidencias"
+						description="Visualice, agregue algún tipo de incidencia facilmente."
+						image={require('../../assets/images/Noticia/noticia.png')}
+					/>
+					<CardItem bordered>
+						<View style={styles.cardBody}>
+							<View style={styles.btns}>
+								<View style={styles.btn}>
+									<Text style={{ fontSize: 20 }}>Recargar</Text>
+									<TouchableOpacity onPress={() => this.getIncidents()}>
+										<Image
+											style={{ height: 30, width: 30, resizeMode: 'contain' }}
+											source={require('../../assets/images/Refresh/refresh.png')}
+										/>
+									</TouchableOpacity>
+								</View>
+								<View style={styles.btn}>
+									<Text style={{ fontSize: 20 }}>Agregar incidencia</Text>
+									<TouchableOpacity onPress={() => this.setState({ addIncident: true })}>
+										<Image
+											style={{ height: 30, width: 30, resizeMode: 'contain' }}
+											source={require('../../assets/images/Add/add.png')}
+										/>
+									</TouchableOpacity>
+								</View>
+							</View>
+                            {/* Add list component */}
+                            {this.state.loading ? spinner: list}
+						</View>
+					</CardItem>
+				</Card>
+			</View>
+		);
 
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -501,7 +627,7 @@ export default class Incidencias extends Component {
                     </View>
                     <StatusBar color="#FEA621" />
                     <ScrollView>
-                        {form}
+                        {!this.state.addIncident ? body : addIncident}
                     </ScrollView>
                 </View>
             </SafeAreaView>
@@ -522,5 +648,26 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20,
         fontWeight: 'bold',
-    }
+    },
+    body: {
+		flex: 1,
+		margin: 5
+	},
+	cardBody: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center'
+	},
+	btns: {
+		flex: 1,
+		flexDirection: 'column'
+	},
+	btn: {
+		flex: 1,
+		flexDirection: 'row',
+		backgroundColor: '#F3F2F1',
+		justifyContent: 'space-between',
+		margin: 5,
+		borderRadius: 5
+	}
 });

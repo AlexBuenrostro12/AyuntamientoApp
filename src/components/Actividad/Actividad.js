@@ -14,7 +14,6 @@ export default class Noticia extends Component {
         imagen: null,
         itemKey: null,
         showItemCard: false,
-        deleted: null
     }
 
     clickedListHandler = (identifier, key) => {
