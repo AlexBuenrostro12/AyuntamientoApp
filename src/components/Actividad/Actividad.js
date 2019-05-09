@@ -11,9 +11,9 @@ export default class Noticia extends Component {
         hora: null,
         descripcion: null,
         fecha: null,
+        imagen: null,
         itemKey: null,
         showItemCard: false,
-        deleted: null
     }
 
     clickedListHandler = (identifier, key) => {
@@ -25,6 +25,7 @@ export default class Noticia extends Component {
                 this.setState({ hora: this.props.data['hora'] });
                 this.setState({ descripcion: this.props.data['descripcion'] });
                 this.setState({ fecha: fecha });
+                this.setState({ imagen: this.props.data['imagen'] });
                 this.setState({ itemKey: key });
             }
         }
@@ -114,6 +115,7 @@ export default class Noticia extends Component {
                     </CardItem>
                     <CardItem>
                         <Body>
+                            <Image style={styles.image} source={{ uri: this.state.imagen }} />
                             <Text>{this.state.descripcion}</Text>
                         </Body>
                     </CardItem>
@@ -165,5 +167,11 @@ const styles = StyleSheet.create({
         width: 30,
         resizeMode: 'contain',
         marginLeft: 2,
-    }
+    },
+    image: {
+        resizeMode: 'contain',
+        height: 160,
+        width: 200,
+        alignSelf: 'center',
+    },
 });

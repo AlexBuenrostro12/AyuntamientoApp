@@ -1,47 +1,33 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, ScrollView, StyleSheet, View, Image, Alert } from 'react-native';
 import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
-import styled from 'styled-components';
 import IconRight from '../../UI/IconRight/IconRight';
 import CustomButton from '../CustomButton/CustomButton';
 import axios from '../../../axios-ayuntamiento';
 
-const StyledListNews = styled.View`
-    margin-left: 2px;
-    margin-right: 2px;
-    margin-top: ${props => props.theme.customMarginValue};
-    margin-bottom: ${props => props.theme.customMarginValue};
-`;
-
-const StyledCard = styled.View``;
-
-const StyledButton = styled.View`
-    flex: ${props => props.theme.commonFlex};
-    flex-grow: 1;
-    margin-top: ${props => props.theme.customMarginValue};
-    margin-bottom: ${props => props.theme.customMarginValue};
-`;
-
-export default class Noticia extends Component {
+export default class Buzon extends Component {
     state = {
-        noticia: null,
-        direccion: null,
-        descripcion: null,
+        actividad: null,
+        asunto: null,
+        comentario: null,
+        email: null,
         fecha: null,
-        imagen: null,
+        nombre: null,
         itemKey: null,
         showItemCard: false,
+        deleted: null
     }
 
     clickedListHandler = (identifier, key) => {
+        console.log('Actividad.js:clickList: ', identifier, key);
         for (let dataName in this.props.data) {
             const fecha = this.props.data['fecha'].split("T", 1);
             if (this.props.data[dataName] === identifier) {
-                this.setState({ noticia: this.props.data[dataName] });
-                this.setState({ direccion: this.props.data['direccion'] });
-                this.setState({ descripcion: this.props.data['descripcion'] });
-                this.setState({ imagen: this.props.data['imagen'] });
+                this.setState({ asunto: this.props.data[dataName] });
+                this.setState({ comentario: this.props.data['comentario'] });
+                this.setState({ email: this.props.data['email'] });
                 this.setState({ fecha: fecha });
+                this.setState({ nombre: this.props.data['nombre'] });
                 this.setState({ itemKey: key });
             }
         }
@@ -54,8 +40,8 @@ export default class Noticia extends Component {
 
     alertCheckDeleteItem = () => {
         Alert.alert(
-            'Actividad', 
-            '¿Desea eliminar esta noticia?', 
+            'Buzón ciudadano', 
+            '¿Desea eliminar esta sugerencia?', 
             [ 
                 { text: 'Si', onPress: () => this.deleteItemListHandler() }, 
                 { text: 'No', }, 
@@ -69,19 +55,19 @@ export default class Noticia extends Component {
     deleteItemListHandler = () => {
         console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
         axios
-			.delete('/news' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
-			.then((response) => {
-                console.log('deleteItemListHandler:res: ', response);
-				Alert.alert('Noticia', '¡Noticia eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
-					cancelable: false
-				});
-			})
-			.catch((error) => {
-                console.log('deleteItemListHandler:res: ', error)
-				Alert.alert('Noticia', '¡Noticia fallida al eliminar!', [ { text: 'Ok' } ], {
-					cancelable: false
-				});
+		.delete('/suggestions' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
+		.then((response) => {
+            console.log('deleteItemListHandler:res: ', response);
+			Alert.alert('Buzón ciudadano', 'Sugerencia eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+				cancelable: false
 			});
+		})
+		.catch((error) => {
+            console.log('deleteItemListHandler:res: ', error)
+			Alert.alert('Buzón ciudadano', 'Sugerencia fallida al eliminar!', [ { text: 'Ok' } ], {
+				cancelable: false
+			});
+		});
     }
 
     refreshItemsHandler = () => {
@@ -90,82 +76,90 @@ export default class Noticia extends Component {
     }
 
     render() {
-
         const data = [];
         for (let dataName in this.props.data) {
-            if (dataName === 'noticia') {
+            if (dataName === 'asunto') {
                 data.push({
-                    noticia: this.props.data[dataName]
+                    asunto: this.props.data[dataName]
                 })
             }
         }
-        const listNews = (
-            <StyledListNews>
+        const listSuggestions = (
+            <View style={styles.listSuggestions}>
                 {data.map(dt => (
-                    <ListItem key={dt.noticia}>
+                    <ListItem key={dt.asunto}>
                         <Left>
-                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.noticia, this.props.id)}>
-                                <Text>{dt.noticia}</Text>
+                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.asunto, this.props.id)}>
+                                <Text>{dt.asunto}</Text>
                             </TouchableOpacity>
                         </Left>
                         <Right>
-                            <IconRight describe={() => this.clickedListHandler(dt.noticia, this.props.id)} />
+                            <IconRight describe={() => this.clickedListHandler(dt.asunto, this.props.id)} />
                         </Right>
                     </ListItem>
                 ))}
-            </StyledListNews>
+            </View>
         );
+        
         const card = (
-            <StyledCard>
+            <View>
                 <Card>
                     <CardItem header>
-                        <View style={styles.header}>
-                            <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{this.state.noticia}</Text>
-                                {this.props.isAdmin && <View style={styles.btnsAdm}>
+                        <View style={styles.btnsContainer}>
+                            <Text>{this.state.asunto}</Text>
+                            {this.props.isAdmin && <View style={styles.btnsAdm}>
                                 <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
                                     <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
                                 </TouchableOpacity>
-                                </View>}
-                            </View>
-                            <Text style={styles.direction}>{this.state.direccion}</Text>
+                            </View>}
                         </View>
                     </CardItem>
                     <CardItem>
                         <Body>
-                            <Image 
-                                style={styles.image}
-                                source={{ uri: this.state.imagen }} />
-                            <Text>{this.state.descripcion}</Text>
+                            <Text>Sugerencia por: {this.state.nombre}</Text>
+                            <Text>Correo: {this.state.email}</Text>
+                            <Text>{this.state.comentario}</Text>
                         </Body>
                     </CardItem>
                     <CardItem footer>
                         <Text>Fecha: {this.state.fecha}</Text>
                     </CardItem>
-                    <StyledButton>
+                    <View style={styles.button}>
                         <CustomButton
                             style="DangerBorder"
                             name="Cerrar"
                             clicked={() => this.showItemList()} />
-                    </StyledButton>
+                    </View>
                 </Card>
-            </StyledCard>
+            </View>
         );
         return (
             <ScrollView>
-                {!this.state.showItemCard ? listNews : card}
+                {!this.state.showItemCard ? listSuggestions : card}
             </ScrollView>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    listSuggestions: {
+        marginLeft: 2,
+        marginRight: 2,
+        marginTop: 5,
+        marginBottom: 5,
+    },
+    button: {
+        flex: 1,
+        flexGrow: 1,
+        marginTop: 5,
+        marginBottom: 5,
+    },
     btnsAdm: { 
         flex: 1, 
         flexDirection: 'row', 
         justifyContent: 'flex-end' ,
     },
-    titleContainer: {
+    btnsContainer: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -182,19 +176,4 @@ const styles = StyleSheet.create({
         width: 200,
         alignSelf: 'center',
     },
-    title: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: 'black'
-    },
-    direction: {
-        fontSize: 14,
-        fontWeight: 'normal',
-        color: 'black'
-    },
-    header: {
-        flex: 1, 
-        flexDirection: 'column', 
-        justifyContent: 'space-between'
-    }
-})
+});
