@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert } from 'react-native';
+import { Alert, View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -9,6 +9,8 @@ import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
+import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
+import Buzon from '../../components/Buzon/Buzon';
 
 const StyledSafeArea = styled.SafeAreaView`flex: 1;`;
 
@@ -87,7 +89,11 @@ export default class BuzonCiudadano extends Component {
 		loading: false,
 		formIsValid: false,
 		date: 'null',
+		suggestions: [],
 		token: null,
+		isAdmin: null,
+		addSuggestion: false,
+		loading: false
 	};
 
 	async componentDidMount() {
@@ -97,14 +103,19 @@ export default class BuzonCiudadano extends Component {
 			console.log('Entro al try');
 			token = await AsyncStorage.getItem('@storage_token');
 			expiresIn = await AsyncStorage.getItem('@storage_expiresIn');
+			email = await AsyncStorage.getItem('@storage_email');
 			//Use the expires in
 			const parseExpiresIn = new Date(parseInt(expiresIn));
 			const now = new Date();
 			console.log('BuzonCiudadano.js: ', token);
-            console.log('BuzonCiudadano.js: ', parseExpiresIn, now);
-            console.log('BuzonCiudadano.js: ', this.state.tokenIsValid);
+			console.log('BuzonCiudadano.js: ', parseExpiresIn, now);
+			console.log('BuzonCiudadano.js: ', this.state.tokenIsValid);
+			console.log('BuzonCiudadano.js: ', email);
 			if (token && parseExpiresIn > now) {
 				this.setState({ token: token });
+				if (email !== 'false') this.setState({ isAdmin: true });
+				else this.setState({ isAdmin: false });
+				this.getSuggestions();
 			} else {
 				//Restrict screens if there's no token
 				try {
@@ -126,6 +137,39 @@ export default class BuzonCiudadano extends Component {
 			//Catch posible errors
 		}
 	}
+
+	cleanForm = () => {
+		const updatedSuggestionForm = {
+			...this.state.form
+		};
+
+		for(let key in updatedSuggestionForm) {
+			updatedSuggestionForm[key].value = ''
+		}
+
+		this.setState({ form: updatedSuggestionForm, formIsValid: false });
+	};
+
+	getSuggestions = () => {
+		this.setState({ loading: true, addSuggestion: false });
+		this.cleanForm();
+		console.log('StateForm:getSuggestions: ', this.state.form, this.state.formIsValid);
+		axios
+			.get('/suggestions.json?auth=' + this.state.token)
+			.then((res) => {
+				const fetchedSuggestions = [];
+				for (let key in res.data) {
+					fetchedSuggestions.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				this.setState({ loading: false, suggestions: fetchedSuggestions });
+			})
+			.catch((err) => {
+				this.setState({ loading: false });
+			});
+	};
 
 	getCurrentDate() {
 		var today = new Date();
@@ -159,16 +203,24 @@ export default class BuzonCiudadano extends Component {
 			axios
 				.post('/suggestions.json?auth=' + this.state.token, suggetion)
 				.then((response) => {
-					Alert.alert('Buzón ciudadano', '¡Sugerencia enviada con exito!', [ { text: 'Ok' } ], {
-						cancelable: false
-					});
+					this.setState({ loading: false });
+					Alert.alert(
+						'Buzón ciudadano',
+						'¡Sugerencia enviada con exito!',
+						[ { text: 'Ok', onPress: () => this.getSuggestions() } ],
+						{
+							cancelable: false
+						}
+					);
 				})
 				.catch((error) => {
+					this.setState({ loading: false });
 					Alert.alert('Buzón ciudadano', '¡Sugerencia fallida al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});
 				});
 		} else {
+			this.setState({ loading: false });
 			Alert.alert('Buzón ciudadano', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});
@@ -238,7 +290,57 @@ export default class BuzonCiudadano extends Component {
 				config: this.state.form[key]
 			});
 		}
-		const buzonCiudadano = (
+		const spinner = <CustomSpinner color="blue" />;
+
+		const list = this.state.suggestions.map((sgt) => (
+			<Buzon
+				key={sgt.id}
+				id={sgt.id}
+				token={this.state.token}
+				isAdmin={this.state.isAdmin}
+				refresh={this.getSuggestions}
+				data={sgt.suggestionData}
+			/>
+		));
+
+		const body = (
+			<View style={styles.body}>
+				<Card>
+					<CustomCardItemTitle
+						title="Buzón ciudadano"
+						description="Visualice y realice sugerencias de una manera sencilla."
+						image={require('../../assets/images/Buzon/buzon.png')}
+					/>
+					<CardItem bordered>
+						<View style={styles.cardBody}>
+							<View style={styles.btns}>
+								<View style={styles.btn}>
+									<Text style={{ fontSize: 20 }}>Recargar</Text>
+									<TouchableOpacity onPress={() => this.getSuggestions()}>
+										<Image
+											style={{ height: 30, width: 30, resizeMode: 'contain' }}
+											source={require('../../assets/images/Refresh/refresh.png')}
+										/>
+									</TouchableOpacity>
+								</View>
+								<View style={styles.btn}>
+									<Text style={{ fontSize: 20 }}>Agregar sugerencia</Text>
+									<TouchableOpacity onPress={() => this.setState({ addSuggestion: true })}>
+										<Image
+											style={{ height: 30, width: 30, resizeMode: 'contain' }}
+											source={require('../../assets/images/Add/add.png')}
+										/>
+									</TouchableOpacity>
+								</View>
+							</View>
+							{this.state.loading ? spinner : list}
+						</View>
+					</CardItem>
+				</Card>
+			</View>
+		);
+
+		const addSugerencia = (
 			<StyledBuzon>
 				<Card>
 					<CustomCardItemTitle
@@ -257,12 +359,22 @@ export default class BuzonCiudadano extends Component {
 									changed={(text) => this.inputChangedHandler(text, formElement.id)}
 								/>
 							))}
-
-							<CustomButton
-								style={this.state.btnStyle}
-								name={this.state.btnName}
-								clicked={() => this.orderHandler()}
-							/>
+							{!this.state.loading ? (
+								<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+									<CustomButton
+										style={this.state.btnStyle}
+										name={this.state.btnName}
+										clicked={() => this.orderHandler()}
+									/>
+									<CustomButton
+										style="Danger"
+										name="Regresar"
+										clicked={() => this.getSuggestions()}
+									/>
+								</View>
+							) : (
+								spinner
+							)}
 						</StyledForm>
 					</CardItem>
 				</Card>
@@ -275,9 +387,33 @@ export default class BuzonCiudadano extends Component {
 						<HeaderToolbar open={this.props} title="Sugerencias" />
 					</StyledHeader>
 					<StatusBar color="#FEA621" />
-					<StyledMainScroll>{buzonCiudadano}</StyledMainScroll>
+					<StyledMainScroll>{this.state.addSuggestion ? addSugerencia : body}</StyledMainScroll>
 				</StyledContainer>
 			</StyledSafeArea>
 		);
 	}
 }
+
+const styles = StyleSheet.create({
+	body: {
+		flex: 1,
+		margin: 5
+	},
+	cardBody: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center'
+	},
+	btns: {
+		flex: 1,
+		flexDirection: 'column'
+	},
+	btn: {
+		flex: 1,
+		flexDirection: 'row',
+		backgroundColor: '#F3F2F1',
+		justifyContent: 'space-between',
+		margin: 5,
+		borderRadius: 5
+	}
+});

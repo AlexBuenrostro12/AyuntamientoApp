@@ -12,8 +12,6 @@ export default class Multimedia extends Component {
                     source={this.props.image}
                     style={{ height: 160, width: 200 }} />
                 <Text style={{ fontSize: 16, color: 'grey' }}>{this.props.name}</Text>
-                {/* <Text style={{ fontSize: 16, color: 'grey' }}>{this.props.response}</Text>
-                <Text style={{ fontSize: 16, color: 'grey' }}>{this.props.uri}</Text> */}
             </View>
         );
         switch (this.props.itemType) {

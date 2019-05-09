@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Alert, Image, TouchableOpacity, TimePickerAndroid } from 'react-native';
+import {
+	View,
+	Text,
+	StyleSheet,
+	SafeAreaView,
+	ScrollView,
+	Alert,
+	Image,
+	TouchableOpacity,
+	TimePickerAndroid
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import { Card, CardItem } from 'native-base';
@@ -17,11 +27,11 @@ export default class BusEscolar extends Component {
 		loading: true,
 		addBus: false,
 		token: null,
-        isAdmin: null,
-        form: {
-			camion: {
+		isAdmin: null,
+		form: {
+			placa: {
 				itemType: 'FloatingLabel',
-				holder: 'Camión',
+				holder: 'Placa',
 				value: '',
 				validation: {
 					minLength: 1,
@@ -47,8 +57,8 @@ export default class BusEscolar extends Component {
 					haveValue: true
 				},
 				valid: false
-            },
-            horaRegreso: {
+			},
+			horaRegreso: {
 				itemType: 'Hour',
 				holder: 'Regreso',
 				value: '',
@@ -56,8 +66,8 @@ export default class BusEscolar extends Component {
 					haveValue: true
 				},
 				valid: false
-            },
-            destino: {
+			},
+			destino: {
 				itemType: 'FloatingLabel',
 				holder: 'Destino',
 				value: '',
@@ -66,18 +76,9 @@ export default class BusEscolar extends Component {
 					maxLength: 30
 				},
 				valid: false
-			},
-			horario: {
-				itemType: 'PickerSchedule',
-				holder: 'Horario',
-				value: '',
-				validation: {
-					haveValue: true
-				},
-				valid: false
-			},
-        },
-        formIsValid: false,
+			}
+		},
+		formIsValid: false
 	};
 
 	async componentDidMount() {
@@ -93,11 +94,9 @@ export default class BusEscolar extends Component {
 			console.log('BusEscolar.js: ', parseExpiresIn, now);
 			console.log('BusEscolar.js: ', email);
 			if (token && parseExpiresIn > now) {
-                this.setState({ token: token });
-                if (email !== 'false')
-					this.setState({ isAdmin: true });
-				else
-					this.setState({ isAdmin: false });
+				this.setState({ token: token });
+				if (email !== 'false') this.setState({ isAdmin: true });
+				else this.setState({ isAdmin: false });
 				//chek email to see if the user is admin
 				this.getBuses();
 			} else {
@@ -120,9 +119,9 @@ export default class BusEscolar extends Component {
 		} catch (e) {
 			//Catch posible errores
 		}
-    }
-    
-    inputChangeHandler = (text, inputIdentifier) => {
+	}
+
+	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
 			...this.state.form
 		};
@@ -172,7 +171,7 @@ export default class BusEscolar extends Component {
 	}
 
 	getBuses = () => {
-        this.setState({ loading: true, addBus: false });
+		this.setState({ loading: true, addBus: false });
 		axios
 			.get('/buses.json?auth=' + token)
 			.then((res) => {
@@ -188,9 +187,9 @@ export default class BusEscolar extends Component {
 			.catch((err) => {
 				this.setState({ loading: false });
 			});
-    };
-    
-    getTime = async (inputIdentifier) => {
+	};
+
+	getTime = async (inputIdentifier) => {
 		try {
 			const { action, hour, minute } = await TimePickerAndroid.open({
 				hour: 14,
@@ -223,9 +222,9 @@ export default class BusEscolar extends Component {
 		} catch ({ code, message }) {
 			console.warn('Cannot open time picker', message);
 		}
-    };
-    
-    sendNewBusHandler = () => {
+	};
+
+	sendNewBusHandler = () => {
 		//check if the form is valid
 		this.setState({ loading: true });
 		if (this.state.formIsValid) {
@@ -240,11 +239,18 @@ export default class BusEscolar extends Component {
 			axios
 				.post('/buses.json?auth=' + this.state.token, buses)
 				.then((response) => {
-					Alert.alert('Bus escolar', 'Nuevo bus enviado con exito!', [ { text: 'Ok', onPress: () => this.getBuses() } ], {
-						cancelable: false
-					});
+					this.setState({ loading: false });
+					Alert.alert(
+						'Bus escolar',
+						'Nuevo bus enviado con exito!',
+						[ { text: 'Ok', onPress: () => this.getBuses() } ],
+						{
+							cancelable: false
+						}
+					);
 				})
 				.catch((error) => {
+					this.setState({ loading: false });
 					Alert.alert('Bus escolar', 'Nuevo bus fallido al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});
@@ -257,21 +263,24 @@ export default class BusEscolar extends Component {
 	};
 
 	render() {
-        console.log(this.state);
-        const formElements = [];
+		console.log(this.state);
+		const formElements = [];
 		for (let key in this.state.form) {
 			formElements.push({
 				id: key,
 				config: this.state.form[key]
 			});
 		}
-        const busesList = this.state.buses.map((bss) => <Buses 
-                                                            key={bss.id} 
-                                                            id={bss.id}
-                                                            token={this.state.token}
-                                                            isAdmin={this.state.isAdmin}
-                                                            refresh={this.getBuses}
-                                                            data={bss.busData} />);
+		const busesList = this.state.buses.map((bss) => (
+			<Buses
+				key={bss.id}
+				id={bss.id}
+				token={this.state.token}
+				isAdmin={this.state.isAdmin}
+				refresh={this.getBuses}
+				data={bss.busData}
+			/>
+		));
 
 		const spinner = <CustommSpinner color="blue" />;
 
@@ -312,9 +321,9 @@ export default class BusEscolar extends Component {
 					</CardItem>
 				</Card>
 			</View>
-        );
-        
-        const addBus = (
+		);
+
+		const addBus = (
 			<View style={styles.body}>
 				<Card>
 					<CustomCardItemTitle
@@ -334,17 +343,10 @@ export default class BusEscolar extends Component {
 									changed1={() => this.getTime(e.id)}
 								/>
 							))}
-							<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-								<CustomButton 
-									style="Success" 
-									name="Agregar" 
-									clicked={() => this.sendNewBusHandler()} />
-								<CustomButton
-									style="Danger"
-									name="Regresar"
-									clicked={() => this.getBuses()}
-								/>
-							</View>
+						{!this.state.loading ?	<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+								<CustomButton style="Success" name="Agregar" clicked={() => this.sendNewBusHandler()} />
+								<CustomButton style="Danger" name="Regresar" clicked={() => this.getBuses()} />
+							</View> : spinner}
 						</View>
 					</CardItem>
 				</Card>
@@ -354,7 +356,7 @@ export default class BusEscolar extends Component {
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={styles.container}>
-					<HeaderToolbar open={this.props} title={!this.state.addBus ? "Bus escolar" : "Agregar Bus"} />
+					<HeaderToolbar open={this.props} title={!this.state.addBus ? 'Bus escolar' : 'Agregar Bus'} />
 
 					<StatusBar color="#FEA621" />
 					<ScrollView>{!this.state.addBus ? bus : addBus}</ScrollView>
@@ -379,8 +381,8 @@ const styles = StyleSheet.create({
 	text: {
 		fontSize: 20,
 		fontWeight: 'bold'
-    },
-    cardBody: {
+	},
+	cardBody: {
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center'
