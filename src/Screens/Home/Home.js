@@ -1,12 +1,45 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Alert, SafeAreaView, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, SafeAreaView, ScrollView, Platform } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import SwiperBanner from '../../components/SwiperBanner/SwiperBanner';
+import FCM, { NotificationActionType, RemoteNotificationResult, WillPresentNotificationResult, NotificationType, FCMEvent } from "react-native-fcm";
 
+// FCM.on(FCMEvent.Notification, async (notif) => {
+// 	if (notif.local_notification) {
+// 		//This is a local notification
+// 	}
+// 	if (notif.opened_from_tray) {
+// 		//IOS: app is open/resumed because user clicked banner
+// 		//Android: app is open/resumed because user clicked banner o tapped app icon
+// 		console.warn('Clicked in the notification!');
+// 	}
+// 	// await someAsyncCall();
+// 	if (Platform.OS === 'ios') {
+// 		//Optionial 
+// 		//IOS requires developers to call completionHandler to end notification process.
+// 		//This library handles it for you automatically with default behavior 
+// 		//notif._notificationType is acailable for iOS platfrom
+// 		switch (notif._notificationType) {
+// 			case NotificationType.Remote:
+// 				notif.finish(RemoteNotificationResult.NewData);
+// 				break;
+// 			case NotificationType.NotificationResponse:
+// 				notif.finish();
+// 				break;
+// 			case NotificationType.WillPresent:
+// 				notif.finish(WillPresentNotificationResult.All);
+// 				break;
+// 		}
+// 	}
+// });
+// FCM.on(FCMEvent.RefreshToken, (token) => {
+// 	console.log(token);
+// 	//fcm token may not available on first load, catch it here
+// });
 
 export default class Home extends Component {
 	state = {
@@ -69,6 +102,18 @@ export default class Home extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
+		//get the notification
+		// try {
+		// 	const requestPermissions = await FCM.requestPermissions();
+		// 	console.log('requestPermissions: ', requestPermissions);
+		// 	const getFCMToken = await FCM.getFCMToken();
+		// 	console.log('getFCMToken, ', getFCMToken);
+		// 	const getInitialNotification = await FCM.getInitialNotification();
+		// 	console.log('getInitialNotification, ', getInitialNotification);
+
+		// } catch (error) {
+			
+		// }
 	}
 
 	render() {

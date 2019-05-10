@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView, Text, Image, Alert, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Platform, Text, Image, Alert, TouchableOpacity, FlatList } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import axiosCloudinary from 'axios';
+import FCM, {
+	NotificationActionType,
+	RemoteNotificationResult,
+	WillPresentNotificationResult,
+	NotificationType,
+	FCMEvent
+} from 'react-native-fcm';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
@@ -13,6 +20,40 @@ import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomButton from '../../components/CustomButton/CustomButton';
+import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
+
+FCM.on(FCMEvent.Notification, async (notif) => {
+	if (notif.local_notification) {
+		//This is a local notification
+	}
+	if (notif.opened_from_tray) {
+		//IOS: app is open/resumed because user clicked banner
+		//Android: app is open/resumed because user clicked banner o tapped app icon
+		console.log('Clicked in the notification!');
+	}
+	// await someAsyncCall();
+	if (Platform.OS === 'ios') {
+		//Optionial
+		//IOS requires developers to call completionHandler to end notification process.
+		//This library handles it for you automatically with default behavior
+		//notif._notificationType is acailable for iOS platfrom
+		switch (notif._notificationType) {
+			case NotificationType.Remote:
+				notif.finish(RemoteNotificationResult.NewData);
+				break;
+			case NotificationType.NotificationResponse:
+				notif.finish();
+				break;
+			case NotificationType.WillPresent:
+				notif.finish(WillPresentNotificationResult.All);
+				break;
+		}
+	}
+});
+FCM.on(FCMEvent.RefreshToken, (token) => {
+	console.log(token);
+	//fcm token may not available on first load, catch it here
+});
 
 const theme = {
 	commonFlex: '1',
@@ -103,15 +144,23 @@ export default class Noticias extends Component {
 			title: 'Elige una opción',
 			takePhotoButtonTitle: 'Abrir camara.',
 			chooseFromLibraryButtonTitle: 'Abrir galeria.',
-			maxWidth: 800, 
+			maxWidth: 800,
 			maxHeight: 800
 		},
 		image: null,
 		fileNameImage: null,
 		imageFormData: null,
+		notificationToken: null
 	};
 
 	async componentDidMount() {
+		//FCM.createNotificationChannel is mandatory for Android targeting >=8. Otherwise you won't see any notification
+		FCM.createNotificationChannel({
+			id: '87834081884',
+			name: 'Default',
+			description: 'used for example',
+			priority: 'high'
+		});
 		let token = (expiresIn = null);
 		try {
 			console.log('Entro al try');
@@ -148,8 +197,53 @@ export default class Noticias extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
+		//get the notification
+		try {
+			const requestPermissions = await FCM.requestPermissions();
+			console.log('requestPermissions: ', requestPermissions);
+			const FCMToken = await FCM.getFCMToken();
+			console.log('getFCMToken, ', FCMToken);
+			const getInitialNotification = await FCM.getInitialNotification();
+			console.log('getInitialNotification, ', getInitialNotification);
+			this.setState({ notificationToken: FCMToken });
+		} catch (error) {}
 	}
+	//SendRemoteNotification
+	sendRemoteNotification = () => {
+		let body;
 
+		if (Platform.OS === 'android') {
+			body = {
+				to: this.state.notificationToken,
+				data: {
+					custom_notification: {
+						title: 'Simple FCM Client',
+						body: 'Click me to go to detail',
+						sound: 'default',
+						priority: 'high',
+						show_in_foreground: true,
+					}
+				},
+				priority: 10
+			};
+		} else {
+			body = {
+				to: this.state.notificationToken,
+				notification: {
+					title: 'Simple FCM Client',
+					body: 'Click me to go to detail',
+					sound: 'default'
+				},
+				data: {
+					targetScreen: 'detail'
+				},
+				priority: 10
+			};
+		}
+
+		firebaseClient.send(JSON.stringify(body), 'notification');
+	};
+	//Get news
 	getNews = () => {
 		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null });
 		axios
@@ -268,7 +362,7 @@ export default class Noticias extends Component {
 					const { data } = response;
 					console.log('ResponseDataCloudinary: ', data);
 					//Destructuring data
-					const { url, eager, } = data;
+					const { url, eager } = data;
 					//Send to form image the value of url
 					this.inputChangeHandler(url, 'imagen');
 					console.log('stateofForm: ', this.state.form);
@@ -303,6 +397,7 @@ export default class Noticias extends Component {
 			axios
 				.post('/news.json?auth=' + this.state.token, news)
 				.then((response) => {
+					this.sendRemoteNotification();
 					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
 					Alert.alert(
 						'Noticias',
@@ -407,10 +502,18 @@ export default class Noticias extends Component {
 									name={this.state.fileNameImage}
 								/>
 							))}
-							{!this.state.loading ? <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-								<CustomButton style="Success" name="Agregar" clicked={() => this.uploadPhotoHandler()} />
-								<CustomButton style="Danger" name="Regresar" clicked={() => this.getNews()} />
-							</View> : spinner}
+							{!this.state.loading ? (
+								<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+									<CustomButton
+										style="Success"
+										name="Agregar"
+										clicked={() => this.uploadPhotoHandler()}
+									/>
+									<CustomButton style="Danger" name="Regresar" clicked={() => this.getNews()} />
+								</View>
+							) : (
+								spinner
+							)}
 						</View>
 					</CardItem>
 				</Card>
