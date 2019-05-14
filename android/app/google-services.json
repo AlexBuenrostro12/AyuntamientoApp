@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "87834081884",
+    "firebase_url": "https://ayuntamiento-77d3b.firebaseio.com",
+    "project_id": "ayuntamiento-77d3b",
+    "storage_bucket": "ayuntamiento-77d3b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87834081884:android:315e8640cf58e6ab",
+        "android_client_info": {
+          "package_name": "com.ayuntamientoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87834081884-eifo7jt670gf28inck7qu5edkq41uqq5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdY5ivrk_mldiM8OaSRS5tdVdiX73eVB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87834081884-eifo7jt670gf28inck7qu5edkq41uqq5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
