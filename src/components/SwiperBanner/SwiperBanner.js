@@ -20,7 +20,7 @@ export default class SwiperBanner extends Component {
     }
 
     componentDidMount() {
-        console.log('componentDidMount');
+        // console.log('componentDidMount');
         if (this.state.startAutoPlay) 
             this.startAutoPlayHandler();
         else
@@ -28,8 +28,8 @@ export default class SwiperBanner extends Component {
     }
 
     onScrollHandler = (e) => {
-        console.log('onScrollHandler');
-        console.log(this.state);
+        // console.log('onScrollHandler');
+        // console.log(this.state);
         
         let { x } = e.nativeEvent.contentOffset, offset, position = Math.floor(x / this.state.width);
         if (x === this.state.preScrollX) return;
@@ -42,23 +42,23 @@ export default class SwiperBanner extends Component {
         }
     }
     onScrollViewLayoutHandler = (e) => {
-        console.log('onScrollViewLAyoutHandler');
+        // console.log('onScrollViewLAyoutHandler');
         let { width } = e.nativeEvent.layout;             
         this.setState({ width: width });
     }
     goToNextPageHandler = () => {
-        console.log('goToNextPageHandler');
+        // console.log('goToNextPageHandler');
         this.stopAutoPlayHandler();
          let nextIndex = (this.state.currentIndex + 1) % this.state.childrenCount;
          this.refs[SCROLLVIEW_REF].scrollTo({ x: this.state.width * nextIndex })
     }
     startAutoPlayHandler = () => {
-        console.log('startAutoPlayHandler');
+        // console.log('startAutoPlayHandler');
         let timerid = setInterval(this.goToNextPageHandler, this.state.scrollInterval);
         this.setState({ timerID: timerid});
      }
     stopAutoPlayHandler = () => {
-        console.log('stopAutoPlayHandler');
+        // console.log('stopAutoPlayHandler');
          if (this.state.timerID) {
              clearInterval(this.state.timerID);
              this.setState({ timerID: null });
@@ -66,7 +66,7 @@ export default class SwiperBanner extends Component {
      }
 
     componentWillMount() {
-        console.log('componentWillMount');
+        // console.log('componentWillMount');
         this.getNewsHandler();
     }
     getNewsHandler = () => {
@@ -98,7 +98,7 @@ export default class SwiperBanner extends Component {
     }
 
     render() {
-        console.log('render');
+        // console.log('render');
 
         const titleBanner = (
             <View style={{ flex: 1, margin: 5 }}>

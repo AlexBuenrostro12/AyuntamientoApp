@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, ScrollView, StyleSheet, View, Image, Alert } from 'react-native';
+import { TouchableOpacity, ScrollView, StyleSheet, View, Image, Alert, Dimensions } from 'react-native';
 import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
 import styled from 'styled-components';
 import IconRight from '../../UI/IconRight/IconRight';

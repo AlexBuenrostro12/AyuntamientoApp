@@ -3,6 +3,7 @@ package com.ayuntamientoapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.evollu.react.fcm.FIRMessagingPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import org.wonday.pdf.RCTPdfView;
@@ -27,7 +28,8 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
+            new FIRMessagingPackage(),
+            new MainReactPackage(),
             new RNGestureHandlerPackage(),
             new AsyncStoragePackage(),
             new RCTPdfView(),
@@ -38,18 +40,19 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected String getJSMainModuleName() {
-      return "index";
+        return "index";
+      }
+    };
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+      return mReactNativeHost;
     }
-  };
 
-  @Override
-  public ReactNativeHost getReactNativeHost() {
-    return mReactNativeHost;
-  }
-
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
-  }
+    // react-native-fcm
+    @Override
+    public void onCreate() { // <-- Check this block exists
+      super.onCreate();
+      SoLoader.init(this, /* native exopackage */ false); // <-- Check this line exists within the block
+    }
 }
