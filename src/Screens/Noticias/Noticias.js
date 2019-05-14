@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Platform, Text, Image, Alert, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Platform, Text, Image, Alert, TouchableOpacity } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -23,6 +23,8 @@ import CustomButton from '../../components/CustomButton/CustomButton';
 import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 
 FCM.on(FCMEvent.Notification, async (notif) => {
+	console.log('FCMEvent: ', FCMEvent);
+	console.log('notif: ', notif);
 	if (notif.local_notification) {
 		//This is a local notification
 	}
@@ -150,17 +152,12 @@ export default class Noticias extends Component {
 		image: null,
 		fileNameImage: null,
 		imageFormData: null,
-		notificationToken: null
+		notificationToken: null,
+		initNotif: null,
+		fcmTokens: []
 	};
 
 	async componentDidMount() {
-		//FCM.createNotificationChannel is mandatory for Android targeting >=8. Otherwise you won't see any notification
-		FCM.createNotificationChannel({
-			id: '87834081884',
-			name: 'Default',
-			description: 'used for example',
-			priority: 'high'
-		});
 		let token = (expiresIn = null);
 		try {
 			console.log('Entro al try');
@@ -171,7 +168,6 @@ export default class Noticias extends Component {
 			const now = new Date();
 			console.log('Noticias.js: ', token);
 			console.log('Noticias.js: ', parseExpiresIn, now);
-			console.log('Noticias.js: ', this.state.tokenIsValid);
 			if (token && parseExpiresIn > now) {
 				this.setState({ token: token, tokenIsValid: true });
 				if (email !== 'false') this.setState({ isAdmin: true });
@@ -197,34 +193,42 @@ export default class Noticias extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
+		//Create notification channel
+		FCM.createNotificationChannel({
+			id: 'null',
+			name: 'Default',
+			description: 'used for example',
+			priority: 'high'
+		});
+
 		//get the notification
 		try {
-			const requestPermissions = await FCM.requestPermissions();
+			const requestPermissions = await FCM.requestPermissions({ badge: false, sound: true, alert: true });
 			console.log('requestPermissions: ', requestPermissions);
 			const FCMToken = await FCM.getFCMToken();
 			console.log('getFCMToken, ', FCMToken);
 			const getInitialNotification = await FCM.getInitialNotification();
 			console.log('getInitialNotification, ', getInitialNotification);
-			this.setState({ notificationToken: FCMToken });
+			this.setState({ notificationToken: FCMToken }, () => this.getFCMTokens());
 		} catch (error) {}
 	}
 	//SendRemoteNotification
 	sendRemoteNotification = () => {
+		this.getFCMTokens();
 		let body;
-
+		console.log('sendRemoteNotification:, ', this.state.notificationToken);
 		if (Platform.OS === 'android') {
 			body = {
-				to: this.state.notificationToken,
-				data: {
-					custom_notification: {
-						title: 'Simple FCM Client',
-						body: 'Click me to go to detail',
-						sound: 'default',
-						priority: 'high',
-						show_in_foreground: true,
-					}
+				registration_ids: this.state.fcmTokens,
+				notification: {
+					title: 'Nueva noticia',
+					body: '!' + this.state.form['noticia'].value + '¡',
+					// icon: require('../../assets/images/Ayuntamiento/logo-naranja.png'),
+					color: '#FEA621',
+					sound: null,
+					tag: this.state.form['noticia'].value,
+					priority: 'high'
 				},
-				priority: 10
 			};
 		} else {
 			body = {
@@ -234,9 +238,7 @@ export default class Noticias extends Component {
 					body: 'Click me to go to detail',
 					sound: 'default'
 				},
-				data: {
-					targetScreen: 'detail'
-				},
+				data: {},
 				priority: 10
 			};
 		}
@@ -263,7 +265,63 @@ export default class Noticias extends Component {
 				this.setState({ loading: false });
 			});
 	};
+	//Get fcmTokens
+	getFCMTokens = () => {
+		//Get fcm tokens
+		const fetchedfcmTokens = [];
+		axios
+			.get('/fcmtokens.json?auth=' + this.state.token)
+			.then((res) => {
+				console.log('Noticias, resfcmTokens: ', res);
+				for (let key in res.data) {
+					fetchedfcmTokens.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				const fcmtkns = [];
+				for (let i = 0; i < fetchedfcmTokens.length; i++) {
+					const element = fetchedfcmTokens[i];
+					let fcmToken = element.tokenData[Object.keys(element.tokenData)];
+					fcmtkns[i] = fcmToken;
+				}
+				console.log('fcmtkns: ', fcmtkns);
+				this.setState({ fcmTokens: fcmtkns }, () => this.verifyfcmTokens());
+			})
+			.catch((err) => {});
+	};
+	//Verify tokens
+	verifyfcmTokens = () => {
+		let exist = false;
+		console.log('fetchedfcmToken: ', this.state.fcmTokens);
+		//Check if this token already exist in db
+		for (let i = 0; i < this.state.fcmTokens.length; i++) {
+			const element = this.state.fcmTokens[i];
+			if (element === this.state.notificationToken) exist = true;
+		}
+		console.log('Element: ', exist);
 
+		if (!exist) {
+			const formData = {};
+			formData['token' + Math.floor(Math.random() * 1000 + 1) + 'fcm'] = this.state.notificationToken;
+			const fcmtoken = {
+				tokenData: formData
+			};
+			console.log('Noticias.js: formData, ', formData);
+			axios
+				.post('/fcmtokens.json?auth=' + this.state.token, fcmtoken)
+				.then((response) => {
+					console.log('Noticias.js: responsefcm, ', response);
+					this.getFCMTokens();
+				})
+				.catch((error) => {
+					this.setState({ loading: false });
+					Alert.alert('Noticias', 'Noticia fallida al enviar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+				});
+		}
+	}; //end
 	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
 			...this.state.form

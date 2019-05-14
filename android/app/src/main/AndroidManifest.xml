@@ -17,7 +17,7 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme">
       <!-- react-native-fcm -->
-      <!-- <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@mipmap-mpdi/ic_launcher.png"/> -->
+      <!-- <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:roundIcon="@drawable/ic_launcher_background"/> -->
       <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="my_default_channel"/>
       
       <service android:name="com.evollu.react.fcm.MessagingService" android:enabled="true" android:exported="true">

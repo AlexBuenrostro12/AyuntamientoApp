@@ -102,18 +102,6 @@ export default class Home extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-		//get the notification
-		// try {
-		// 	const requestPermissions = await FCM.requestPermissions();
-		// 	console.log('requestPermissions: ', requestPermissions);
-		// 	const getFCMToken = await FCM.getFCMToken();
-		// 	console.log('getFCMToken, ', getFCMToken);
-		// 	const getInitialNotification = await FCM.getInitialNotification();
-		// 	console.log('getInitialNotification, ', getInitialNotification);
-
-		// } catch (error) {
-			
-		// }
 	}
 
 	render() {
