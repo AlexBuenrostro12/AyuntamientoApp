@@ -11,6 +11,7 @@ import HomeScreen from '../../../Screens/Home/Home';
 import IncidenciasScreen from '../../../Screens/Incidencias/Incidencias';
 import ActividadesScreen from '../../../Screens/Actividades/Actividades';
 import LogoutScreen from '../../../Screens/Logout/Logout';
+import DescribeDataScreen from '../../DescribeData/DescribeData';
 
 const CustomDrawerComponent = (props) => (
 	<SafeAreaView style={styles.sAV}>
@@ -31,13 +32,13 @@ const AppDrawer = createDrawerNavigator({
   'Bus Escolar': BusEscolarScreen,
   'Incidencias': IncidenciasScreen,
   'Actividades': ActividadesScreen,
+  'Describe' : DescribeDataScreen,
   'Salir': LogoutScreen,
 },{
   contentComponent: CustomDrawerComponent
 });
 
 const AuthStack = createStackNavigator({ Auth: LoginScreen });
-
 
 export default createAppContainer(
 	createSwitchNavigator(

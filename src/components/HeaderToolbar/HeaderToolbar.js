@@ -13,7 +13,7 @@ const headerToolbar = (props) => {
             <View style={styles.view}>
                 <Text style={styles.text}>{props.title}</Text>
             </View>
-            <Image style={styles.image} source={require('../../assets/images/Ayuntamiento/escudo-blanco.png')}/>   
+            <Image style={styles.image} source={require('../../assets/images/Ayuntamiento/logo.png')}/>   
         </View>
     );
 
@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     image: {
-        height: height / 10,
-        width: width / 4,
+        height: height / 11,
+        width: width / 3,
         resizeMode: 'contain',
         paddingRight: 1,
     }

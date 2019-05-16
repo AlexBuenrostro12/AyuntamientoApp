@@ -109,12 +109,8 @@ export default class Noticias extends Component {
 			direccion: {
 				itemType: 'PickerDirection',
 				holder: 'Dirección',
-				value: '',
-				validation: {
-					minLength: 1,
-					maxLength: 55
-				},
-				valid: false
+				value: 'Direccion 1',
+				valid: true
 			},
 			fecha: {
 				itemType: 'Date',
@@ -154,7 +150,7 @@ export default class Noticias extends Component {
 		imageFormData: null,
 		notificationToken: null,
 		initNotif: null,
-		fcmTokens: []
+		fcmTokens: [],
 	};
 
 	async componentDidMount() {
@@ -479,8 +475,8 @@ export default class Noticias extends Component {
 			});
 		}
 	};
-
 	render() {
+		console.log('Noticias.js:props: ', this.props)
 		const list = this.state.news.map((nw) => (
 			<Noticia
 				key={nw.id}
@@ -489,6 +485,7 @@ export default class Noticias extends Component {
 				isAdmin={this.state.isAdmin}
 				refresh={this.getNews}
 				data={nw.newData}
+				describe={this.props}
 			/>
 		));
 		const spinner = <CustomSpinner color="blue" />;
