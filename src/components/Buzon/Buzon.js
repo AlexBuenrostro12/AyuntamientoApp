@@ -31,8 +31,26 @@ export default class Buzon extends Component {
                 this.setState({ itemKey: key });
             }
         }
-        this.setState({ showItemCard: true });
+        this.setState({ showItemCard: true }, () => this.goToDescribeData());
     }
+
+    goToDescribeData = () => {
+		if (this.state.showItemCard) {
+			const obj = {
+				asunto: this.state.asunto,
+				comentario: this.state.comentario,
+				email: this.state.email,
+				fecha: this.state.fecha,
+				nombre: this.state.nombre,
+				isAdmin: this.props.isAdmin,
+				deleteItem: this.alertCheckDeleteItem,
+				type: 'buzon',
+				deleted: this.state.deleted,
+			};
+			const { navigate } = this.props.describe.navigation;
+			navigate('Describe', { data: obj });
+		}
+	};
 
     showItemList = () => {
         this.setState({ showItemCard: false })
@@ -54,11 +72,12 @@ export default class Buzon extends Component {
 
     deleteItemListHandler = () => {
         console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
+        const { navigate } = this.props.describe.navigation;
         axios
 		.delete('/suggestions' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
 		.then((response) => {
             console.log('deleteItemListHandler:res: ', response);
-			Alert.alert('Buzón ciudadano', 'Sugerencia eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+			Alert.alert('Buzón ciudadano', 'Sugerencia eliminada con exito!', [ { text: 'Ok', onPress: () => { navigate('Buzón Ciudadano'); this.refreshItemsHandler() } } ], {
 				cancelable: false
 			});
 		})
@@ -135,7 +154,7 @@ export default class Buzon extends Component {
         );
         return (
             <ScrollView>
-                {!this.state.showItemCard ? listSuggestions : card}
+                {listSuggestions}
             </ScrollView>
         );
     }

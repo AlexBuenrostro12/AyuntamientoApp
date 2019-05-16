@@ -50,7 +50,6 @@ export default class Noticia extends Component {
 				fecha: this.state.fecha,
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
-				refresh: this.refreshItemsHandler,
 				type: 'noticia',
 				deleted: this.state.deleted,
 			};

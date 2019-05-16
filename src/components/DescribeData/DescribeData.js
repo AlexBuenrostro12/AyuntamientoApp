@@ -44,9 +44,7 @@ export default class DescribreData extends Component {
 										{data.isAdmin && (
 											<View style={styles.btnsAdm}>
 												<TouchableOpacity
-													onPress={() => {
-														data.deleteItem();
-													}}
+													onPress={() => data.deleteItem()}
 												>
 													<Image
 														style={styles.btnsAdmImg}
@@ -62,7 +60,7 @@ export default class DescribreData extends Component {
 							<CardItem>
 								<Body>
 									<TouchableOpacity
-										style={{ alignSelf: 'center', }}
+										style={{ alignSelf: 'center' }}
 										onPress={() => this.setState({ zoomImage: true })}
 									>
 										<Image style={styles.image} source={{ uri: data.imagen }} />
@@ -73,18 +71,49 @@ export default class DescribreData extends Component {
 							<CardItem footer>
 								<Text style={styles.fecha}>Fecha: {data.fecha}</Text>
 							</CardItem>
-							<View style={{ flex: 1, flexGrow: 1, marginTop: 5, marginBottom: 5 }}>
-								<CustomButton
-									style="DangerBorder"
-									name="Cerrar"
-									clicked={() => navigate('Noticias')}
-								/>
+							<View style={styles.button}>
+								<CustomButton style="DangerBorder" name="Cerrar" clicked={() => navigate('Noticias')} />
 							</View>
 						</Card>
 					</View>
 				);
 				break;
-
+			case 'buzon':
+				card = (
+					<View>
+						<Card>
+							<CardItem header>
+								<View style={styles.titleContainer}>
+									<Text style={styles.title}>{data.asunto}</Text>
+									{data.isAdmin && (
+										<View style={styles.btnsAdm}>
+											<TouchableOpacity onPress={() => data.deleteItem()}>
+												<Image
+													style={styles.btnsAdmImg}
+													source={require('../../assets/images/Delete/delete.png')}
+												/>
+											</TouchableOpacity>
+										</View>
+									)}
+								</View>
+							</CardItem>
+							<CardItem>
+								<Body>
+									<Text style={styles.descripcion}>Sugerencia por: {data.nombre}</Text>
+									<Text style={styles.descripcion}>Correo: {data.email}</Text>
+									<Text style={styles.descripcion}>{data.comentario}</Text>
+								</Body>
+							</CardItem>
+							<CardItem footer>
+								<Text style={styles.fecha}>Fecha: {data.fecha}</Text>
+							</CardItem>
+							<View style={styles.button}>
+								<CustomButton style="DangerBorder" name="Cerrar" clicked={() => navigate('Buzón Ciudadano')} />
+							</View>
+						</Card>
+					</View>
+				);
+				break;
 			default:
 				card = null;
 				break;
@@ -154,7 +183,7 @@ const styles = StyleSheet.create({
 		height: height / 1.5,
 		width: width / 0.95,
 		alignSelf: 'center',
-		margin: 2,
+		margin: 2
 	},
 	title: {
 		fontSize: 22,
@@ -180,5 +209,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'space-between'
+	},
+	button: {
+		flex: 1,
+		flexGrow: 1,
+		marginTop: 5,
+		marginBottom: 5
 	}
 });
