@@ -279,6 +279,7 @@ export default class BusEscolar extends Component {
 				isAdmin={this.state.isAdmin}
 				refresh={this.getBuses}
 				data={bss.busData}
+				describe={this.props}
 			/>
 		));
 

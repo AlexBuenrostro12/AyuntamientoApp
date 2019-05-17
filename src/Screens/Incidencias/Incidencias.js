@@ -578,7 +578,8 @@ export default class Incidencias extends Component {
                                                             personalData={inct.personalData}
                                                             descripcionData={inct.descripcionData}
                                                             multimediaData={inct.multimediaData}
-                                                            ubicacionData={inct.ubicacionData} />);
+                                                            ubicacionData={inct.ubicacionData}
+                                                            describe={this.props} />);
         const body = (
 			<View style={styles.body}>
 				<Card>
@@ -599,7 +600,7 @@ export default class Incidencias extends Component {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View style={styles.btn}>
+								{this.state.isAdmin && <View style={styles.btn}>
 									<Text style={{ fontSize: 20 }}>Agregar incidencia</Text>
 									<TouchableOpacity onPress={() => this.setState({ addIncident: true })}>
 										<Image
@@ -607,7 +608,7 @@ export default class Incidencias extends Component {
 											source={require('../../assets/images/Add/add.png')}
 										/>
 									</TouchableOpacity>
-								</View>
+								</View>}
 							</View>
                             {/* Add list component */}
                             {this.state.loading ? spinner: list}

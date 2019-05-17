@@ -15,8 +15,7 @@ export default class Buses extends Component {
     }
 
     clickedListHandler = (salida, destino, key) => {  
-        const bus = [];
-        let obj = {};
+        const obj = {};
         for (let dataName in this.props.data) {
             console.log(this.props.data[dataName], salida, destino);
             switch (dataName) {
@@ -40,19 +39,23 @@ export default class Buses extends Component {
                     break;
             }
         }
-        bus.push(obj);
-        console.log(bus);
-        this.setState({ bus: bus, showItemCard: true, itemKey: key });
-    }
+        obj.isAdmin = this.props.isAdmin;
+        obj.deleteItem =  this.alertCheckDeleteItem;
+        obj.type =  'bus';
+        this.setState({ showItemCard: true, itemKey: key }, () => this.goToDescribeData(obj));
+    };
 
-    showItemList = () => {
-        this.setState({ showItemCard: false });
-    }
-
+    goToDescribeData = (obj) => {
+		if (this.state.showItemCard) {
+			const { navigate } = this.props.describe.navigation;
+			navigate('Describe', { data: obj });
+		}
+    };
+    
     alertCheckDeleteItem = () => {
         Alert.alert(
-            'Actividad', 
-            '¿Desea eliminar esta horario del bus?', 
+            '¡Bus escolar!', 
+            '¿Desea eliminar esta horario de autobus?', 
             [ 
                 { text: 'Si', onPress: () => this.deleteItemListHandler() }, 
                 { text: 'No', }, 
@@ -65,17 +68,18 @@ export default class Buses extends Component {
 
     deleteItemListHandler = () => {
         console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
+        const { navigate } = this.props.describe.navigation;
         axios
 			.delete('/buses' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
 			.then((response) => {
                 console.log('deleteItemListHandler:res: ', response);
-				Alert.alert('¡Bus escolar', 'Bus escolar eliminado con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+				Alert.alert('¡Bus escolar!', 'Bus escolar eliminado con exito!', [ { text: 'Ok', onPress: () => { navigate('Bus Escolar'); this.refreshItemsHandler(); } } ], {
 					cancelable: false
 				});
 			})
 			.catch((error) => {
                 console.log('deleteItemListHandler:res: ', error)
-				Alert.alert('¡Bus escolar', 'Bus escolar fallido al eliminar!', [ { text: 'Ok' } ], {
+				Alert.alert('¡Bus escolar!', 'Bus escolar fallido al eliminar!', [ { text: 'Ok' } ], {
 					cancelable: false
 				});
 			});
@@ -125,45 +129,9 @@ export default class Buses extends Component {
             </View>
         );
 
-        const cardBuses = (
-            <View style={{ flex: 1, marginBottom: 20, marginTop: 20 }}>
-                {this.state.bus.map(bs => (
-                    <Card key={bs.chofer  + bs.horaSalida + bs.destino}>
-                        <CardItem header>
-                            <View style={styles.btnsContainer}>
-                                <Text style={styles.textTitle}>{bs.destino}</Text>
-                                {this.props.isAdmin && <View style={styles.btnsAdm}>
-                                    <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
-                                        <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
-                                    </TouchableOpacity>
-                                </View>}
-                            </View>
-                        </CardItem>
-                        <CardItem>
-                            <Body>
-                                <Text style={styles.text}>Placa del camión: {bs.placa}</Text>
-                                <Text style={styles.text}>Chofer: {bs.chofer}</Text>
-                                <Text style={styles.text}>Salida: {bs.horaSalida}</Text>
-                                <Text style={styles.text}>Regreso: {bs.horaRegreso}</Text>
-                            </Body>
-                        </CardItem>
-                        <CardItem footer>
-                            <Text style={styles.textTitle}>Horarios.</Text>
-                        </CardItem>
-                        <View style={{ flex: 1, flexGrow: 1, marginTop: 5, marginBottom: 5 }}>
-                            <CustomButton
-                                style="DangerBorder"
-                                name="Cerrar"
-                                clicked={() => this.showItemList()} />
-                        </View>
-                    </Card>
-                ))}
-            </View>
-        );
-
         return (
             <ScrollView>
-                {!this.state.showItemCard ? listBuses : cardBuses}
+                {listBuses}
             </ScrollView>
         );
     }

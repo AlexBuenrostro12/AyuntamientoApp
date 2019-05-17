@@ -31,12 +31,25 @@ export default class Buzon extends Component {
                 this.setState({ itemKey: key });
             }
         }
-        this.setState({ showItemCard: true });
+        this.setState({ showItemCard: true }, () => this.goToDescribeData());
     }
 
-    showItemList = () => {
-        this.setState({ showItemCard: false })
-    }
+    goToDescribeData = () => {
+		if (this.state.showItemCard) {
+			const obj = {
+				asunto: this.state.asunto,
+				comentario: this.state.comentario,
+				email: this.state.email,
+				fecha: this.state.fecha,
+				nombre: this.state.nombre,
+				isAdmin: this.props.isAdmin,
+				deleteItem: this.alertCheckDeleteItem,
+				type: 'buzon',
+			};
+			const { navigate } = this.props.describe.navigation;
+			navigate('Describe', { data: obj });
+		}
+	};
 
     alertCheckDeleteItem = () => {
         Alert.alert(
@@ -54,11 +67,12 @@ export default class Buzon extends Component {
 
     deleteItemListHandler = () => {
         console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
+        const { navigate } = this.props.describe.navigation;
         axios
 		.delete('/suggestions' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
 		.then((response) => {
             console.log('deleteItemListHandler:res: ', response);
-			Alert.alert('Buzón ciudadano', 'Sugerencia eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+			Alert.alert('Buzón ciudadano', 'Sugerencia eliminada con exito!', [ { text: 'Ok', onPress: () => { navigate('Buzón Ciudadano'); this.refreshItemsHandler() } } ], {
 				cancelable: false
 			});
 		})
@@ -100,42 +114,10 @@ export default class Buzon extends Component {
                 ))}
             </View>
         );
-        
-        const card = (
-            <View>
-                <Card>
-                    <CardItem header>
-                        <View style={styles.btnsContainer}>
-                            <Text>{this.state.asunto}</Text>
-                            {this.props.isAdmin && <View style={styles.btnsAdm}>
-                                <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
-                                    <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
-                                </TouchableOpacity>
-                            </View>}
-                        </View>
-                    </CardItem>
-                    <CardItem>
-                        <Body>
-                            <Text>Sugerencia por: {this.state.nombre}</Text>
-                            <Text>Correo: {this.state.email}</Text>
-                            <Text>{this.state.comentario}</Text>
-                        </Body>
-                    </CardItem>
-                    <CardItem footer>
-                        <Text>Fecha: {this.state.fecha}</Text>
-                    </CardItem>
-                    <View style={styles.button}>
-                        <CustomButton
-                            style="DangerBorder"
-                            name="Cerrar"
-                            clicked={() => this.showItemList()} />
-                    </View>
-                </Card>
-            </View>
-        );
+
         return (
             <ScrollView>
-                {!this.state.showItemCard ? listSuggestions : card}
+                {listSuggestions}
             </ScrollView>
         );
     }

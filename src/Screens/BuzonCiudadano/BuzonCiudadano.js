@@ -300,6 +300,7 @@ export default class BuzonCiudadano extends Component {
 				isAdmin={this.state.isAdmin}
 				refresh={this.getSuggestions}
 				data={sgt.suggestionData}
+				describe={this.props}
 			/>
 		));
 

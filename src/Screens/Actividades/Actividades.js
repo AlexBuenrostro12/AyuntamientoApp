@@ -360,7 +360,8 @@ export default class Actividades extends Component {
 															token={this.state.token}
 															isAdmin={this.state.isAdmin} 
 															refresh={this.getActivities} 
-															data={act.activityData} />);
+															data={act.activityData}
+															describe={this.props} />);
 
 		const body = (
 			<View style={styles.body}>
