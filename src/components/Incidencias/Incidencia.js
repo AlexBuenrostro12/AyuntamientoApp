@@ -19,8 +19,7 @@ export default class Noticia extends Component {
 
     clickedListHandler = (identifier, key) => {
         console.log('Actividad.js:clickList: ', identifier, key);
-        //Try to construct and array where we can push all the data nesscesary to display 
-        const fetchedIncident = [];
+        //Construct the object with the data nesscesary to display
         let obj = {};
         obj.itemKey = key;
         //Add personalData to the object
@@ -73,15 +72,18 @@ export default class Noticia extends Component {
                     break;
             }
         }
-        //Push the object to the arrar
-        fetchedIncident.push(obj);
-        console.log('FetchedIncident, ', fetchedIncident);
-        this.setState({ showItemCard: true, incident: fetchedIncident });
+        obj.isAdmin = this.props.isAdmin;
+        obj.deleteItem = this.alertCheckDeleteItem;
+        obj.type =  'incidencia';
+        this.setState({ showItemCard: true }, () => this.goToDescribeData(obj));
     }
 
-    showItemList = () => {
-        this.setState({ showItemCard: false })
-    }
+    goToDescribeData = (obj) => {
+		if (this.state.showItemCard) {
+			const { navigate } = this.props.describe.navigation;
+			navigate('Describe', { data: obj });
+		}
+	};
 
     alertCheckDeleteItem = (itemKey) => {
         Alert.alert(
@@ -99,11 +101,12 @@ export default class Noticia extends Component {
 
     deleteItemListHandler = (itemKey) => {
         console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
+        const { navigate } = this.props.describe.navigation;
         axios
 		.delete('/incidents' + '/' + itemKey + '.json?auth=' + this.props.token)
 		.then((response) => {
             console.log('deleteItemListHandler:res: ', response);
-			Alert.alert('Incidencia', 'Incidencia eliminada con exito!', [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+			Alert.alert('Incidencia', 'Incidencia eliminada con exito!', [ { text: 'Ok', onPress: () => { navigate('Incidencias'); this.refreshItemsHandler(); } } ], {
 				cancelable: false
 			});
 		})
@@ -147,51 +150,11 @@ export default class Noticia extends Component {
             </View>
         );
         
-        const card = this.state.incident.map(inct => (
-            <View key={inct.itemKey}>
-                <Card>
-                    <CardItem header>
-                        <View style={styles.btnsContainer}>
-                            <Text>{inct.asunto}</Text>
-                            {this.props.isAdmin && <View style={styles.btnsAdm}>
-                                <TouchableOpacity onPress={() => this.alertCheckDeleteItem(inct.itemKey)}>
-                                    <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
-                                </TouchableOpacity>
-                            </View>}
-                        </View>
-                    </CardItem>
-                    <CardItem>
-                        <Body>
-                            <Text style={styles.title}>Descripción</Text>
-                            <Text style={styles.body}>{inct.tipo}</Text>
-                            <Text style={styles.body}>{inct.descripcion}</Text>
-                            <Image style={styles.image} source={{ uri: inct.imagen }} />
-                            <Text style={styles.title}>Ubicación</Text>
-                            <Text style={styles.body}>{inct.direccion}</Text>
-                            <Text style={styles.body}>{inct.municipio}</Text>
-                            <Text style={styles.body}>{inct.fecha}</Text>
-                            <Text style={styles.title}>Datos de quien reporta</Text>
-                            <Text style={styles.body}>{inct.nombre}</Text>
-                            <Text style={styles.body}>{inct.email}</Text>
-                            <Text style={styles.body}>{inct.telefono}</Text>
-                        </Body>
-                    </CardItem>
-                    <CardItem footer>
-                        <Text>Reporte de incidencia</Text>
-                    </CardItem>
-                    <View style={styles.button}>
-                        <CustomButton
-                            style="DangerBorder"
-                            name="Cerrar"
-                            clicked={() => this.showItemList()} />
-                    </View>
-                </Card>
-            </View>
-        ));
+       
 
         return (
             <ScrollView>
-                {!this.state.showItemCard ? listIncidents : card}
+                {listIncidents}
             </ScrollView>
         );
     }

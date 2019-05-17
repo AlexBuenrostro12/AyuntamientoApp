@@ -147,7 +147,107 @@ export default class DescribreData extends Component {
 								<Text style={styles.fecha}>Horarios.</Text>
 							</CardItem>
 							<View style={{ flex: 1, flexGrow: 1, marginTop: 5, marginBottom: 5 }}>
-								<CustomButton style="DangerBorder" name="Cerrar" clicked={() => navigate('Bus Escolar')} />
+								<CustomButton
+									style="DangerBorder"
+									name="Cerrar"
+									clicked={() => navigate('Bus Escolar')}
+								/>
+							</View>
+						</Card>
+					</View>
+				);
+				break;
+			case 'incidencia':
+				card = (
+					<View key={data.itemKey}>
+						<Card>
+							<CardItem header>
+								<View style={styles.titleContainer}>
+									<Text style={styles.title}>{data.asunto}</Text>
+									{data.isAdmin && (
+										<View style={styles.btnsAdm}>
+											<TouchableOpacity onPress={() => data.deleteItem(data.itemKey)}>
+												<Image
+													style={styles.btnsAdmImg}
+													source={require('../../assets/images/Delete/delete.png')}
+												/>
+											</TouchableOpacity>
+										</View>
+									)}
+								</View>
+							</CardItem>
+							<CardItem>
+								<Body>
+									<Text style={styles.fecha}>Descripción</Text>
+									<Text style={styles.descripcion}>{JSON.stringify(data.tipo).toUpperCase()}</Text>
+									<Text style={styles.descripcion}>{data.descripcion}</Text>
+									<TouchableOpacity
+										style={{ alignSelf: 'center' }}
+										onPress={() => this.setState({ zoomImage: true })}
+									>
+										<Image style={styles.image} source={{ uri: data.imagen }} />
+									</TouchableOpacity>
+									<Text style={styles.fecha}>Ubicación</Text>
+									<Text style={styles.descripcion}>{data.direccion}</Text>
+									<Text style={styles.descripcion}>{data.municipio}</Text>
+									<Text style={styles.descripcion}>{data.fecha}</Text>
+									<Text style={styles.fecha}>Datos de quien reporta</Text>
+									<Text style={styles.descripcion}>{data.nombre}</Text>
+									<Text style={styles.descripcion}>{data.email}</Text>
+									<Text style={styles.descripcion}>{data.telefono}</Text>
+								</Body>
+							</CardItem>
+							<CardItem footer>
+								<Text style={styles.fecha}>Reporte de incidencia</Text>
+							</CardItem>
+							<View style={styles.button}>
+								<CustomButton
+									style="DangerBorder"
+									name="Cerrar"
+									clicked={() => navigate('Incidencias')}
+								/>
+							</View>
+						</Card>
+					</View>
+				);
+				break;
+			case 'actividad':
+				card = (
+					<View>
+						<Card>
+							<CardItem header>
+								<View style={styles.titleContainer}>
+									<Text style={styles.title}>{data.actividad}</Text>
+									{data.isAdmin && (
+										<View style={styles.btnsAdm}>
+											<TouchableOpacity onPress={() => data.deleteItem()}>
+												<Image
+													style={styles.btnsAdmImg}
+													source={require('../../assets/images/Delete/delete.png')}
+												/>
+											</TouchableOpacity>
+										</View>
+									)}
+								</View>
+							</CardItem>
+							<CardItem>
+								<Body>
+									<TouchableOpacity
+										style={{ alignSelf: 'center' }}
+										onPress={() => this.setState({ zoomImage: true })}
+									>
+										<Image style={styles.image} source={{ uri: data.imagen }} />
+									</TouchableOpacity>
+									<Text style={styles.descripcion}>{data.descripcion}</Text>
+								</Body>
+							</CardItem>
+							<CardItem footer>
+								<Text style={styles.fecha}>
+									Fecha: {data.fecha} / Hora: {data.hora}
+								</Text>
+							</CardItem>
+							<View style={styles.button}>
+								<CustomButton style="DangerBorder" name="Cerrar" clicked={() => navigate('Actividades')} />
 							</View>
 						</Card>
 					</View>
