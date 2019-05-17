@@ -43,9 +43,7 @@ export default class DescribreData extends Component {
 										<Text style={styles.title}>{data.noticia}</Text>
 										{data.isAdmin && (
 											<View style={styles.btnsAdm}>
-												<TouchableOpacity
-													onPress={() => data.deleteItem()}
-												>
+												<TouchableOpacity onPress={() => data.deleteItem()}>
 													<Image
 														style={styles.btnsAdmImg}
 														source={require('../../assets/images/Delete/delete.png')}
@@ -108,7 +106,48 @@ export default class DescribreData extends Component {
 								<Text style={styles.fecha}>Fecha: {data.fecha}</Text>
 							</CardItem>
 							<View style={styles.button}>
-								<CustomButton style="DangerBorder" name="Cerrar" clicked={() => navigate('Buzón Ciudadano')} />
+								<CustomButton
+									style="DangerBorder"
+									name="Cerrar"
+									clicked={() => navigate('Buzón Ciudadano')}
+								/>
+							</View>
+						</Card>
+					</View>
+				);
+				break;
+			case 'bus':
+				card = (
+					<View style={{ flex: 1, marginBottom: 20, marginTop: 20 }}>
+						<Card key={data.chofer + data.horaSalida + data.destino}>
+							<CardItem header>
+								<View style={styles.titleContainer}>
+									<Text style={styles.title}>{data.destino}</Text>
+									{data.isAdmin && (
+										<View style={styles.btnsAdm}>
+											<TouchableOpacity onPress={() => data.deleteItem()}>
+												<Image
+													style={styles.btnsAdmImg}
+													source={require('../../assets/images/Delete/delete.png')}
+												/>
+											</TouchableOpacity>
+										</View>
+									)}
+								</View>
+							</CardItem>
+							<CardItem>
+								<Body>
+									<Text style={styles.descripcion}>Placa del camión: {data.placa}</Text>
+									<Text style={styles.descripcion}>Chofer: {data.chofer}</Text>
+									<Text style={styles.descripcion}>Salida: {data.horaSalida}</Text>
+									<Text style={styles.descripcion}>Regreso: {data.horaRegreso}</Text>
+								</Body>
+							</CardItem>
+							<CardItem footer>
+								<Text style={styles.fecha}>Horarios.</Text>
+							</CardItem>
+							<View style={{ flex: 1, flexGrow: 1, marginTop: 5, marginBottom: 5 }}>
+								<CustomButton style="DangerBorder" name="Cerrar" clicked={() => navigate('Bus Escolar')} />
 							</View>
 						</Card>
 					</View>

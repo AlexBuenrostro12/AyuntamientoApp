@@ -45,16 +45,11 @@ export default class Buzon extends Component {
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'buzon',
-				deleted: this.state.deleted,
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
 		}
 	};
-
-    showItemList = () => {
-        this.setState({ showItemCard: false })
-    }
 
     alertCheckDeleteItem = () => {
         Alert.alert(
@@ -119,39 +114,7 @@ export default class Buzon extends Component {
                 ))}
             </View>
         );
-        
-        const card = (
-            <View>
-                <Card>
-                    <CardItem header>
-                        <View style={styles.btnsContainer}>
-                            <Text>{this.state.asunto}</Text>
-                            {this.props.isAdmin && <View style={styles.btnsAdm}>
-                                <TouchableOpacity onPress={() => this.alertCheckDeleteItem()}>
-                                    <Image style={styles.btnsAdmImg} source={require('../../assets/images/Delete/delete.png')}/>
-                                </TouchableOpacity>
-                            </View>}
-                        </View>
-                    </CardItem>
-                    <CardItem>
-                        <Body>
-                            <Text>Sugerencia por: {this.state.nombre}</Text>
-                            <Text>Correo: {this.state.email}</Text>
-                            <Text>{this.state.comentario}</Text>
-                        </Body>
-                    </CardItem>
-                    <CardItem footer>
-                        <Text>Fecha: {this.state.fecha}</Text>
-                    </CardItem>
-                    <View style={styles.button}>
-                        <CustomButton
-                            style="DangerBorder"
-                            name="Cerrar"
-                            clicked={() => this.showItemList()} />
-                    </View>
-                </Card>
-            </View>
-        );
+
         return (
             <ScrollView>
                 {listSuggestions}

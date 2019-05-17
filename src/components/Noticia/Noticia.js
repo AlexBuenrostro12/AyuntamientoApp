@@ -51,7 +51,6 @@ export default class Noticia extends Component {
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'noticia',
-				deleted: this.state.deleted,
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
