@@ -149,8 +149,8 @@ export default class Noticias extends Component {
 		fileNameImage: null,
 		imageFormData: null,
 		notificationToken: null,
-		initNotif: null,
 		fcmTokens: [],
+		allReadyToNotification: false
 	};
 
 	async componentDidMount() {
@@ -211,35 +211,35 @@ export default class Noticias extends Component {
 	//SendRemoteNotification
 	sendRemoteNotification = () => {
 		this.getFCMTokens();
-		let body;
-		console.log('sendRemoteNotification:, ', this.state.notificationToken);
-		if (Platform.OS === 'android') {
-			body = {
-				registration_ids: this.state.fcmTokens,
-				notification: {
-					title: 'Nueva noticia',
-					body: '!' + this.state.form['noticia'].value + '¡',
-					// icon: require('../../assets/images/Ayuntamiento/logo-naranja.png'),
-					color: '#FEA621',
-					sound: null,
-					tag: this.state.form['noticia'].value,
-					priority: 'high'
-				},
-			};
-		} else {
-			body = {
-				to: this.state.notificationToken,
-				notification: {
-					title: 'Simple FCM Client',
-					body: 'Click me to go to detail',
-					sound: 'default'
-				},
-				data: {},
-				priority: 10
-			};
-		}
+		if (this.state.allReadyToNotification) {
+			let body;
+			console.log('sendRemoteNotification:, ', this.state.notificationToken);
+			if (Platform.OS === 'android') {
+				body = {
+					registration_ids: this.state.fcmTokens,
+					notification: {
+						title: 'Nueva noticia',
+						body: '!' + this.state.form['noticia'].value + '¡',
+						sound: null,
+						tag: this.state.form['noticia'].value,
+						priority: 'high'
+					}
+				};
+			} else {
+				body = {
+					to: this.state.notificationToken,
+					notification: {
+						title: 'Simple FCM Client',
+						body: 'Click me to go to detail',
+						sound: 'default'
+					},
+					data: {},
+					priority: 10
+				};
+			}
 
-		firebaseClient.send(JSON.stringify(body), 'notification');
+			firebaseClient.send(JSON.stringify(body), 'notification');
+		}
 	};
 	//Get news
 	getNews = () => {
@@ -317,6 +317,7 @@ export default class Noticias extends Component {
 					});
 				});
 		}
+		if (exist) this.setState({ allReadyToNotification: true });
 	}; //end
 	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
@@ -476,7 +477,7 @@ export default class Noticias extends Component {
 		}
 	};
 	render() {
-		console.log('Noticias.js:props: ', this.props)
+		console.log('Noticias.js:props: ', this.props);
 		const list = this.state.news.map((nw) => (
 			<Noticia
 				key={nw.id}
