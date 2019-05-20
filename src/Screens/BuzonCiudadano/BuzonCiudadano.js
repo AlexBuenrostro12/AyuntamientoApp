@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { Alert, View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -324,7 +324,7 @@ export default class BuzonCiudadano extends Component {
 										/>
 									</TouchableOpacity>
 								</View>
-								<View style={styles.btn}>
+								{this.state.isAdmin && <View style={styles.btn}>
 									<Text style={{ fontSize: 20 }}>Agregar sugerencia</Text>
 									<TouchableOpacity onPress={() => this.setState({ addSuggestion: true })}>
 										<Image
@@ -332,9 +332,9 @@ export default class BuzonCiudadano extends Component {
 											source={require('../../assets/images/Add/add.png')}
 										/>
 									</TouchableOpacity>
-								</View>
+								</View>}
 							</View>
-							{this.state.loading ? spinner : list}
+							{this.state.loading ? spinner : <View style={styles.scrollDataList}>{list}</View>}
 						</View>
 					</CardItem>
 				</Card>
@@ -416,5 +416,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		margin: 5,
 		borderRadius: 5
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		flexWrap: 'wrap',
 	}
 });

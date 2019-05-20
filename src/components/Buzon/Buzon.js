@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, ScrollView, StyleSheet, View, Image, Alert } from 'react-native';
-import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
-import IconRight from '../../UI/IconRight/IconRight';
-import CustomButton from '../CustomButton/CustomButton';
+import { StyleSheet, View, Alert } from 'react-native';
 import axios from '../../../axios-ayuntamiento';
+import ListData from '../ListData/ListData';
 
 export default class Buzon extends Component {
     state = {
@@ -98,27 +96,15 @@ export default class Buzon extends Component {
                 })
             }
         }
-        const listSuggestions = (
-            <View style={styles.listSuggestions}>
-                {data.map(dt => (
-                    <ListItem key={dt.asunto}>
-                        <Left>
-                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.asunto, this.props.id)}>
-                                <Text>{dt.asunto}</Text>
-                            </TouchableOpacity>
-                        </Left>
-                        <Right>
-                            <IconRight describe={() => this.clickedListHandler(dt.asunto, this.props.id)} />
-                        </Right>
-                    </ListItem>
-                ))}
-            </View>
-        );
+        const listData = <ListData 
+                            data={data}
+                            id={this.props.id}
+                            clicked={this.clickedListHandler}/>
 
         return (
-            <ScrollView>
-                {listSuggestions}
-            </ScrollView>
+            <View>
+                {listData}
+            </View>
         );
     }
 }
