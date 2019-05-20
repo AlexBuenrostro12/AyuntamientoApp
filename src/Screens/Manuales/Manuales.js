@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Dimensions, Alert, ScrollView } from 'react-native';
 import { Card, ListItem, CardItem } from 'native-base';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -85,7 +85,6 @@ export default class Manuales extends Component {
 
 	render() {
 		const cardBody = (
-			<View style={{ flex: 1, margin: 5 }}>
 				<Card>
 					<CustomCardItemTitle
 						title="Manuales"
@@ -107,7 +106,6 @@ export default class Manuales extends Component {
 						</StyledViewManuales>
 					</CardItem>
 				</Card>
-			</View>
 		);
 
 		const button = <CustomButton style="DangerBorder" clicked={() => this.hiddeManualHandler()} name="Cerrar" />;
@@ -131,7 +129,7 @@ export default class Manuales extends Component {
 
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
-				<View style={{ flex: 1 }}>{this.state.show ? manual : body}</View>
+				<ScrollView style={{ flex: 1 }}>{this.state.show ? manual : body}</ScrollView>
 			</SafeAreaView>
 		);
 	}
@@ -140,9 +138,7 @@ export default class Manuales extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		flexDirection: 'column',
-		flexWrap: 'wrap',
-		overflow: 'scroll'
+
 	},
 	view: {
 		flex: 1,

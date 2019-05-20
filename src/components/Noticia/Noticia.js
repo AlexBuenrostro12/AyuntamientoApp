@@ -1,17 +1,7 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, ScrollView, StyleSheet, View, Image, Alert, Dimensions } from 'react-native';
-import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
-import styled from 'styled-components';
-import IconRight from '../../UI/IconRight/IconRight';
+import { StyleSheet, View, Alert } from 'react-native';
 import axios from '../../../axios-ayuntamiento';
 import ListData from '../../components/ListData/ListData';
-
-const StyledListNews = styled.View`
-	margin-left: 2px;
-	margin-right: 2px;
-	margin-top: ${(props) => props.theme.customMarginValue};
-	margin-bottom: ${(props) => props.theme.customMarginValue};
-`;
 
 export default class Noticia extends Component {
 	state = {
