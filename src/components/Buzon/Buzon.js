@@ -103,7 +103,7 @@ export default class Buzon extends Component {
 		for (let dataName in this.props.data) {
 			if (dataName === 'asunto') {
 				data.push({
-					asunto: this.props.data[dataName]
+					title: this.props.data[dataName]
 				});
 			}
 		}

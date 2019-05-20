@@ -6,6 +6,7 @@ const { height, width } = Dimensions.get('window');
 
 const customCardItemTitle = (props) => (
 	<CardItem header bordered>
+        {console.log('props: ', props)}
 		<View style={styles.container}>
 			<View style={styles.textContainer}>
 				<Text style={styles.title}>{props.title}</Text>
@@ -19,7 +20,7 @@ const customCardItemTitle = (props) => (
 					<Image style={styles.iconImage} source={require('../../assets/images/Refresh/refresh.png')} />
 				</TouchableOpacity>}
 				{/* refresh */}
-				{props.showButtons && <TouchableOpacity onPress={() => props.add()}>
+				{props.showButtons && props.isAdmin && <TouchableOpacity onPress={() => props.add()}>
 					<Image style={styles.iconImage} source={require('../../assets/images/Add/add.png')} />
 				</TouchableOpacity>}
 			</View>

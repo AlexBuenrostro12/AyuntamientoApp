@@ -316,6 +316,7 @@ export default class BuzonCiudadano extends Component {
 						showButtons={this.state.showButtons}
 						get={this.getSuggestions}
 						add={() => this.setState({ addSuggestion: true, showButtons: false })}
+						isAdmin={this.state.isAdmin}
 					/>
 					<CardItem bordered>
 						<View style={styles.cardBody}>

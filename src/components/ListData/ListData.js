@@ -7,12 +7,12 @@ const ListData = (props) =>
 	props.data.map((dt) => (
 		<TouchableOpacity
 			style={styles.marginContainer}
-			onPress={() => props.clicked(dt.asunto, props.id)}
-			key={dt.asunto}
+			onPress={() => props.clicked(dt.title, props.id)}
+			key={props.id}
 		>
-			<ImageBackground style={styles.image} source={require('../../assets/images/Ayuntamiento/fondo.jpg')}>
+			<ImageBackground style={styles.image} source={!dt.imagen ? require('../../assets/images/Ayuntamiento/fondo.jpg') : { uri: dt.imagen }}>
 				<View style={styles.textContainer}>
-					<Text style={styles.text}>{dt.asunto}</Text>
+					<Text style={styles.text}>{dt.title}</Text>
 				</View>
 			</ImageBackground>
 		</TouchableOpacity>

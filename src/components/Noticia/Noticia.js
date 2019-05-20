@@ -4,6 +4,7 @@ import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
 import styled from 'styled-components';
 import IconRight from '../../UI/IconRight/IconRight';
 import axios from '../../../axios-ayuntamiento';
+import ListData from '../../components/ListData/ListData';
 
 const StyledListNews = styled.View`
 	margin-left: 2px;
@@ -99,30 +100,19 @@ export default class Noticia extends Component {
 
 	render() {
 		const data = [];
+		const obj = {};
 		for (let dataName in this.props.data) {
 			if (dataName === 'noticia') {
-				data.push({
-					noticia: this.props.data[dataName]
-				});
+				obj.title = this.props.data[dataName];
+			}
+			if (dataName === 'imagen'){
+				obj.imagen = this.props.data[dataName];
 			}
 		}
-		const listNews = (
-			<StyledListNews>
-				{data.map((dt) => (
-					<ListItem key={dt.noticia}>
-						<Left>
-							<TouchableOpacity onPress={() => this.clickedListHandler(dt.noticia, this.props.id)}>
-								<Text>{dt.noticia}</Text>
-							</TouchableOpacity>
-						</Left>
-						<Right>
-							<IconRight describe={() => this.clickedListHandler(dt.noticia, this.props.id)} />
-						</Right>
-					</ListItem>
-				))}
-			</StyledListNews>
-		);
-		return <ScrollView>{listNews}</ScrollView>;
+		data.push(obj);
+		const listData = <ListData data={data} id={this.props.id} clicked={this.clickedListHandler} />;
+
+		return <View>{listData}</View>
 	}
 }
 
