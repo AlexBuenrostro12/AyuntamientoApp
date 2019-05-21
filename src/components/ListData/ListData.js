@@ -7,12 +7,16 @@ const ListData = (props) =>
 	props.data.map((dt) => (
 		<TouchableOpacity
 			style={styles.marginContainer}
-			onPress={() => props.clicked(dt.title, props.id)}
+			// in the property onPress, there is an special case to BusEscolar.js and Buses.js that's why pass other properties instead dt.title
+			onPress={() => props.clicked(dt.title ? (dt.title, props.id) : (dt.horaSalida, dt.destino, props.id))}
 			key={props.id}
 		>
-			<ImageBackground style={styles.image} source={!dt.imagen ? require('../../assets/images/Ayuntamiento/fondo.jpg') : { uri: dt.imagen }}>
+			<ImageBackground
+				style={styles.image}
+				source={!dt.imagen ? require('../../assets/images/Ayuntamiento/fondo.jpg') : { uri: dt.imagen }}
+			>
 				<View style={styles.textContainer}>
-					<Text style={styles.text}>{dt.title}</Text>
+					{dt.title ? <Text style={styles.text}>{dt.title}</Text> : <Text style={styles.text}>{dt.destino} - {dt.horaSalida}</Text>}
 				</View>
 			</ImageBackground>
 		</TouchableOpacity>
@@ -31,19 +35,18 @@ const styles = StyleSheet.create({
 		resizeMode: 'contain',
 		flexDirection: 'column',
 		justifyContent: 'flex-end'
-	}, 
+	},
 	text: {
 		alignSelf: 'center',
 		color: 'white',
 		fontSize: 16,
-		fontWeight: 'bold',
+		fontWeight: 'bold'
 	},
 	textContainer: {
 		justifyContent: 'center',
-		height: (width / 2.38) / 2,
+		height: width / 2.38 / 2,
 		width: width / 2.38,
 		backgroundColor: 'black',
 		opacity: 0.5
-
 	}
 });
