@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, ScrollView, StyleSheet, View, Image, Alert } from 'react-native';
-import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
-import IconRight from '../../UI/IconRight/IconRight';
-import CustomButton from '../CustomButton/CustomButton';
+import { ScrollView, StyleSheet, Alert } from 'react-native';
 import axios from '../../../axios-ayuntamiento';
+import ListData from '../ListData/ListData';
 
 export default class Noticia extends Component {
     state = {
@@ -126,35 +124,23 @@ export default class Noticia extends Component {
     render() {
         console.log('Incidencia.js:props: ', this.props)
         const data = [];
+        const obj = {};
         for (let dataName in this.props.descripcionData) {
             if (dataName === 'asunto') {
-                data.push({
-                    asunto: this.props.descripcionData[dataName]
-                })
+                obj.title = this.props.descripcionData[dataName];
             }
         }
-        const listIncidents = (
-            <View style={styles.listIncidents}>
-                {data.map(dt => (
-                    <ListItem key={dt.asunto}>
-                        <Left>
-                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.asunto, this.props.id)}>
-                                <Text>{dt.asunto}</Text>
-                            </TouchableOpacity>
-                        </Left>
-                        <Right>
-                            <IconRight describe={() => this.clickedListHandler(dt.asunto, this.props.id)} />
-                        </Right>
-                    </ListItem>
-                ))}
-            </View>
-        );
-        
-       
+        for (let dataName in this.props.multimediaData) {
+            if (dataName === 'imagen') {
+                obj.imagen = this.props.multimediaData[dataName];
+            }
+        }
+        data.push(obj);
+        const listData = <ListData data={data} id={this.props.id} clicked={this.clickedListHandler} />;
 
         return (
             <ScrollView>
-                {listIncidents}
+                {listData}
             </ScrollView>
         );
     }

@@ -16,6 +16,7 @@ export default class Noticia extends Component {
 	};
 
 	clickedListHandler = (identifier, key) => {
+		console.log('ClickedListHandler: ', identifier, 'key: ', key, 'id:', this.props.id);
 		for (let dataName in this.props.data) {
 			const fecha = this.props.data['fecha'].split('T', 1);
 			if (this.props.data[dataName] === identifier) {
@@ -28,7 +29,6 @@ export default class Noticia extends Component {
 			}
 		}
 		this.setState({ showItemCard: true }, () => this.goToDescribeData());
-		console.log('this.props: ', this.props)
 	};
 
 	goToDescribeData = () => {
@@ -60,12 +60,11 @@ export default class Noticia extends Component {
 	};
 
 	deleteItemListHandler = () => {
-		console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
+		// console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
 		const { navigate } = this.props.describe.navigation;
 		axios
 			.delete('/news' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
 			.then((response) => {
-				console.log('deleteItemListHandler:res: ', response);
 				Alert.alert(
 					'Noticia',
 					'¡Noticia eliminada con exito!',
@@ -76,7 +75,6 @@ export default class Noticia extends Component {
 				);
 			})
 			.catch((error) => {
-				console.log('deleteItemListHandler:res: ', error);
 				Alert.alert('Noticia', '¡Noticia fallida al eliminar!', [ { text: 'Ok' } ], {
 					cancelable: false
 				});

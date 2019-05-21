@@ -8,7 +8,7 @@ const ListData = (props) =>
 		<TouchableOpacity
 			style={styles.marginContainer}
 			// in the property onPress, there is an special case to BusEscolar.js and Buses.js that's why pass other properties instead dt.title
-			onPress={() => props.clicked(dt.title ? (dt.title, props.id) : (dt.horaSalida, dt.destino, props.id))}
+			onPress={() => (dt.title ? props.clicked(dt.title, props.id) : props.clicked(dt.horaSalida, dt.destino, props.id))}
 			key={props.id}
 		>
 			<ImageBackground

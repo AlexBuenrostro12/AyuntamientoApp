@@ -123,22 +123,6 @@ export default class Buses extends Component {
 	render() {
 		console.log('Buses.js: ', this.props);
 		const listData = <ListData data={this.state.data} id={this.props.id} clicked={this.clickedListHandler} />;
-		// const listBuses = (
-		//     <View style={styles.list}>
-		//         {this.state.data.map(dt => (
-		//             <ListItem key={dt.destino + dt.horaSalida}>
-		//                 <Left>
-		//                     <TouchableOpacity onPress={() => this.clickedListHandler(dt.horaSalida, dt.destino, this.props.id)}>
-		//                         <Text style={styles.text}>{dt.destino} - {dt.horaSalida}</Text>
-		//                     </TouchableOpacity>
-		//                 </Left>
-		//                 <Right>
-		//                     <IconRight describe={() => this.clickedListHandler(dt.horaSalida, dt.destino, this.props.id)} />
-		//                 </Right>
-		//             </ListItem>
-		//         ))}
-		//     </View>
-		// );
 
 		return <View>{listData}</View>;
 	}
