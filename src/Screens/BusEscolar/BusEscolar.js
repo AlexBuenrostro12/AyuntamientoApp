@@ -78,7 +78,8 @@ export default class BusEscolar extends Component {
 				valid: false
 			}
 		},
-		formIsValid: false
+		formIsValid: false,
+		showButtons: true
 	};
 
 	async componentDidMount() {
@@ -171,7 +172,7 @@ export default class BusEscolar extends Component {
 	}
 
 	getBuses = () => {
-		this.setState({ loading: true, addBus: false });
+		this.setState({ loading: true, addBus: false, showButtons: true });
 		axios
 			.get('/buses.json?auth=' + token)
 			.then((res) => {
@@ -271,7 +272,7 @@ export default class BusEscolar extends Component {
 				config: this.state.form[key]
 			});
 		}
-		const busesList = this.state.buses.map((bss) => (
+		const list = this.state.buses.map((bss) => (
 			<Buses
 				key={bss.id}
 				id={bss.id}
@@ -292,32 +293,14 @@ export default class BusEscolar extends Component {
 						title="Bus escolar"
 						description="Consulta los horarios y destinos de tus camiones."
 						image={require('../../assets/images/Ubicacion/search.png')}
+						showButtons={this.state.showButtons}
+						get={this.getBuses}
+						add={() => this.setState({ addBus: true, showButtons: false })}
+						isAdmin={this.state.isAdmin}
 					/>
 					<CardItem bordered>
 						<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-							<View style={styles.btns}>
-								<View style={styles.btn}>
-									<Text style={{ fontSize: 20 }}>Recargar</Text>
-									<TouchableOpacity onPress={() => this.getBuses()}>
-										<Image
-											style={{ height: 30, width: 30, resizeMode: 'contain' }}
-											source={require('../../assets/images/Refresh/refresh.png')}
-										/>
-									</TouchableOpacity>
-								</View>
-								{this.state.isAdmin && (
-									<View style={styles.btn}>
-										<Text style={{ fontSize: 20 }}>Agregar nuevo bus</Text>
-										<TouchableOpacity onPress={() => this.setState({ addBus: true })}>
-											<Image
-												style={{ height: 30, width: 30, resizeMode: 'contain' }}
-												source={require('../../assets/images/Add/add.png')}
-											/>
-										</TouchableOpacity>
-									</View>
-								)}
-							</View>
-							{this.state.loading ? spinner : busesList}
+							{this.state.loading ? spinner : <View style={styles.scrollDataList}>{list}</View>}
 						</View>
 					</CardItem>
 				</Card>
@@ -344,10 +327,18 @@ export default class BusEscolar extends Component {
 									changed1={() => this.getTime(e.id)}
 								/>
 							))}
-						{!this.state.loading ?	<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-								<CustomButton style="Success" name="Agregar" clicked={() => this.sendNewBusHandler()} />
-								<CustomButton style="Danger" name="Regresar" clicked={() => this.getBuses()} />
-							</View> : spinner}
+							{!this.state.loading ? (
+								<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+									<CustomButton
+										style="Success"
+										name="Agregar"
+										clicked={() => this.sendNewBusHandler()}
+									/>
+									<CustomButton style="Danger" name="Regresar" clicked={() => this.getBuses()} />
+								</View>
+							) : (
+								spinner
+							)}
 						</View>
 					</CardItem>
 				</Card>
@@ -399,5 +390,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		margin: 5,
 		borderRadius: 5
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		flexWrap: 'wrap'
 	}
 });

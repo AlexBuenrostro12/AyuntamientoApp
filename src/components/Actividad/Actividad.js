@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, ScrollView, StyleSheet, View, Image, Alert } from 'react-native';
-import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
-import IconRight from '../../UI/IconRight/IconRight';
-import CustomButton from '../CustomButton/CustomButton';
+import { ScrollView, StyleSheet, Alert } from 'react-native';
 import axios from '../../../axios-ayuntamiento';
+import ListData from '../ListData/ListData';
 
 export default class Noticia extends Component {
     state = {
@@ -17,6 +15,7 @@ export default class Noticia extends Component {
     }
 
     clickedListHandler = (identifier, key) => {
+        //Check the key
         console.log('Actividad.js:clickList: ', identifier, key);
         for (let dataName in this.props.data) {
             const fecha = this.props.data['fecha'].split("T", 1);
@@ -90,33 +89,21 @@ export default class Noticia extends Component {
     render() {
         console.log('Actividad.js:props: ', this.props)
         const data = [];
+        const obj = {};
         for (let dataName in this.props.data) {
             if (dataName === 'actividad') {
-                data.push({
-                    actividad: this.props.data[dataName]
-                })
+                obj.title = this.props.data[dataName];
+            }
+            if (dataName === 'imagen') {
+                obj.imagen = this.props.data[dataName];
             }
         }
-        const listActivities = (
-            <View style={styles.listActivities}>
-                {data.map(dt => (
-                    <ListItem key={dt.actividad}>
-                        <Left>
-                            <TouchableOpacity onPress={() => this.clickedListHandler(dt.actividad, this.props.id)}>
-                                <Text>{dt.actividad}</Text>
-                            </TouchableOpacity>
-                        </Left>
-                        <Right>
-                            <IconRight describe={() => this.clickedListHandler(dt.actividad, this.props.id)} />
-                        </Right>
-                    </ListItem>
-                ))}
-            </View>
-        );
+        data.push(obj);
+        const listData = <ListData data={data} id={this.props.id} clicked={this.clickedListHandler} />;
         
         return (
             <ScrollView>
-                {listActivities}
+                {listData}
             </ScrollView>
         );
     }
