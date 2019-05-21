@@ -1,16 +1,7 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, ScrollView, StyleSheet, View, Image, Alert, Dimensions } from 'react-native';
-import { ListItem, Text, Left, Right, Card, CardItem, Body } from 'native-base';
-import styled from 'styled-components';
-import IconRight from '../../UI/IconRight/IconRight';
+import { StyleSheet, View, Alert } from 'react-native';
 import axios from '../../../axios-ayuntamiento';
-
-const StyledListNews = styled.View`
-	margin-left: 2px;
-	margin-right: 2px;
-	margin-top: ${(props) => props.theme.customMarginValue};
-	margin-bottom: ${(props) => props.theme.customMarginValue};
-`;
+import ListData from '../../components/ListData/ListData';
 
 export default class Noticia extends Component {
 	state = {
@@ -25,6 +16,7 @@ export default class Noticia extends Component {
 	};
 
 	clickedListHandler = (identifier, key) => {
+		console.log('ClickedListHandler: ', identifier, 'key: ', key, 'id:', this.props.id);
 		for (let dataName in this.props.data) {
 			const fecha = this.props.data['fecha'].split('T', 1);
 			if (this.props.data[dataName] === identifier) {
@@ -37,7 +29,6 @@ export default class Noticia extends Component {
 			}
 		}
 		this.setState({ showItemCard: true }, () => this.goToDescribeData());
-		console.log('this.props: ', this.props)
 	};
 
 	goToDescribeData = () => {
@@ -69,12 +60,11 @@ export default class Noticia extends Component {
 	};
 
 	deleteItemListHandler = () => {
-		console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
+		// console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
 		const { navigate } = this.props.describe.navigation;
 		axios
 			.delete('/news' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
 			.then((response) => {
-				console.log('deleteItemListHandler:res: ', response);
 				Alert.alert(
 					'Noticia',
 					'¡Noticia eliminada con exito!',
@@ -85,7 +75,6 @@ export default class Noticia extends Component {
 				);
 			})
 			.catch((error) => {
-				console.log('deleteItemListHandler:res: ', error);
 				Alert.alert('Noticia', '¡Noticia fallida al eliminar!', [ { text: 'Ok' } ], {
 					cancelable: false
 				});
@@ -99,30 +88,19 @@ export default class Noticia extends Component {
 
 	render() {
 		const data = [];
+		const obj = {};
 		for (let dataName in this.props.data) {
 			if (dataName === 'noticia') {
-				data.push({
-					noticia: this.props.data[dataName]
-				});
+				obj.title = this.props.data[dataName];
+			}
+			if (dataName === 'imagen'){
+				obj.imagen = this.props.data[dataName];
 			}
 		}
-		const listNews = (
-			<StyledListNews>
-				{data.map((dt) => (
-					<ListItem key={dt.noticia}>
-						<Left>
-							<TouchableOpacity onPress={() => this.clickedListHandler(dt.noticia, this.props.id)}>
-								<Text>{dt.noticia}</Text>
-							</TouchableOpacity>
-						</Left>
-						<Right>
-							<IconRight describe={() => this.clickedListHandler(dt.noticia, this.props.id)} />
-						</Right>
-					</ListItem>
-				))}
-			</StyledListNews>
-		);
-		return <ScrollView>{listNews}</ScrollView>;
+		data.push(obj);
+		const listData = <ListData data={data} id={this.props.id} clicked={this.clickedListHandler} />;
+
+		return <View>{listData}</View>
 	}
 }
 

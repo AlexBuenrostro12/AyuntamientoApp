@@ -150,7 +150,8 @@ export default class Noticias extends Component {
 		imageFormData: null,
 		notificationToken: null,
 		fcmTokens: [],
-		allReadyToNotification: false
+		allReadyToNotification: false,
+		showButtons: true,
 	};
 
 	async componentDidMount() {
@@ -243,7 +244,7 @@ export default class Noticias extends Component {
 	};
 	//Get news
 	getNews = () => {
-		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null });
+		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null, showButtons: true });
 		axios
 			.get('/news.json?auth=' + this.state.token)
 			.then((res) => {
@@ -505,32 +506,14 @@ export default class Noticias extends Component {
 						description="Las noticias más 
                             relebantes de Tecalitlán a tu alcance."
 						image={require('../../assets/images/Noticia/noticia.png')}
+						showButtons={this.state.showButtons}
+						get={this.getNews}
+						add={() => this.setState({ addNew: true, showButtons: false })}
+						isAdmin={this.state.isAdmin}
 					/>
 					<CardItem bordered>
 						<StyledCardBody>
-							<View style={styles.btns}>
-								<View style={styles.btn}>
-									<Text style={{ fontSize: 20 }}>Recargar</Text>
-									<TouchableOpacity onPress={() => this.getNews()}>
-										<Image
-											style={{ height: 30, width: 30, resizeMode: 'contain' }}
-											source={require('../../assets/images/Refresh/refresh.png')}
-										/>
-									</TouchableOpacity>
-								</View>
-								{this.state.isAdmin && (
-									<View style={styles.btn}>
-										<Text style={{ fontSize: 20 }}>Agregar noticia</Text>
-										<TouchableOpacity onPress={() => this.setState({ addNew: true })}>
-											<Image
-												style={{ height: 30, width: 30, resizeMode: 'contain' }}
-												source={require('../../assets/images/Add/add.png')}
-											/>
-										</TouchableOpacity>
-									</View>
-								)}
-							</View>
-							{this.state.loading ? spinner : list}
+							{this.state.loading ? spinner : <View style={styles.scrollDataList}>{list}</View>}
 						</StyledCardBody>
 					</CardItem>
 				</Card>
@@ -609,5 +592,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center'
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		flexWrap: 'wrap',
 	}
 });

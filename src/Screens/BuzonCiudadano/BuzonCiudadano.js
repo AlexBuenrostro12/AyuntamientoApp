@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { Alert, View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -93,7 +93,8 @@ export default class BuzonCiudadano extends Component {
 		token: null,
 		isAdmin: null,
 		addSuggestion: false,
-		loading: false
+		loading: false,
+		showButtons: true,
 	};
 
 	async componentDidMount() {
@@ -151,7 +152,7 @@ export default class BuzonCiudadano extends Component {
 	};
 
 	getSuggestions = () => {
-		this.setState({ loading: true, addSuggestion: false });
+		this.setState({ loading: true, addSuggestion: false, showButtons: true });
 		this.cleanForm();
 		console.log('StateForm:getSuggestions: ', this.state.form, this.state.formIsValid);
 		axios
@@ -291,7 +292,8 @@ export default class BuzonCiudadano extends Component {
 			});
 		}
 		const spinner = <CustomSpinner color="blue" />;
-
+		console.log('suggestions: ', this.state.suggestions);
+		console.log('sortSuggestion: ', this.state.suggestions.suggestionData);
 		const list = this.state.suggestions.map((sgt) => (
 			<Buzon
 				key={sgt.id}
@@ -311,30 +313,14 @@ export default class BuzonCiudadano extends Component {
 						title="Buzón ciudadano"
 						description="Visualice y realice sugerencias de una manera sencilla."
 						image={require('../../assets/images/Buzon/buzon.png')}
+						showButtons={this.state.showButtons}
+						get={this.getSuggestions}
+						add={() => this.setState({ addSuggestion: true, showButtons: false })}
+						isAdmin={this.state.isAdmin}
 					/>
 					<CardItem bordered>
 						<View style={styles.cardBody}>
-							<View style={styles.btns}>
-								<View style={styles.btn}>
-									<Text style={{ fontSize: 20 }}>Recargar</Text>
-									<TouchableOpacity onPress={() => this.getSuggestions()}>
-										<Image
-											style={{ height: 30, width: 30, resizeMode: 'contain' }}
-											source={require('../../assets/images/Refresh/refresh.png')}
-										/>
-									</TouchableOpacity>
-								</View>
-								<View style={styles.btn}>
-									<Text style={{ fontSize: 20 }}>Agregar sugerencia</Text>
-									<TouchableOpacity onPress={() => this.setState({ addSuggestion: true })}>
-										<Image
-											style={{ height: 30, width: 30, resizeMode: 'contain' }}
-											source={require('../../assets/images/Add/add.png')}
-										/>
-									</TouchableOpacity>
-								</View>
-							</View>
-							{this.state.loading ? spinner : list}
+							{this.state.loading ? spinner : <View style={styles.scrollDataList}>{list}</View>}
 						</View>
 					</CardItem>
 				</Card>
@@ -416,5 +402,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		margin: 5,
 		borderRadius: 5
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		flexWrap: 'wrap',
 	}
 });

@@ -86,7 +86,8 @@ export default class Actividades extends Component {
 		isAdmin: true,
 		image: null,
 		fileNameImage: null,
-		imageFormData: null
+		imageFormData: null,
+		showButtons: true
 	};
 
 	async componentDidMount() {
@@ -137,7 +138,7 @@ export default class Actividades extends Component {
 	}
 
 	getActivities = () => {
-		this.setState({ loading: true, addAct: false });
+		this.setState({ loading: true, addAct: false, showButtons: true });
 		axios
 			.get('/activities.json?auth=' + this.state.token)
 			.then((res) => {
@@ -370,30 +371,14 @@ export default class Actividades extends Component {
 						title="Calendario de actividades"
 						description="Visualice, agregue y edite actividades relevantes."
 						image={require('../../assets/images/Noticia/noticia.png')}
+						showButtons={this.state.showButtons}
+						get={this.getActivities}
+						add={() => this.setState({ addAct: true, showButtons: false })}
+						isAdmin={this.state.isAdmin}
 					/>
 					<CardItem bordered>
 						<View style={styles.cardBody}>
-							<View style={styles.btns}>
-								<View style={styles.btn}>
-									<Text style={{ fontSize: 20 }}>Recargar</Text>
-									<TouchableOpacity onPress={() => this.getActivities()}>
-										<Image
-											style={{ height: 30, width: 30, resizeMode: 'contain' }}
-											source={require('../../assets/images/Refresh/refresh.png')}
-										/>
-									</TouchableOpacity>
-								</View>
-								{this.state.isAdmin && <View style={styles.btn}>
-									<Text style={{ fontSize: 20 }}>Agregar actividad</Text>
-									<TouchableOpacity onPress={() => this.setState({ addAct: true })}>
-										<Image
-											style={{ height: 30, width: 30, resizeMode: 'contain' }}
-											source={require('../../assets/images/Add/add.png')}
-										/>
-									</TouchableOpacity>
-								</View>}
-							</View>
-							{this.state.loading ? spinner: list}
+							{this.state.loading ? spinner: <View style={styles.scrollDataList}>{list}</View>}
 						</View>
 					</CardItem>
 				</Card>
@@ -487,5 +472,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		margin: 5,
 		borderRadius: 5
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		flexWrap: 'wrap',
 	}
 });
