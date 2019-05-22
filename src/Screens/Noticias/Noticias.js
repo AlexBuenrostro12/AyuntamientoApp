@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Platform, Text, Image, Alert, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -59,9 +59,10 @@ FCM.on(FCMEvent.RefreshToken, (token) => {
 
 const theme = {
 	commonFlex: '1',
-	customMarginValue: '5px'
+	customMarginValue: '5px',
+	backgroundColor: '#00a19a'
 };
-
+const { height, width } = Dimensions.get('window');
 const StyledSafeArea = styled.SafeAreaView`flex: ${theme.commonFlex};`;
 
 const StyledContainer = styled.View`
@@ -72,8 +73,6 @@ const StyledContainer = styled.View`
 `;
 
 const StyledHeader = styled.View``;
-
-const StyledMainScroll = styled.ScrollView``;
 
 const StyledNoticias = styled.View`
 	flex: ${theme.commonFlex};
@@ -151,7 +150,8 @@ export default class Noticias extends Component {
 		notificationToken: null,
 		fcmTokens: [],
 		allReadyToNotification: false,
-		showButtons: true,
+		notifications: true,
+		showLikeIcons: true,
 	};
 
 	async componentDidMount() {
@@ -244,7 +244,7 @@ export default class Noticias extends Component {
 	};
 	//Get news
 	getNews = () => {
-		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null, showButtons: true });
+		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null });
 		axios
 			.get('/news.json?auth=' + this.state.token)
 			.then((res) => {
@@ -256,7 +256,7 @@ export default class Noticias extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, news: fetchedNews });
+				this.setState({ loading: false, news: fetchedNews.reverse() });
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
@@ -477,9 +477,18 @@ export default class Noticias extends Component {
 			});
 		}
 	};
+
+	actOrDescNotification = () => {
+		this.setState({ notifications: !this.state.notifications })
+	};
+
+	changeDisplay = () => {
+		this.setState({ showLikeIcons: !this.state.showLikeIcons })
+	};
+
 	render() {
 		console.log('Noticias.js:props: ', this.props);
-		const list = this.state.news.map((nw) => (
+		const list = this.state.news.map((nw, index) => (
 			<Noticia
 				key={nw.id}
 				id={nw.id}
@@ -487,7 +496,9 @@ export default class Noticias extends Component {
 				isAdmin={this.state.isAdmin}
 				refresh={this.getNews}
 				data={nw.newData}
+				index={index + 1}
 				describe={this.props}
+				showLikeIcons={this.state.showLikeIcons}
 			/>
 		));
 		const spinner = <CustomSpinner color="blue" />;
@@ -498,26 +509,31 @@ export default class Noticias extends Component {
 				config: this.state.form[key]
 			});
 		}
+		const title = (
+			<Card style={{ flex: 1, margin: 0 }}>
+				<CustomCardItemTitle
+					title="NOTICIAS"
+					description="Las Noticias más 
+					relevantes de tu gobierno ciudadano."
+					info="Delice hacia abajo, para las noticias mas antiguas."
+					image={require('../../assets/images/Noticia/noticia.png')}
+				/>
+			</Card>
+		);
+		const body = (
+			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start'}}>
+					<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>	
+							<StyledCardBody>
+								{this.state.loading ? spinner : <View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>{list}</View>}
+							</StyledCardBody>
+					</ScrollView>
+			</Card>
+		);
 		const noticias = (
-			<StyledNoticias>
-				<Card>
-					<CustomCardItemTitle
-						title="Noticias"
-						description="Las noticias más 
-                            relebantes de Tecalitlán a tu alcance."
-						image={require('../../assets/images/Noticia/noticia.png')}
-						showButtons={this.state.showButtons}
-						get={this.getNews}
-						add={() => this.setState({ addNew: true, showButtons: false })}
-						isAdmin={this.state.isAdmin}
-					/>
-					<CardItem bordered>
-						<StyledCardBody>
-							{this.state.loading ? spinner : <View style={styles.scrollDataList}>{list}</View>}
-						</StyledCardBody>
-					</CardItem>
-				</Card>
-			</StyledNoticias>
+			<View style={{ flex: 1, margin: 10 }}>
+				{title}
+				{body}
+			</View>
 		);
 		const addNew = (
 			<View style={styles.body}>
@@ -563,12 +579,23 @@ export default class Noticias extends Component {
 			<StyledSafeArea>
 				<StyledContainer>
 					<StyledHeader>
-						<HeaderToolbar open={this.props} title="Noticias" />
+						<HeaderToolbar 
+							open={this.props} 
+							title="Noticias" 
+							color="#00a19a"
+							titleOfAdd="Nueva noticia"
+							get={this.getNews}
+							add={() => this.setState({ addNew: true })}
+							isAdmin={this.state.isAdmin} 
+							notifications={this.actOrDescNotification}
+							actOrDesc={this.state.notifications}
+							changeDisplay={this.changeDisplay}
+							showLikeIcons={this.state.showLikeIcons} />
 					</StyledHeader>
-					<StatusBar color="#FEA621" />
-					<StyledMainScroll>
+					<StatusBar color="#00847b" />
+					<View style={{ flex: 1 }}>
 						<ThemeProvider theme={theme}>{!this.state.addNew ? noticias : addNew}</ThemeProvider>
-					</StyledMainScroll>
+					</View>
 				</StyledContainer>
 			</StyledSafeArea>
 		);
@@ -593,10 +620,15 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center'
 	},
-	scrollDataList: {
+	scrollDataListIcons: {
 		flex: 1,
 		justifyContent: 'space-between',
 		flexDirection: 'row',
 		flexWrap: 'wrap',
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'column',
 	}
 });

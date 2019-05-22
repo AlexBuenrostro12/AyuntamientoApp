@@ -149,7 +149,7 @@ export default class Actividades extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, activities: fetchedActivities });
+				this.setState({ loading: false, activities: fetchedActivities.reverse() });
 			})
 			.catch((err) => {
 				this.setState({ loading: false });

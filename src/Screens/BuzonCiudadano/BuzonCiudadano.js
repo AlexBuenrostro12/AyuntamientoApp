@@ -46,7 +46,7 @@ export default class BuzonCiudadano extends Component {
 				value: '',
 				validation: {
 					minLength: 1,
-					maxLength: 35
+					maxLength: 40
 				},
 				valid: false
 			},
@@ -66,7 +66,7 @@ export default class BuzonCiudadano extends Component {
 				value: '',
 				validation: {
 					minLength: 1,
-					maxLength: 15
+					maxLength: 20
 				},
 				valid: false
 			},
@@ -76,7 +76,7 @@ export default class BuzonCiudadano extends Component {
 				value: '',
 				validation: {
 					minLength: 1,
-					maxLength: 55
+					maxLength: 800
 				},
 				valid: false
 			},
@@ -165,7 +165,7 @@ export default class BuzonCiudadano extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, suggestions: fetchedSuggestions });
+				this.setState({ loading: false, suggestions: fetchedSuggestions.reverse() });
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
@@ -316,7 +316,7 @@ export default class BuzonCiudadano extends Component {
 						showButtons={this.state.showButtons}
 						get={this.getSuggestions}
 						add={() => this.setState({ addSuggestion: true, showButtons: false })}
-						isAdmin={this.state.isAdmin}
+						isAdmin={true}
 					/>
 					<CardItem bordered>
 						<View style={styles.cardBody}>

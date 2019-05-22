@@ -12,7 +12,9 @@ export default class Noticia extends Component {
 		imagen: null,
 		itemKey: null,
 		showItemCard: false,
-		deleted: false
+		deleted: false,
+		count: -1,
+		data: []
 	};
 
 	clickedListHandler = (identifier, key) => {
@@ -86,60 +88,36 @@ export default class Noticia extends Component {
 		this.props.refresh();
 	};
 
-	render() {
+	componentDidMount() {
 		const data = [];
 		const obj = {};
 		for (let dataName in this.props.data) {
 			if (dataName === 'noticia') {
 				obj.title = this.props.data[dataName];
 			}
-			if (dataName === 'imagen'){
+			if (dataName === 'imagen') {
 				obj.imagen = this.props.data[dataName];
 			}
+			if (dataName === 'fecha') {	
+				const fecha = this.props.data[dataName].split('T', 1);
+				obj.fecha = fecha;
+			}
 		}
+		const oddORnot = (this.props.index % 2);
+		let odd = null;
+		if(oddORnot === 1)
+			odd = false;
+		else
+			odd = true;
+		obj.odd = odd;
 		data.push(obj);
-		const listData = <ListData data={data} id={this.props.id} clicked={this.clickedListHandler} />;
+		this.setState({ data: data });
+	}
+
+	render() {
+		
+		const listData = <ListData showLikeIcons={this.props.showLikeIcons} data={this.state.data} id={this.props.id} clicked={this.clickedListHandler} />;
 
 		return <View>{listData}</View>
 	}
 }
-
-const styles = StyleSheet.create({
-	btnsAdm: {
-		flex: 1,
-		flexDirection: 'row',
-		justifyContent: 'flex-end'
-	},
-	titleContainer: {
-		flex: 1,
-		flexDirection: 'row',
-		justifyContent: 'space-between'
-	},
-	btnsAdmImg: {
-		height: 30,
-		width: 30,
-		resizeMode: 'contain',
-		marginLeft: 2
-	},
-	image: {
-		resizeMode: 'contain',
-		height: 160,
-		width: 200,
-		alignSelf: 'center'
-	},
-	title: {
-		fontSize: 16,
-		fontWeight: 'bold',
-		color: 'black'
-	},
-	direction: {
-		fontSize: 14,
-		fontWeight: 'normal',
-		color: 'black'
-	},
-	header: {
-		flex: 1,
-		flexDirection: 'column',
-		justifyContent: 'space-between'
-	}
-});

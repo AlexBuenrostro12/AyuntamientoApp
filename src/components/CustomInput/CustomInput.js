@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
 import { Item, Input, Label, Textarea, DatePicker, Picker } from 'native-base';
 import { normalize } from '../AuxiliarFunctions/FontResponsive';
-import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 
 const customInput = ( props ) => {
     
