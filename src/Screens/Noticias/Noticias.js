@@ -510,15 +510,13 @@ export default class Noticias extends Component {
 			});
 		}
 		const title = (
-			<Card style={{ flex: 1, margin: 0 }}>
-				<CustomCardItemTitle
-					title="NOTICIAS"
-					description="Las Noticias más 
-					relevantes de tu gobierno ciudadano."
-					info="Delice hacia abajo, para las noticias mas antiguas."
-					image={require('../../assets/images/Noticia/noticia.png')}
-				/>
-			</Card>
+			<CustomCardItemTitle
+				title="NOTICIAS"
+				description="Las Noticias más 
+				relevantes de tu gobierno ciudadano."
+				info="Delice hacia abajo, para las noticias mas antiguas."
+				image={require('../../assets/images/Noticia/speaker.png')}
+			/>
 		);
 		const body = (
 			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start'}}>
@@ -530,7 +528,7 @@ export default class Noticias extends Component {
 			</Card>
 		);
 		const noticias = (
-			<View style={{ flex: 1, margin: 10 }}>
+			<View style={{ flex: 1, margin: 5 }}>
 				{title}
 				{body}
 			</View>

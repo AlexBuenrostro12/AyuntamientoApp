@@ -1,47 +1,55 @@
 import React from 'react';
 import { Text, View, Image, StyleSheet, Dimensions, ImageBackground } from 'react-native';
-import { CardItem } from 'native-base';
 
 const { height, width } = Dimensions.get('window');
 
 const customCardItemTitle = (props) => (
-	// <CardItem header bordered style={{ flex: 1 }}>
-			/* <View style={styles.container}> */
-		<ImageBackground style={styles.container} resizeMode='contain' source={require('../../assets/images/Preferences/banner.jpeg')}>
-				<View style={styles.buttonsContainer}>
-					{/* image */}
-					<Image style={styles.image} source={props.image} />
-				</View>
-				<View style={styles.textContainer}>
-					<Text style={styles.title}>{props.title}</Text>
-					<Text style={styles.description}>{props.description}</Text>
-					<Text style={styles.info}>{props.info}</Text>
-				</View>
-		</ImageBackground>
-			/* </View> */
-	// </CardItem>
+	<ImageBackground
+		style={styles.container}
+		resizeMode='cover'
+		source={require('../../assets/images/Preferences/banner.jpeg')}
+	>
+		<View style={styles.responsiveContainer}>
+			{/* View image */}
+			<View style={styles.buttonsContainer}>
+				<Image style={styles.image} source={props.image} />
+			</View>
+			{/* View text */}
+			<View style={styles.textContainer}>
+				<Text style={styles.title}>{props.title}</Text>
+				<Text style={styles.description}>{props.description}</Text>
+				<Text style={styles.info}>{props.info}</Text>
+			</View>
+		</View>
+	</ImageBackground>
 );
 
 export default customCardItemTitle;
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 2,
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderColor: 'gainsboro',
+		borderWidth: 2
+	},
+	responsiveContainer: {
+		flex: 1,
 		flexDirection: 'row',
-		justifyContent: 'space-between',
+		width: width * 0.95,
+		justifyContent: 'space-around'
 	},
 	textContainer: {
 		flex: 2,
 		flexDirection: 'column',
-		justifyContent: 'space-between',
-		alignContent: 'flex-start',
-		alignItems: 'flex-start',
-		marginTop: 10,
+		alignSelf: 'center',
+		justifyContent: 'space-around'
 	},
 	title: {
 		color: '#f8ae40',
 		fontSize: 18,
-		fontWeight: 'bold',
+		fontWeight: 'bold'
 	},
 	description: {
 		color: '#676766',
@@ -54,8 +62,8 @@ const styles = StyleSheet.create({
 		fontSize: 14
 	},
 	image: {
-        alignSelf: 'center',
-        resizeMode: 'contain',
+		alignSelf: 'center',
+		resizeMode: 'contain',
 		height: width / 3.5,
 		width: width / 3.5
 	},
