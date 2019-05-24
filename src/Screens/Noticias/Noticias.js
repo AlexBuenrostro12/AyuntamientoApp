@@ -152,6 +152,10 @@ export default class Noticias extends Component {
 		allReadyToNotification: false,
 		notifications: true,
 		showLikeIcons: true,
+		texToSearch: 'Buscar',
+		filtered: [],
+		showSearch: false,
+		idSearch: null
 	};
 
 	async componentDidMount() {
@@ -479,15 +483,43 @@ export default class Noticias extends Component {
 	};
 
 	actOrDescNotification = () => {
-		this.setState({ notifications: !this.state.notifications })
+		this.setState({ notifications: !this.state.notifications });
 	};
 
 	changeDisplay = () => {
-		this.setState({ showLikeIcons: !this.state.showLikeIcons })
+		this.setState({ showLikeIcons: !this.state.showLikeIcons });
 	};
-
+	searchTextHandler = (text) => {
+		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
+	};
+	filterData = (text) => {
+		if (text !== '') {
+			const filtered = [];
+			const obj = {};
+			for (let i = 0; i < this.state.news.length; i++) {
+				const element = this.state.news[i];
+				const newData = element.newData;
+				obj.id = element.id;
+				// console.log('newData: ', newData)
+				for (let key in newData) {
+					if (key === 'noticia') {
+						if (text === newData[key]) {
+							console.log('it works');
+							obj.title = newData[key];
+							obj.fecha = newData['fecha'];
+							obj.imagen = newData['imagen'];
+						}
+					}
+				}
+			}
+			filtered.push(obj);
+			console.log('filtered: ', filtered);
+			this.setState({ filtered: filtered, showSearch: true, idSearch: obj.id });
+		} else this.setState({ showSearch: false })
+	};
 	render() {
-		console.log('Noticias.js:props: ', this.props);
+		// console.log('Noticias.js:props: ', this.props);
+		// console.log('this.state.texToSearch: ', this.state.texToSearch);
 		const list = this.state.news.map((nw, index) => (
 			<Noticia
 				key={nw.id}
@@ -499,8 +531,24 @@ export default class Noticias extends Component {
 				index={index + 1}
 				describe={this.props}
 				showLikeIcons={this.state.showLikeIcons}
+				filteredData={this.state.filtered}
+				showSearch={this.state.showSearch}
 			/>
 		));
+		const filtered = (
+			<Noticia
+				key={this.state.idSearch}
+				id={this.state.idSearch}
+				token={this.state.token}
+				isAdmin={this.state.isAdmin}
+				refresh={this.getNews}
+				index={1}
+				describe={this.props}
+				showLikeIcons={this.state.showLikeIcons}
+				filteredData={this.state.filtered}
+				showSearch={this.state.showSearch}
+			/>
+		);
 		const spinner = <CustomSpinner color="blue" />;
 		const formElements = [];
 		for (let key in this.state.form) {
@@ -510,25 +558,33 @@ export default class Noticias extends Component {
 			});
 		}
 		const title = (
-			<CustomCardItemTitle
-				title="NOTICIAS"
-				description="Las Noticias más 
-				relevantes de tu gobierno ciudadano."
-				info="Delice hacia abajo, para las noticias mas antiguas."
-				image={require('../../assets/images/Noticia/speaker.png')}
-			/>
+			<ScrollView style={{ flex: 1 }}>
+				<CustomCardItemTitle
+					title="NOTICIAS"
+					description="Las Noticias más 
+					relevantes de tu gobierno ciudadano."
+					info="Delice hacia abajo, para las noticias mas antiguas."
+					image={require('../../assets/images/Noticia/speaker.png')}
+				/>
+			</ScrollView>
 		);
 		const body = (
-			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start'}}>
-					<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>	
-							<StyledCardBody>
-								{this.state.loading ? spinner : <View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>{list}</View>}
-							</StyledCardBody>
-					</ScrollView>
+			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
+				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+					<StyledCardBody>
+						{this.state.loading ? (
+							spinner
+						) : (
+							<View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
+								{!this.state.showSearch ? list : filtered}
+							</View>
+						)}
+					</StyledCardBody>
+				</ScrollView>
 			</Card>
 		);
 		const noticias = (
-			<View style={{ flex: 1, margin: 5 }}>
+			<View style={{ flex: 1 }}>
 				{title}
 				{body}
 			</View>
@@ -577,21 +633,25 @@ export default class Noticias extends Component {
 			<StyledSafeArea>
 				<StyledContainer>
 					<StyledHeader>
-						<HeaderToolbar 
-							open={this.props} 
-							title="Noticias" 
+						<HeaderToolbar
+							open={this.props}
+							title="Noticias"
 							color="#00a19a"
 							titleOfAdd="Nueva noticia"
 							get={this.getNews}
 							add={() => this.setState({ addNew: true })}
-							isAdmin={this.state.isAdmin} 
+							isAdmin={this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
 							changeDisplay={this.changeDisplay}
-							showLikeIcons={this.state.showLikeIcons} />
+							showLikeIcons={this.state.showLikeIcons}
+							changed={(text) => this.searchTextHandler(text)}
+							value={this.state.texToSearch}
+							search={this.filterData}
+						/>
 					</StyledHeader>
 					<StatusBar color="#00847b" />
-					<View style={{ flex: 1 }}>
+					<View style={{ flex: 1, margin: 5 }}>
 						<ThemeProvider theme={theme}>{!this.state.addNew ? noticias : addNew}</ThemeProvider>
 					</View>
 				</StyledContainer>
@@ -622,11 +682,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'space-between',
 		flexDirection: 'row',
-		flexWrap: 'wrap',
+		flexWrap: 'wrap'
 	},
 	scrollDataList: {
 		flex: 1,
 		justifyContent: 'space-between',
-		flexDirection: 'column',
+		flexDirection: 'column'
 	}
 });

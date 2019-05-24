@@ -1,12 +1,20 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Text, Image, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import IconMenu from '../../UI/IconMenu/IconMenu';
-import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
+import { Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
+import CustomInput from '../CustomInput/CustomInput';
 
 const { height, width } = Dimensions.get('window');
 
 export default class HeaderToolbar extends React.Component {
-	state = {};
+	state = {
+		search: false,
+		texToSearch: ''
+	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
+
 	render() {
 		const preferenceMenu = (
 			<TouchableOpacity style={{ marginLeft: 15 }}>
@@ -79,21 +87,17 @@ export default class HeaderToolbar extends React.Component {
 		);
 
 		const search = (
-			<TouchableOpacity>
+			<TouchableOpacity onPress={() => this.startSearch()}>
 				<Image style={styles.settings} source={require('../../assets/images/Search/search.png')} />
 			</TouchableOpacity>
 		);
 
-		return (
+		const contentBar = (
 			<View
 				style={{
 					flex: 1,
 					flexDirection: 'row',
-					justifyContent: 'space-between',
-					height: height / 11,
-					width: width,
-					backgroundColor: this.props.color ? this.props.color : '#78888D',
-					paddingLeft: 5
+					justifyContent: 'space-between'
 				}}
 			>
 				<View style={styles.contentLeft}>
@@ -108,6 +112,46 @@ export default class HeaderToolbar extends React.Component {
 					{search}
 					{preferenceMenu}
 				</View>
+			</View>
+		);
+		const searBar = (
+			<View
+				style={{
+					flex: 1,
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					backgroundColor: 'white',
+					marginRight: 5,
+					marginBottom: 5,
+					marginTop: 5,
+					borderRadius: 2,
+				}}
+			>
+				<TouchableOpacity onPress={() => this.startSearch()}>
+					<Image style={styles.settings} source={require('../../assets/images/Preferences/playback.jpeg')} />
+				</TouchableOpacity>
+				<View style={{ flex: 1, alignSelf: 'center' }}>
+					<CustomInput 
+						itemType="InlineLabel"
+						value={this.props.value}
+						changed={this.props.changed} />
+				</View>
+			</View>
+		);
+		return (
+			<View
+				style={{
+					flex: 1,
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					height: height / 11,
+					width: width,
+					backgroundColor: this.props.color ? this.props.color : '#78888D',
+					paddingLeft: 5
+				}}
+			>
+				{!this.state.search ? contentBar : <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding' enabled>{searBar}</KeyboardAvoidingView>}
 			</View>
 		);
 	}

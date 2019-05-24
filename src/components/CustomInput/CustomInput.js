@@ -15,6 +15,13 @@ const customInput = ( props ) => {
         </View>
     );
     switch (props.itemType) {
+        case 'InlineLabel': 
+            input = (
+                <Item inlineLabel>
+                    <Input value={props.value} onChangeText={props.changed}/>
+                </Item>  
+            );
+        break;
         case 'FloatingLabel':
             input = (
                 <Item floatingLabel>

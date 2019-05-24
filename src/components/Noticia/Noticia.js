@@ -14,7 +14,7 @@ export default class Noticia extends Component {
 		showItemCard: false,
 		deleted: false,
 		count: -1,
-		data: []
+		data: [],
 	};
 
 	clickedListHandler = (identifier, key) => {
@@ -115,8 +115,12 @@ export default class Noticia extends Component {
 	}
 
 	render() {
-		
-		const listData = <ListData showLikeIcons={this.props.showLikeIcons} data={this.state.data} id={this.props.id} clicked={this.clickedListHandler} />;
+		console.log('props.filteredData: ', this.props.filteredData)
+		const listData = <ListData 
+							showLikeIcons={this.props.showLikeIcons} 
+							data={!this.props.showSearch ? this.state.data : this.props.filteredData} 
+							id={this.props.id} 
+							clicked={this.clickedListHandler} />;
 
 		return <View>{listData}</View>
 	}

@@ -4,12 +4,13 @@ import { Text, View, Image, StyleSheet, Dimensions, ImageBackground } from 'reac
 const { height, width } = Dimensions.get('window');
 
 const customCardItemTitle = (props) => (
-	<ImageBackground
-		style={styles.container}
-		resizeMode='cover'
-		source={require('../../assets/images/Preferences/banner.jpeg')}
-	>
-		<View style={styles.responsiveContainer}>
+		<ImageBackground
+			style={styles.container}
+			resizeMode="contain"
+			width={width * 0.95}
+			source={require('../../assets/images/Preferences/banner.jpeg')}
+		>
+			<View style={styles.responsiveContainer}>
 			{/* View image */}
 			<View style={styles.buttonsContainer}>
 				<Image style={styles.image} source={props.image} />
@@ -20,8 +21,8 @@ const customCardItemTitle = (props) => (
 				<Text style={styles.description}>{props.description}</Text>
 				<Text style={styles.info}>{props.info}</Text>
 			</View>
-		</View>
-	</ImageBackground>
+			</View>
+		</ImageBackground>
 );
 
 export default customCardItemTitle;
@@ -31,20 +32,21 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
+		borderWidth: 2,
 		borderColor: 'gainsboro',
-		borderWidth: 2
 	},
 	responsiveContainer: {
 		flex: 1,
 		flexDirection: 'row',
-		width: width * 0.95,
-		justifyContent: 'space-around'
+		width: width * 0.99,
+		justifyContent: 'space-around',
 	},
 	textContainer: {
 		flex: 2,
 		flexDirection: 'column',
 		alignSelf: 'center',
-		justifyContent: 'space-around'
+		justifyContent: 'space-around',
+		paddingHorizontal: 6,
 	},
 	title: {
 		color: '#f8ae40',
@@ -71,7 +73,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		paddingHorizontal: 6,
 	},
 	iconImage: {
 		height: 45,
