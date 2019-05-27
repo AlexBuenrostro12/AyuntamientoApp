@@ -29,7 +29,7 @@ export default class HeaderToolbar extends React.Component {
 								<View style={styles.menuOption}>
 									<Image
 										style={styles.menuOptionImage}
-										source={require('../../assets/images/Preferences/refresh.jpeg')}
+										source={require('../../assets/images/Preferences/refresh.png')}
 									/>
 									<Text style={styles.menuOptionText}>Actualizar</Text>
 								</View>
@@ -41,7 +41,7 @@ export default class HeaderToolbar extends React.Component {
 								<View style={styles.menuOption}>
 									<Image
 										style={styles.menuOptionImage}
-										source={require('../../assets/images/Preferences/add.jpeg')}
+										source={require('../../assets/images/Preferences/add.png')}
 									/>
 									<Text style={styles.menuOptionText}>{this.props.titleOfAdd}</Text>
 								</View>
@@ -53,7 +53,7 @@ export default class HeaderToolbar extends React.Component {
 								<View style={styles.menuOption}>
 									<Image
 										style={styles.menuOptionImage}
-										source={require('../../assets/images/Preferences/notifications.jpeg')}
+										source={require('../../assets/images/Preferences/notify.png')}
 									/>
 									<Text style={styles.menuOptionText}>
 										{this.props.actOrDesc ? 'Notificationes act.' : 'Notificaciones desc.'}
@@ -69,15 +69,51 @@ export default class HeaderToolbar extends React.Component {
 										style={styles.menuOptionImage}
 										source={
 											this.props.showLikeIcons ? (
-												require('../../assets/images/Preferences/list.jpeg')
+												require('../../assets/images/Preferences/list.png')
 											) : (
-												require('../../assets/images/Preferences/icons.jpeg')
+												require('../../assets/images/Preferences/icons.png')
 											)
 										}
 									/>
 									<Text style={styles.menuOptionText}>
 										{this.props.showLikeIcons ? 'Ver como lista' : 'Ver como iconos'}
 									</Text>
+								</View>
+							</MenuOption>
+						)}
+					</MenuOptions>
+				</Menu>
+			</TouchableOpacity>
+        );
+        
+        const preferenceMenuAdd = (
+			<TouchableOpacity style={{ marginLeft: 15 }}>
+				<Menu>
+					<MenuTrigger>
+						<Image style={styles.settings} source={require('../../assets/images/settings/settings.png')} />
+					</MenuTrigger>
+					<MenuOptions>
+						{/* Cancelar */}
+						{this.props.isAdmin && (
+							<MenuOption onSelect={() => this.props.goBack()}>
+								<View style={styles.menuOption}>
+									<Image
+										style={styles.menuOptionImage}
+										source={require('../../assets/images/Preferences/back.png')}
+									/>
+									<Text style={styles.menuOptionText}>Cancelar</Text>
+								</View>
+							</MenuOption>
+						)}
+						{/* Publicar */}
+						{this.props.isAdmin && (
+							<MenuOption onSelect={() => this.props.save()}>
+								<View style={styles.menuOption}>
+									<Image
+										style={styles.menuOptionImage}
+										source={require('../../assets/images/Preferences/add.png')}
+									/>
+									<Text style={styles.menuOptionText}>Publicar</Text>
 								</View>
 							</MenuOption>
 						)}
@@ -109,8 +145,8 @@ export default class HeaderToolbar extends React.Component {
 					</View>
 				</View>
 				<View style={styles.contentRight}>
-					{search}
-					{preferenceMenu}
+					{!this.props.isAdd && search}
+					{!this.props.isAdd ? preferenceMenu : preferenceMenuAdd}
 				</View>
 			</View>
 		);
@@ -120,7 +156,7 @@ export default class HeaderToolbar extends React.Component {
 					flex: 1,
 					flexDirection: 'row',
 					justifyContent: 'space-between',
-					alignItems: 'center',
+                    alignItems: 'center',
 					backgroundColor: 'white',
 					marginRight: 5,
 					marginBottom: 5,
@@ -129,7 +165,7 @@ export default class HeaderToolbar extends React.Component {
 				}}
 			>
 				<TouchableOpacity onPress={() => this.startSearch()}>
-					<Image style={styles.settings} source={require('../../assets/images/Preferences/playback.jpeg')} />
+					<Image style={styles.settings} source={require('../../assets/images/Preferences/back.png')} />
 				</TouchableOpacity>
 				<View style={{ flex: 1, alignSelf: 'center' }}>
 					<CustomInput 
@@ -193,9 +229,11 @@ const styles = StyleSheet.create({
 		paddingRight: 1
 	},
 	settings: {
-		height: height / 28,
-		width: height / 28,
-		resizeMode: 'contain'
+		height: height / 30,
+		width: height / 30,
+        resizeMode: 'contain',
+        alignSelf: 'center',
+        
 	},
 	menuOption: {
 		flex: 1,

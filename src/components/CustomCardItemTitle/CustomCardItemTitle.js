@@ -6,7 +6,7 @@ const { height, width } = Dimensions.get('window');
 const customCardItemTitle = (props) => (
 		<ImageBackground
 			style={styles.container}
-			resizeMode="contain"
+			resizeMode="cover"
 			width={width * 0.95}
 			source={require('../../assets/images/Preferences/banner.jpeg')}
 		>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 	responsiveContainer: {
 		flex: 1,
 		flexDirection: 'row',
-		width: width * 0.99,
+		width: width * 0.95,
 		justifyContent: 'space-around',
 	},
 	textContainer: {

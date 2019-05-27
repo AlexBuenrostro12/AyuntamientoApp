@@ -50,7 +50,7 @@ export default class DescribreData extends Component {
 											</View>
 										)}
 									</View>
-									<Text style={styles.direction}>{data.direccion}</Text>
+									<Text style={styles.direction}>{(data.direccion).toUpperCase()}</Text>
 								</View>
 							</CardItem>
 							<CardItem>
@@ -325,22 +325,26 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 22,
 		fontWeight: 'bold',
-		color: 'black'
+		color: 'black',
+		fontFamily: 'AvenirNextLTPro-Regular',
 	},
 	direction: {
 		fontSize: 16,
 		fontWeight: 'normal',
-		color: 'black'
+		color: 'black',
+		fontFamily: 'AvenirNextLTPro-Regular',
 	},
 	descripcion: {
 		fontSize: 16,
 		fontWeight: 'normal',
-		color: 'black'
+		color: 'black',
+		fontFamily: 'AvenirNextLTPro-Regular',
 	},
 	fecha: {
 		fontSize: 16,
 		fontWeight: 'bold',
-		color: 'black'
+		color: 'black',
+		fontFamily: 'AvenirNextLTPro-Regular',
 	},
 	header: {
 		flex: 1,
