@@ -115,10 +115,9 @@ export default class Noticia extends Component {
 	}
 
 	render() {
-		console.log('props.filteredData: ', this.props.filteredData)
 		const listData = <ListData 
 							showLikeIcons={this.props.showLikeIcons} 
-							data={!this.props.showSearch ? this.state.data : this.props.filteredData} 
+							data={this.state.data}
 							id={this.props.id} 
 							clicked={this.clickedListHandler} />;
 

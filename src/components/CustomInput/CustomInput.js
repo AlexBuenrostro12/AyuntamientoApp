@@ -18,7 +18,7 @@ const customInput = ( props ) => {
         case 'InlineLabel': 
             input = (
                 <Item inlineLabel>
-                    <Input value={props.value} onChangeText={props.changed}/>
+                    <Input placeholder={props.holder} value={props.value} onChangeText={props.changed}/>
                 </Item>  
             );
         break;

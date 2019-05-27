@@ -152,10 +152,7 @@ export default class Noticias extends Component {
 		allReadyToNotification: false,
 		notifications: true,
 		showLikeIcons: true,
-		texToSearch: 'Buscar',
-		filtered: [],
-		showSearch: false,
-		idSearch: null
+		texToSearch: '',
 	};
 
 	async componentDidMount() {
@@ -273,7 +270,6 @@ export default class Noticias extends Component {
 		axios
 			.get('/fcmtokens.json?auth=' + this.state.token)
 			.then((res) => {
-				console.log('Noticias, resfcmTokens: ', res);
 				for (let key in res.data) {
 					fetchedfcmTokens.push({
 						...res.data[key],
@@ -286,7 +282,6 @@ export default class Noticias extends Component {
 					let fcmToken = element.tokenData[Object.keys(element.tokenData)];
 					fcmtkns[i] = fcmToken;
 				}
-				console.log('fcmtkns: ', fcmtkns);
 				this.setState({ fcmTokens: fcmtkns }, () => this.verifyfcmTokens());
 			})
 			.catch((err) => {});
@@ -294,13 +289,11 @@ export default class Noticias extends Component {
 	//Verify tokens
 	verifyfcmTokens = () => {
 		let exist = false;
-		console.log('fetchedfcmToken: ', this.state.fcmTokens);
 		//Check if this token already exist in db
 		for (let i = 0; i < this.state.fcmTokens.length; i++) {
 			const element = this.state.fcmTokens[i];
 			if (element === this.state.notificationToken) exist = true;
 		}
-		console.log('Element: ', exist);
 
 		if (!exist) {
 			const formData = {};
@@ -308,11 +301,9 @@ export default class Noticias extends Component {
 			const fcmtoken = {
 				tokenData: formData
 			};
-			console.log('Noticias.js: formData, ', formData);
 			axios
 				.post('/fcmtokens.json?auth=' + this.state.token, fcmtoken)
 				.then((response) => {
-					console.log('Noticias.js: responsefcm, ', response);
 					this.getFCMTokens();
 				})
 				.catch((error) => {
@@ -376,7 +367,6 @@ export default class Noticias extends Component {
 
 	loadPhotoHandler = () => {
 		ImagePicker.showImagePicker(this.state.options, (response) => {
-			console.log('ResponseImagePicker: ', response);
 
 			if (response.didCancel) {
 				console.log('User cancelled image picker');
@@ -494,32 +484,24 @@ export default class Noticias extends Component {
 	};
 	filterData = (text) => {
 		if (text !== '') {
-			const filtered = [];
-			const obj = {};
-			for (let i = 0; i < this.state.news.length; i++) {
-				const element = this.state.news[i];
-				const newData = element.newData;
-				obj.id = element.id;
-				// console.log('newData: ', newData)
-				for (let key in newData) {
-					if (key === 'noticia') {
-						if (text === newData[key]) {
-							console.log('it works');
-							obj.title = newData[key];
-							obj.fecha = newData['fecha'];
-							obj.imagen = newData['imagen'];
-						}
-					}
+			let ban = false;
+			const filteredNews = this.state.news.filter(nw => {
+				const filterNew = nw.newData['noticia'];
+				const filterDate = nw.newData['fecha'].split('T', 1);
+				console.log('filterNew: ', filterNew);
+				console.log('filterDate: ', filterDate[0]);
+				if (filterNew.includes(text) || filterDate[0].includes(text)){
+					ban = true;
+					return nw;
 				}
+			});
+			if (ban) {
+				this.setState({ news: filteredNews });
 			}
-			filtered.push(obj);
-			console.log('filtered: ', filtered);
-			this.setState({ filtered: filtered, showSearch: true, idSearch: obj.id });
-		} else this.setState({ showSearch: false })
+		} else this.getNews();
 	};
 	render() {
-		// console.log('Noticias.js:props: ', this.props);
-		// console.log('this.state.texToSearch: ', this.state.texToSearch);
+		
 		const list = this.state.news.map((nw, index) => (
 			<Noticia
 				key={nw.id}
@@ -531,24 +513,9 @@ export default class Noticias extends Component {
 				index={index + 1}
 				describe={this.props}
 				showLikeIcons={this.state.showLikeIcons}
-				filteredData={this.state.filtered}
-				showSearch={this.state.showSearch}
 			/>
 		));
-		const filtered = (
-			<Noticia
-				key={this.state.idSearch}
-				id={this.state.idSearch}
-				token={this.state.token}
-				isAdmin={this.state.isAdmin}
-				refresh={this.getNews}
-				index={1}
-				describe={this.props}
-				showLikeIcons={this.state.showLikeIcons}
-				filteredData={this.state.filtered}
-				showSearch={this.state.showSearch}
-			/>
-		);
+		
 		const spinner = <CustomSpinner color="blue" />;
 		const formElements = [];
 		for (let key in this.state.form) {
@@ -576,7 +543,7 @@ export default class Noticias extends Component {
 							spinner
 						) : (
 							<View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
-								{!this.state.showSearch ? list : filtered}
+								{list}
 							</View>
 						)}
 					</StyledCardBody>

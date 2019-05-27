@@ -134,7 +134,8 @@ export default class HeaderToolbar extends React.Component {
 				<View style={{ flex: 1, alignSelf: 'center' }}>
 					<CustomInput 
 						itemType="InlineLabel"
-						value={this.props.value}
+                        value={this.props.value}
+                        holder="Buscar"
 						changed={this.props.changed} />
 				</View>
 			</View>

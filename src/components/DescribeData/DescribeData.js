@@ -26,10 +26,8 @@ export default class DescribreData extends Component {
 	};
 
 	render() {
-		console.log('DrecibeData.js: ', this.props);
 		const { getParam, navigate } = this.props.navigation;
 		const data = getParam('data', null);
-		console.log('DrecibeData.js: ', data);
 		if (data.imagen) this.getFullImageSize(data.imagen);
 		let card = null;
 		switch (data.type) {
