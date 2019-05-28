@@ -3,6 +3,7 @@ import { View, SafeAreaView, ScrollView, StyleSheet, Dimensions, TouchableOpacit
 import { Card, CardItem, Body } from 'native-base';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '.././CustomButton/CustomButton';
+import HeaderToolbar from '../HeaderToolbar/HeaderToolbar';
 
 export default class DescribreData extends Component {
 	state = {
@@ -50,7 +51,7 @@ export default class DescribreData extends Component {
 											</View>
 										)}
 									</View>
-									<Text style={styles.direction}>{(data.direccion).toUpperCase()}</Text>
+									<Text style={styles.direction}>{data.direccion.toUpperCase()}</Text>
 								</View>
 							</CardItem>
 							<CardItem>
@@ -214,38 +215,43 @@ export default class DescribreData extends Component {
 					<View>
 						<Card>
 							<CardItem header>
-								<View style={styles.titleContainer}>
-									<Text style={styles.title}>{data.actividad}</Text>
-									{data.isAdmin && (
-										<View style={styles.btnsAdm}>
-											<TouchableOpacity onPress={() => data.deleteItem()}>
-												<Image
-													style={styles.btnsAdmImg}
-													source={require('../../assets/images/Delete/delete.png')}
-												/>
-											</TouchableOpacity>
-										</View>
-									)}
+								<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+									<View style={styles.titleContainer}>
+										<Text style={styles.title}>{data.actividad}</Text>
+										{data.isAdmin && (
+											<View style={styles.btnsAdm}>
+												<TouchableOpacity onPress={() => data.deleteItem()}>
+													<Image
+														style={styles.btnsAdmImg}
+														source={require('../../assets/images/Delete/delete.png')}
+													/>
+												</TouchableOpacity>
+											</View>
+										)}
+									</View>
+									<Text style={styles.direction}>{data.direccion.toUpperCase()}</Text>
 								</View>
 							</CardItem>
 							<CardItem>
 								<Body>
+									<Text style={styles.fecha}>
+										Fecha: {data.fecha} / Hora: {data.hora}
+									</Text>
+									<Text style={styles.descripcion}>{data.descripcion}</Text>
 									<TouchableOpacity
 										style={{ alignSelf: 'center' }}
 										onPress={() => this.setState({ zoomImage: true })}
 									>
 										<Image style={styles.image} source={{ uri: data.imagen }} />
 									</TouchableOpacity>
-									<Text style={styles.descripcion}>{data.descripcion}</Text>
 								</Body>
 							</CardItem>
-							<CardItem footer>
-								<Text style={styles.fecha}>
-									Fecha: {data.fecha} / Hora: {data.hora}
-								</Text>
-							</CardItem>
 							<View style={styles.button}>
-								<CustomButton style="DangerBorder" name="Cerrar" clicked={() => navigate('Actividades')} />
+								<CustomButton
+									style="DangerBorder"
+									name="Cerrar"
+									clicked={() => navigate('Actividades')}
+								/>
 							</View>
 						</Card>
 					</View>
@@ -273,10 +279,20 @@ export default class DescribreData extends Component {
 			</View>
 		);
 		return (
-			<SafeAreaView style={styles.container}>
-				<View style={styles.view}>
-					<StatusBar color="#FEA621" />
-					{!this.state.zoomImage && <ScrollView style={styles.body}>{card}</ScrollView>}
+			<SafeAreaView style={{ flex: 1 }}>
+				<View style={styles.container}>
+					<View>
+						<HeaderToolbar
+							open={this.props}
+							title="Drscripción"
+							color="#f8ae40"
+							// here i go
+						/>
+					</View>
+					<StatusBar color="#f39028" />
+					{!this.state.zoomImage && <View style={{ flex: 1, margin: 5 }}>
+					 		<ScrollView>{card}</ScrollView>
+					</View>}
 					{this.state.zoomImage && <ScrollView style={{ flex: 1, margin: 2 }}>{image && image}</ScrollView>}
 				</View>
 			</SafeAreaView>
@@ -288,7 +304,10 @@ const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		flexDirection: 'column',
+		flexWrap: 'wrap',
+		overflow: 'scroll'
 	},
 	view: {
 		flex: 1
@@ -326,25 +345,26 @@ const styles = StyleSheet.create({
 		fontSize: 22,
 		fontWeight: 'bold',
 		color: 'black',
-		fontFamily: 'AvenirNextLTPro-Regular',
+		fontFamily: 'AvenirNextLTPro-Regular'
 	},
 	direction: {
-		fontSize: 16,
-		fontWeight: 'normal',
+		fontSize: 17,
+		fontStyle: 'italic',
 		color: 'black',
-		fontFamily: 'AvenirNextLTPro-Regular',
+		fontFamily: 'AvenirNextLTPro-Regular'
 	},
 	descripcion: {
-		fontSize: 16,
+		fontSize: 15,
 		fontWeight: 'normal',
 		color: 'black',
-		fontFamily: 'AvenirNextLTPro-Regular',
+		fontFamily: 'AvenirNextLTPro-Regular'
 	},
 	fecha: {
-		fontSize: 16,
-		fontWeight: 'bold',
+		fontSize: 17,
+		fontWeight: 'normal',
+		fontStyle: 'italic',
 		color: 'black',
-		fontFamily: 'AvenirNextLTPro-Regular',
+		fontFamily: 'AvenirNextLTPro-Regular'
 	},
 	header: {
 		flex: 1,

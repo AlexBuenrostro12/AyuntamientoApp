@@ -5,7 +5,8 @@ import ListData from '../ListData/ListData';
 
 export default class Noticia extends Component {
 	state = {
-		actividad: null,
+        actividad: null,
+        direccion: null,
 		hora: null,
 		descripcion: null,
 		fecha: null,
@@ -21,7 +22,8 @@ export default class Noticia extends Component {
 		for (let dataName in this.props.data) {
 			const fecha = this.props.data['fecha'].split('T', 1);
 			if (this.props.data[dataName] === identifier) {
-				this.setState({ actividad: this.props.data[dataName] });
+                this.setState({ actividad: this.props.data[dataName] });
+                this.setState({ direccion: this.props.data['direccion'] });
 				this.setState({ hora: this.props.data['hora'] });
 				this.setState({ descripcion: this.props.data['descripcion'] });
 				this.setState({ fecha: fecha });
@@ -35,7 +37,8 @@ export default class Noticia extends Component {
 	goToDescribeData = () => {
 		if (this.state.showItemCard) {
 			const obj = {
-				actividad: this.state.actividad,
+                actividad: this.state.actividad,
+                direccion: this.state.direccion,
 				hora: this.state.hora,
 				descripcion: this.state.descripcion,
 				fecha: this.state.fecha,

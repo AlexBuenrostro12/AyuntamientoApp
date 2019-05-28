@@ -129,11 +129,11 @@ export default class HeaderToolbar extends React.Component {
 		);
 		const calendar = (
 			!this.props.showCalendar ? 
-				<TouchableOpacity style={{ marginRight: 20 }} onPress={() => this.props.calendar()}>
+				<TouchableOpacity style={{ marginRight: 20 }} onPress={() => this.props.calendar('refresh')}>
 					<Image style={styles.settings} source={require('../../assets/images/Preferences/calendar.png')} />
 				</TouchableOpacity>
 			: 
-				<TouchableOpacity style={{ marginRight: 20 }} onPress={() => this.props.calendar()}>
+				<TouchableOpacity style={{ marginRight: 20 }} onPress={() => this.props.calendar('refresh')}>
 					<Image style={styles.settings} source={require('../../assets/images/Preferences/back-white.png')} />
 				</TouchableOpacity>
 		);
@@ -156,7 +156,7 @@ export default class HeaderToolbar extends React.Component {
 				</View>
 				<View style={styles.contentRight}>
 					{!this.props.isAdd && this.props.calendar && calendar}
-					{!this.props.isAdd && search}
+					{!this.props.isAdd && !this.props.showCalendar && search}
 					{!this.props.isAdd ? preferenceMenu : preferenceMenuAdd}
 				</View>
 			</View>

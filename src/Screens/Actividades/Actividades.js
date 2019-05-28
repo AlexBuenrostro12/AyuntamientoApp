@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
-import {
-	View,
-	StyleSheet,
-	SafeAreaView,
-	ScrollView,
-	Text,
-	TouchableOpacity,
-	Image,
-	Alert,
-	TimePickerAndroid
-} from 'react-native';
+import { View, StyleSheet, SafeAreaView, ScrollView, Alert, TimePickerAndroid, Dimensions } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import axiosCloudinary from 'axios';
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
@@ -22,6 +13,8 @@ import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
 import Actividad from '../../components/Actividad/Actividad';
+
+const { height, width } = Dimensions.get('window');
 
 export default class Actividades extends Component {
 	state = {
@@ -38,6 +31,12 @@ export default class Actividades extends Component {
 					maxLength: 55
 				},
 				valid: false
+			},
+			direccion: {
+				itemType: 'PickerDirection',
+				holder: 'Dirección',
+				value: 'Direccion 1',
+				valid: true
 			},
 			fecha: {
 				itemType: 'Date',
@@ -92,6 +91,7 @@ export default class Actividades extends Component {
 		notifications: true,
 		texToSearch: '',
 		showCalendar: false,
+		calendarDates: {},
 	};
 
 	async componentDidMount() {
@@ -151,12 +151,28 @@ export default class Actividades extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, activities: fetchedActivities.reverse() });
+				this.setState({ loading: false, activities: fetchedActivities.reverse() }, () => this.getDatesOfAct());
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
 			});
 	};
+
+	// Get the dates to put into the calendar
+	getDatesOfAct = () => { 
+		const dates = [];
+		this.state.activities.filter((act) => {
+			const filterDate = act.activityData['fecha'].split('T', 1);
+			const date = filterDate[0];
+			dates.push(date);
+		});
+		this.makeFormatToDates(dates);
+	};
+	// make the format object to be able to put the marks in the calendar
+	makeFormatToDates = (dates) => {
+		var obj = dates.reduce((c, v) => Object.assign(c, {[v]: { selected: true, marked: true, selectedColor: '#676766' }}), {});
+		this.setState({ calendarDates : obj});
+	} 
 
 	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
@@ -283,10 +299,10 @@ export default class Actividades extends Component {
 
 	loadPhotoHandler = (show) => {
 		console.log('show: ', show);
-		if (show === 'library'){
+		if (show === 'library') {
 			ImagePicker.launchImageLibrary(this.state.options, (response) => {
 				console.log('ResponseImagePicker: ', response);
-	
+
 				if (response.didCancel) {
 					console.log('User cancelled image picker');
 				} else if (response.error) {
@@ -312,7 +328,7 @@ export default class Actividades extends Component {
 		} else {
 			ImagePicker.launchCamera(this.state.options, (response) => {
 				console.log('ResponseImagePicker: ', response);
-	
+
 				if (response.didCancel) {
 					console.log('User cancelled image picker');
 				} else if (response.error) {
@@ -336,7 +352,6 @@ export default class Actividades extends Component {
 				} // else
 			});
 		}
-		
 	};
 
 	uploadPhotoHandler = () => {
@@ -407,11 +422,12 @@ export default class Actividades extends Component {
 			}
 		} else this.getActivities();
 	};
-	showCalendar = () => {
+	showCalendar = (refresh) => {
 		this.setState({ showCalendar: !this.state.showCalendar });
+		if(refresh === 'refresh')
+			this.getActivities();
 	};
 	render() {
-		console.log(this.state);
 		const formElements = [];
 		for (let key in this.state.form) {
 			formElements.push({
@@ -433,6 +449,18 @@ export default class Actividades extends Component {
 				showLikeIcons={this.state.showLikeIcons}
 			/>
 		));
+		const calendar = (
+			<Calendar
+				style={styles.calendar}
+				current={new Date()}
+				minDate={'2012-05-10'}
+				maxDate={'2024-05-29'}
+				firstDay={1}
+				markedDates={this.state.calendarDates}
+				hideArrows={false}
+				onDayPress={(day) => { this.showCalendar(); this.filterData(day.dateString); }}
+			/>
+		);
 
 		const title = (
 			<ScrollView style={{ flex: 1 }}>
@@ -453,7 +481,7 @@ export default class Actividades extends Component {
 							spinner
 						) : (
 							<View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
-								{list}
+								{!this.state.showCalendar ? list : calendar}
 							</View>
 						)}
 					</View>
@@ -585,5 +613,14 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center'
-	}
+	},
+	calendar: {
+		borderTopWidth: 1,
+		paddingTop: 5,
+		paddingBottom: 5,
+		borderBottomWidth: 1,
+		borderColor: '#676766',
+		height: width / .80,
+	  },
 });
+
