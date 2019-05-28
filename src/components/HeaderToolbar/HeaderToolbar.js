@@ -127,6 +127,16 @@ export default class HeaderToolbar extends React.Component {
 				<Image style={styles.settings} source={require('../../assets/images/Search/search.png')} />
 			</TouchableOpacity>
 		);
+		const calendar = (
+			!this.props.showCalendar ? 
+				<TouchableOpacity style={{ marginRight: 20 }} onPress={() => this.props.calendar()}>
+					<Image style={styles.settings} source={require('../../assets/images/Preferences/calendar.png')} />
+				</TouchableOpacity>
+			: 
+				<TouchableOpacity style={{ marginRight: 20 }} onPress={() => this.props.calendar()}>
+					<Image style={styles.settings} source={require('../../assets/images/Preferences/back-white.png')} />
+				</TouchableOpacity>
+		);
 
 		const contentBar = (
 			<View
@@ -145,6 +155,7 @@ export default class HeaderToolbar extends React.Component {
 					</View>
 				</View>
 				<View style={styles.contentRight}>
+					{!this.props.isAdd && this.props.calendar && calendar}
 					{!this.props.isAdd && search}
 					{!this.props.isAdd ? preferenceMenu : preferenceMenuAdd}
 				</View>

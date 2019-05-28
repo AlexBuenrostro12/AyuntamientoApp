@@ -529,8 +529,8 @@ export default class Noticias extends Component {
 				isAdmin={this.state.isAdmin}
 				refresh={this.getNews}
 				data={nw.newData}
-				index={index + 1}
 				describe={this.props}
+				index={index + 1}
 				showLikeIcons={this.state.showLikeIcons}
 			/>
 		));

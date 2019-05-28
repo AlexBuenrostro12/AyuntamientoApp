@@ -17,9 +17,9 @@ import axiosCloudinary from 'axios';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
+import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import CustomButton from '../../components/CustomButton/CustomButton';
 import axios from '../../../axios-ayuntamiento';
 import Actividad from '../../components/Actividad/Actividad';
 
@@ -78,7 +78,7 @@ export default class Actividades extends Component {
 			title: 'Elige una opción',
 			takePhotoButtonTitle: 'Abrir camara.',
 			chooseFromLibraryButtonTitle: 'Abrir galeria.',
-			maxWidth: 800, 
+			maxWidth: 800,
 			maxHeight: 800
 		},
 		formIsValid: false,
@@ -87,7 +87,11 @@ export default class Actividades extends Component {
 		image: null,
 		fileNameImage: null,
 		imageFormData: null,
-		showButtons: true
+		showButtons: true,
+		showLikeIcons: true,
+		notifications: true,
+		texToSearch: '',
+		showCalendar: false,
 	};
 
 	async componentDidMount() {
@@ -107,10 +111,8 @@ export default class Actividades extends Component {
 			if (token && parseExpiresIn > now) {
 				// charge actividades
 				this.setState({ token: token });
-				if (email !== 'false')
-					this.setState({ isAdmin: true });
-				else
-					this.setState({ isAdmin: false });
+				if (email !== 'false') this.setState({ isAdmin: true });
+				else this.setState({ isAdmin: false });
 
 				this.getActivities();
 			} else {
@@ -154,7 +156,7 @@ export default class Actividades extends Component {
 			.catch((err) => {
 				this.setState({ loading: false });
 			});
-	}
+	};
 
 	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
@@ -221,9 +223,14 @@ export default class Actividades extends Component {
 				.post('/activities.json?auth=' + this.state.token, activity)
 				.then((response) => {
 					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
-					Alert.alert('Actividades', 'Actividad enviada con exito!', [ { text: 'Ok', onPress: () => this.getActivities() } ], {
-						cancelable: false
-					});
+					Alert.alert(
+						'Actividades',
+						'Actividad enviada con exito!',
+						[ { text: 'Ok', onPress: () => this.getActivities() } ],
+						{
+							cancelable: false
+						}
+					);
 				})
 				.catch((error) => {
 					this.setState({ loading: false });
@@ -274,32 +281,62 @@ export default class Actividades extends Component {
 		}
 	};
 
-	loadPhotoHandler = () => {
-		ImagePicker.showImagePicker(this.state.options, (response) => {
-			console.log('ResponseImagePicker: ', response);
-
-			if (response.didCancel) {
-				console.log('User cancelled image picker');
-			} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
-			} else {
-				//Destructuring response object
-				const { fileName, fileSize, type, data, uri } = response;
-				//Preset
-				const UPLOAD_PRESET_NAME = 'ayuntamiento';
-				//Image form data
-				const imageFormData = new FormData();
-				imageFormData.append('file', {
-					name: fileName,
-					size: fileSize,
-					type: type,
-					data: data,
-					uri: uri
-				});
-				imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
-				this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
-			} // else
-		});
+	loadPhotoHandler = (show) => {
+		console.log('show: ', show);
+		if (show === 'library'){
+			ImagePicker.launchImageLibrary(this.state.options, (response) => {
+				console.log('ResponseImagePicker: ', response);
+	
+				if (response.didCancel) {
+					console.log('User cancelled image picker');
+				} else if (response.error) {
+					console.log('ImagePicker Error: ', response.error);
+				} else {
+					//Destructuring response object
+					const { fileName, fileSize, type, data, uri } = response;
+					//Preset
+					const UPLOAD_PRESET_NAME = 'ayuntamiento';
+					//Image form data
+					const imageFormData = new FormData();
+					imageFormData.append('file', {
+						name: fileName,
+						size: fileSize,
+						type: type,
+						data: data,
+						uri: uri
+					});
+					imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
+					this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
+				} // else
+			});
+		} else {
+			ImagePicker.launchCamera(this.state.options, (response) => {
+				console.log('ResponseImagePicker: ', response);
+	
+				if (response.didCancel) {
+					console.log('User cancelled image picker');
+				} else if (response.error) {
+					console.log('ImagePicker Error: ', response.error);
+				} else {
+					//Destructuring response object
+					const { fileName, fileSize, type, data, uri } = response;
+					//Preset
+					const UPLOAD_PRESET_NAME = 'ayuntamiento';
+					//Image form data
+					const imageFormData = new FormData();
+					imageFormData.append('file', {
+						name: fileName,
+						size: fileSize,
+						type: type,
+						data: data,
+						uri: uri
+					});
+					imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
+					this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
+				} // else
+			});
+		}
+		
 	};
 
 	uploadPhotoHandler = () => {
@@ -322,7 +359,7 @@ export default class Actividades extends Component {
 					const { data } = response;
 					console.log('ResponseDataCloudinary: ', data);
 					//Destructuring data
-					const { url, eager, } = data;
+					const { url, eager } = data;
 					//Send to form image the value of url
 					this.inputChangeHandler(url, 'imagen');
 					console.log('stateofForm: ', this.state.form);
@@ -343,8 +380,36 @@ export default class Actividades extends Component {
 			});
 		}
 	};
-
-
+	actOrDescNotification = () => {
+		this.setState({ notifications: !this.state.notifications });
+	};
+	changeDisplay = () => {
+		this.setState({ showLikeIcons: !this.state.showLikeIcons });
+	};
+	searchTextHandler = (text) => {
+		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
+	};
+	filterData = (text) => {
+		if (text !== '') {
+			let ban = false;
+			const filteredActivities = this.state.activities.filter((act) => {
+				const filterAct = act.activityData['actividad'];
+				const filterDate = act.activityData['fecha'].split('T', 1);
+				console.log('filterNew: ', filterAct);
+				console.log('filterDate: ', filterDate[0]);
+				if (filterAct.includes(text) || filterDate[0].includes(text)) {
+					ban = true;
+					return act;
+				}
+			});
+			if (ban) {
+				this.setState({ activities: filteredActivities });
+			}
+		} else this.getActivities();
+	};
+	showCalendar = () => {
+		this.setState({ showCalendar: !this.state.showCalendar });
+	};
 	render() {
 		console.log(this.state);
 		const formElements = [];
@@ -355,44 +420,63 @@ export default class Actividades extends Component {
 			});
 		}
 		spinner = <CustomSpinner color="blue" />;
-		const list = this.state.activities.map((act) => <Actividad 
-															key={act.id} 
-															id={act.id} 
-															token={this.state.token}
-															isAdmin={this.state.isAdmin} 
-															refresh={this.getActivities} 
-															data={act.activityData}
-															describe={this.props} />);
+		const list = this.state.activities.map((act, index) => (
+			<Actividad
+				key={act.id}
+				id={act.id}
+				token={this.state.token}
+				isAdmin={this.state.isAdmin}
+				refresh={this.getActivities}
+				data={act.activityData}
+				describe={this.props}
+				index={index + 1}
+				showLikeIcons={this.state.showLikeIcons}
+			/>
+		));
 
-		const body = (
-			<View style={styles.body}>
-				<Card>
-					<CustomCardItemTitle
-						title="Calendario de actividades"
-						description="Visualice, agregue y edite actividades relevantes."
-						image={require('../../assets/images/Noticia/noticia.png')}
-						showButtons={this.state.showButtons}
-						get={this.getActivities}
-						add={() => this.setState({ addAct: true, showButtons: false })}
-						isAdmin={this.state.isAdmin}
-					/>
-					<CardItem bordered>
-						<View style={styles.cardBody}>
-							{this.state.loading ? spinner: <View style={styles.scrollDataList}>{list}</View>}
-						</View>
-					</CardItem>
-				</Card>
-			</View>
+		const title = (
+			<ScrollView style={{ flex: 1 }}>
+				<CustomCardItemTitle
+					title="ACTIVIDADES"
+					description="Consulte las actividades y efemerides que celebramos en nuestro gobierno ciudadano."
+					info="Delice hacia abajo, para leer las actividades a futuro."
+					image={require('../../assets/images/Descripcion/descripcion.png')}
+				/>
+			</ScrollView>
 		);
 
-		const addAct = (
-			<View style={styles.body}>
-				<Card>
-					<CustomCardItemTitle
-						title="Agregar actividad"
-						description="Agregue una actividad"
-						image={require('../../assets/images/Descripcion/descripcion.png')}
-					/>
+		const body = (
+			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
+				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+						{this.state.loading ? (
+							spinner
+						) : (
+							<View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
+								{list}
+							</View>
+						)}
+					</View>
+				</ScrollView>
+			</Card>
+		);
+		const activiades = (
+			<View style={{ flex: 1 }}>
+				{title}
+				{body}
+			</View>
+		);
+		const addActTitle = (
+			<View style={{ flex: 1, marginBottom: 10 }}>
+				<CustomAddBanner
+					title="NUEVA ACTIVIDAD"
+					image={require('../../assets/images/Preferences/add-orange.png')}
+				/>
+			</View>
+		);
+		const addActBody = (
+			<Card style={styles.addAct}>
+				<ScrollView style={{ flex: 1 }}>
 					<CardItem bordered>
 						<View style={styles.cardBody}>
 							{formElements.map((e) => (
@@ -403,25 +487,21 @@ export default class Actividades extends Component {
 									value={e.config.value}
 									changed={(text) => this.inputChangeHandler(text, e.id)}
 									changed1={() => this.getTime(e.id)}
-									loadPhoto={() => this.loadPhotoHandler()}
+									loadPhoto={this.loadPhotoHandler}
 									image={this.state.image}
 									name={this.state.fileNameImage}
 								/>
 							))}
-							{!this.state.loading ? <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-								<CustomButton 
-									style="Success" 
-									name="Agregar" 
-									clicked={() => this.uploadPhotoHandler()} />
-								<CustomButton
-									style="Danger"
-									name="Regresar"
-									clicked={() => this.getActivities()}
-								/>
-							</View> : spinner}
 						</View>
 					</CardItem>
-				</Card>
+				</ScrollView>
+			</Card>
+		);
+		const addAct = (
+			<View style={{ flex: 1, flexDirection: 'column' }}>
+				{addActTitle}
+				{this.state.loading && spinner}
+				{addActBody}
 			</View>
 		);
 
@@ -431,11 +511,28 @@ export default class Actividades extends Component {
 					<View>
 						<HeaderToolbar
 							open={this.props}
-							title={!this.state.addAct ? 'Actividades' : 'Agregar actividad'}
+							title={'Actividades'}
+							color="#f8ae40"
+							titleOfAdd="Nueva Actividad"
+							get={this.getActivities}
+							add={() => this.setState({ addAct: true })}
+							goBack={() => this.setState({ addAct: false })}
+							isAdd={this.state.addAct}
+							save={this.uploadPhotoHandler}
+							isAdmin={this.state.isAdmin}
+							notifications={this.actOrDescNotification}
+							actOrDesc={this.state.notifications}
+							changeDisplay={this.changeDisplay}
+							showLikeIcons={this.state.showLikeIcons}
+							changed={(text) => this.searchTextHandler(text)}
+							value={this.state.texToSearch}
+							search={this.filterData}
+							calendar={this.showCalendar}
+							showCalendar={this.state.showCalendar}
 						/>
 					</View>
-					<StatusBar color="#FEA621" />
-					<ScrollView>{!this.state.addAct ? body : addAct}</ScrollView>
+					<StatusBar color="#f39028" />
+					<View style={{ flex: 1, margin: 10 }}>{!this.state.addAct ? activiades : addAct}</View>
 				</View>
 			</SafeAreaView>
 		);
@@ -456,11 +553,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		margin: 5
 	},
-	cardBody: {
-		flex: 1,
-		flexDirection: 'column',
-		justifyContent: 'center'
-	},
 	btns: {
 		flex: 1,
 		flexDirection: 'column'
@@ -473,10 +565,25 @@ const styles = StyleSheet.create({
 		margin: 5,
 		borderRadius: 5
 	},
-	scrollDataList: {
+	scrollDataListIcons: {
 		flex: 1,
 		justifyContent: 'space-between',
 		flexDirection: 'row',
-		flexWrap: 'wrap',
+		flexWrap: 'wrap'
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'column'
+	},
+	addAct: {
+		flex: 2,
+		flexDirection: 'column',
+		justifyContent: 'flex-start'
+	},
+	cardBody: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center'
 	}
 });

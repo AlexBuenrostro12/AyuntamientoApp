@@ -12,8 +12,6 @@ export default class Noticia extends Component {
 		imagen: null,
 		itemKey: null,
 		showItemCard: false,
-		deleted: false,
-		count: -1,
 		data: [],
 	};
 
