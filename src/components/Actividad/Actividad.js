@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert, View } from 'react-native';
+import RNCalendarEvents from 'react-native-calendar-events';
 import axios from '../../../axios-ayuntamiento';
 import ListData from '../ListData/ListData';
 
 export default class Noticia extends Component {
 	state = {
-        actividad: null,
-        direccion: null,
+		actividad: null,
+		direccion: null,
 		hora: null,
 		descripcion: null,
 		fecha: null,
@@ -22,8 +23,8 @@ export default class Noticia extends Component {
 		for (let dataName in this.props.data) {
 			const fecha = this.props.data['fecha'].split('T', 1);
 			if (this.props.data[dataName] === identifier) {
-                this.setState({ actividad: this.props.data[dataName] });
-                this.setState({ direccion: this.props.data['direccion'] });
+				this.setState({ actividad: this.props.data[dataName] });
+				this.setState({ direccion: this.props.data['direccion'] });
 				this.setState({ hora: this.props.data['hora'] });
 				this.setState({ descripcion: this.props.data['descripcion'] });
 				this.setState({ fecha: fecha });
@@ -37,19 +38,59 @@ export default class Noticia extends Component {
 	goToDescribeData = () => {
 		if (this.state.showItemCard) {
 			const obj = {
-                actividad: this.state.actividad,
-                direccion: this.state.direccion,
+				actividad: this.state.actividad,
+				direccion: this.state.direccion,
 				hora: this.state.hora,
 				descripcion: this.state.descripcion,
 				fecha: this.state.fecha,
 				imagen: this.state.imagen,
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
-				type: 'actividad'
+				type: 'Actividades',
+				barProps: { title: 'Actividades', status: '#f39028', bar: '#f8ae40' },
+				saveEvent: this.saveEventIntoCalendarHandler
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
 		}
+	};
+
+	showAlert = () => {
+		Alert.alert('Actividad', '¡Actividad agregada al calendario!', [ { text: 'Ok' } ], {
+			cancelable: false
+		});
+	};
+
+	saveEventIntoCalendarHandler = () => {
+		RNCalendarEvents.authorizeEventStore().then((status) => {
+			console.log('status: ', status);
+			if (status === 'authorized') {
+				RNCalendarEvents.authorizationStatus().then((status) => {
+					console.log('status: ', status);
+					if (status === 'authorized') {
+						const startDate = new Date(this.state.fecha.toString());
+						startDate.setDate(startDate.getDate() + 1);
+						const endDate = new Date(Date.parse(startDate) + 3600000);
+						console.log('startDate: ', startDate, endDate);
+						RNCalendarEvents.saveEvent(this.state.actividad.toString(), {
+							startDate: startDate,
+							endDate: endDate,
+							location: 'Tecalitlán, Jal.',
+							notes: this.state.descripcion.toString()
+						})
+							.then((status) => {
+								if(status) {
+									console.log('statusSend: ', status);
+									this.showAlert();
+								}
+							})
+							.catch((err) => {
+								console.log('status: ', status);
+							});
+					}
+				});
+			}
+		});
 	};
 
 	alertCheckDeleteItem = () => {

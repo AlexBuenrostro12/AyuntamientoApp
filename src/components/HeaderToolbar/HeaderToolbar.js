@@ -16,6 +16,7 @@ export default class HeaderToolbar extends React.Component {
 	};
 
 	render() {
+		//Main menu
 		const preferenceMenu = (
 			<TouchableOpacity style={{ marginLeft: 15 }}>
 				<Menu>
@@ -85,7 +86,7 @@ export default class HeaderToolbar extends React.Component {
 				</Menu>
 			</TouchableOpacity>
         );
-        
+        //Add note
         const preferenceMenuAdd = (
 			<TouchableOpacity style={{ marginLeft: 15 }}>
 				<Menu>
@@ -117,6 +118,31 @@ export default class HeaderToolbar extends React.Component {
 								</View>
 							</MenuOption>
 						)}
+					</MenuOptions>
+				</Menu>
+			</TouchableOpacity>
+		);
+		//Describe data preferences menu
+		const preferenceMenuDescribeData = (
+			<TouchableOpacity style={{ marginLeft: 15 }}>
+				<Menu>
+					<MenuTrigger>
+						<Image style={styles.settings} source={require('../../assets/images/settings/settings.png')} />
+					</MenuTrigger>
+					<MenuOptions>
+						{/* Go back */}
+						{this.props.describeGoBack && (
+							<MenuOption onSelect={() => this.props.describeGoBack()}>
+								<View style={styles.menuOption}>
+									<Image
+										style={styles.menuOptionImage}
+										source={require('../../assets/images/Preferences/back.png')}
+									/>
+									<Text style={styles.menuOptionText}>Cancelar</Text>
+								</View>
+							</MenuOption>
+						)}
+						{/* Here could be other options */}
 					</MenuOptions>
 				</Menu>
 			</TouchableOpacity>
@@ -155,9 +181,14 @@ export default class HeaderToolbar extends React.Component {
 					</View>
 				</View>
 				<View style={styles.contentRight}>
-					{!this.props.isAdd && this.props.calendar && calendar}
-					{!this.props.isAdd && !this.props.showCalendar && search}
-					{!this.props.isAdd ? preferenceMenu : preferenceMenuAdd}
+					{/* check if can show the calendar */}
+					{!this.props.describeGoBack && !this.props.isAdd && this.props.calendar && calendar}
+					{/* check if can show the search bar */}
+					{!this.props.describeGoBack && !this.props.isAdd && !this.props.showCalendar && search}
+					{/* check if it's not describeScreen and then check if show menu or menuAdd */}
+					{!this.props.describeGoBack && (!this.props.isAdd ? preferenceMenu : preferenceMenuAdd)}
+					{/* check if show menu of describeData */}
+					{this.props.describeGoBack && preferenceMenuDescribeData}
 				</View>
 			</View>
 		);

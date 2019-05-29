@@ -41,7 +41,8 @@ export default class Noticia extends Component {
 				fecha: this.state.fecha,
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
-				type: 'noticia',
+				type: 'Noticias',
+				barProps: { title: 'Noticias', status: '#00847b', bar: '#00a19a' }
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
