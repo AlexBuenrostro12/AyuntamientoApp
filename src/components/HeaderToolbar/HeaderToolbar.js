@@ -142,6 +142,30 @@ export default class HeaderToolbar extends React.Component {
 								</View>
 							</MenuOption>
 						)}
+						{/* Send by email */}
+						{true && (
+							<MenuOption onSelect={() => null}>
+								<View style={styles.menuOption}>
+									<Image
+										style={styles.menuOptionImage}
+										source={require('../../assets/images/Preferences/email.png')}
+									/>
+									<Text style={styles.menuOptionText}>Enviar por correo</Text>
+								</View>
+							</MenuOption>
+						)}
+						{/* Comment to adminstrator */}
+						{true && (
+							<MenuOption onSelect={() => null}>
+								<View style={styles.menuOption}>
+									<Image
+										style={styles.menuOptionImage}
+										source={require('../../assets/images/Preferences/alert.png')}
+									/>
+									<Text style={styles.menuOptionText}>Comenatar al admin.</Text>
+								</View>
+							</MenuOption>
+						)}
 						{/* Here could be other options */}
 					</MenuOptions>
 				</Menu>

@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { View, SafeAreaView, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Image, Text, BackHandler } from 'react-native';
+import {
+	View,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	Dimensions,
+	TouchableOpacity,
+	Image,
+	Text,
+	BackHandler
+} from 'react-native';
 import { Card, CardItem, Body } from 'native-base';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '.././CustomButton/CustomButton';
@@ -14,7 +24,7 @@ export default class DescribreData extends Component {
 		data: null,
 		navigate: null,
 		loaded: false,
-		nativeGoBAck: null,
+		nativeGoBAck: null
 	};
 	static navigationOptions = {
 		header: null,
@@ -33,25 +43,24 @@ export default class DescribreData extends Component {
 	componentDidMount() {
 		this.getDataHandler();
 		BackHandler.addEventListener('hardwareBackPress', this.goBackHandler);
-	};
+	}
 	componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.goBackHandler);
-    }
+		BackHandler.removeEventListener('hardwareBackPress', this.goBackHandler);
+	}
 	getDataHandler = () => {
 		const { getParam, navigate } = this.props.navigation;
 		const data = getParam('data', null);
 		if (data.imagen) this.getFullImageSize(data.imagen);
-		this.setState({ data: data, navigate: navigate, loaded: true }, () => console.log('data: ', this.state	));
-	}
+		this.setState({ data: data, navigate: navigate, loaded: true }, () => console.log('data: ', this.state));
+	};
 	componentWillUpdate() {
-		if (!this.state.loaded)
-			this.getDataHandler();
+		if (!this.state.loaded) this.getDataHandler();
 	}
 	// Disable the native button of return
 	goBackHandler = () => true;
-	
+
 	render() {
-		let card = image = null;
+		let card = (image = null);
 		if (this.state.data && this.state.navigate) {
 			const { data, navigate } = this.state;
 			switch (data.type) {
@@ -89,8 +98,7 @@ export default class DescribreData extends Component {
 										</TouchableOpacity>
 									</Body>
 								</CardItem>
-								<CardItem footer>
-								</CardItem>
+								<CardItem footer />
 							</Card>
 						</View>
 					);
@@ -198,7 +206,9 @@ export default class DescribreData extends Component {
 								<CardItem>
 									<Body>
 										<Text style={styles.fecha}>Descripción</Text>
-										<Text style={styles.descripcion}>{JSON.stringify(data.tipo).toUpperCase()}</Text>
+										<Text style={styles.descripcion}>
+											{JSON.stringify(data.tipo).toUpperCase()}
+										</Text>
 										<Text style={styles.descripcion}>{data.descripcion}</Text>
 										<TouchableOpacity
 											style={{ alignSelf: 'center' }}
@@ -281,7 +291,7 @@ export default class DescribreData extends Component {
 					card = null;
 					break;
 			}
-	
+
 			image = (
 				<View style={{ flex: 1, paddingTop: height * 0.08 }}>
 					<TouchableOpacity style={{ flex: 1 }} onPress={() => this.setState({ zoomImage: false })}>
@@ -307,13 +317,15 @@ export default class DescribreData extends Component {
 							open={this.props}
 							title={this.state.data && this.state.data.barProps.title}
 							color={this.state.data && this.state.data.barProps.bar}
-							describeGoBack={() => this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type))}
+							describeGoBack={() =>
+								this.setState(
+									{ loaded: false },
+									() => this.state.navigate && this.state.navigate(this.state.data.type)
+								)}
 							// here i go
 						/>
 					</View>
-					<StatusBar 
-						color={this.state.data && this.state.data.barProps.status} 
-					/>
+					<StatusBar color={this.state.data && this.state.data.barProps.status} />
 					{!this.state.zoomImage && (
 						<View style={{ flex: 1, margin: 5 }}>
 							<ScrollView>{card}</ScrollView>
