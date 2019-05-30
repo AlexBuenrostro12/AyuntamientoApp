@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, SafeAreaView, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Image, Text } from 'react-native';
+import { View, SafeAreaView, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Image, Text, BackHandler } from 'react-native';
 import { Card, CardItem, Body } from 'native-base';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '.././CustomButton/CustomButton';
@@ -14,6 +14,7 @@ export default class DescribreData extends Component {
 		data: null,
 		navigate: null,
 		loaded: false,
+		nativeGoBAck: null,
 	};
 	static navigationOptions = {
 		header: null,
@@ -31,7 +32,11 @@ export default class DescribreData extends Component {
 	};
 	componentDidMount() {
 		this.getDataHandler();
+		BackHandler.addEventListener('hardwareBackPress', this.goBackHandler);
 	};
+	componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.goBackHandler);
+    }
 	getDataHandler = () => {
 		const { getParam, navigate } = this.props.navigation;
 		const data = getParam('data', null);
@@ -42,6 +47,8 @@ export default class DescribreData extends Component {
 		if (!this.state.loaded)
 			this.getDataHandler();
 	}
+	// Disable the native button of return
+	goBackHandler = () => true;
 	
 	render() {
 		let card = image = null;
@@ -72,21 +79,18 @@ export default class DescribreData extends Component {
 								</CardItem>
 								<CardItem>
 									<Body>
+										<Text style={styles.fecha}>Fecha: {data.fecha}</Text>
+										<Text style={styles.descripcion}>{data.descripcion}</Text>
 										<TouchableOpacity
-											style={{ alignSelf: 'center' }}
+											style={{ alignSelf: 'center', marginBottom: 0.5 }}
 											onPress={() => this.setState({ zoomImage: true })}
 										>
 											<Image style={styles.image} source={{ uri: data.imagen }} />
 										</TouchableOpacity>
-										<Text style={styles.descripcion}>{data.descripcion}</Text>
 									</Body>
 								</CardItem>
 								<CardItem footer>
-									<Text style={styles.fecha}>Fecha: {data.fecha}</Text>
 								</CardItem>
-								<View style={styles.button}>
-									<CustomButton style="DangerBorder" name="Cerrar" clicked={() => navigate('Noticias')} />
-								</View>
 							</Card>
 						</View>
 					);

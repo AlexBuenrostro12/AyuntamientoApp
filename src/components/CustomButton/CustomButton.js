@@ -30,9 +30,9 @@ const customButton = (props) => {
 			button = (
 				<View style={styles.saveActivity}>
 					<View style={{ flex: 1, flexDirection: 'column', }}>
-                        <Text style={styles.saveActivityText}>{props.date}</Text>
-                        <Text style={styles.saveActivityTextInfo}>Guardar en calendario</Text>
-                    </View>
+            <Text style={styles.saveActivityText}>{props.date}</Text>
+            <Text style={styles.saveActivityTextInfo}>Guardar en calendario</Text>
+          </View>
 					<TouchableOpacity onPress={props.clicked}>
 						<Image
 							resizeMode="contain"
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 		height: width / 8
 	},
 	saveActivityText: {
-		fontSize: 22,
+		fontSize: 18,
 		fontStyle: 'normal',
 		fontWeight: 'bold',
 		color: 'white',
