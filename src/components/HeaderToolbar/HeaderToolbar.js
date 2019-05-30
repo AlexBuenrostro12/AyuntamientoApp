@@ -143,8 +143,8 @@ export default class HeaderToolbar extends React.Component {
 							</MenuOption>
 						)}
 						{/* Send by email */}
-						{true && (
-							<MenuOption onSelect={() => null}>
+						{this.props.sendEmail && (
+							<MenuOption onSelect={() => this.props.sendEmail(false)}>
 								<View style={styles.menuOption}>
 									<Image
 										style={styles.menuOptionImage}
@@ -155,8 +155,8 @@ export default class HeaderToolbar extends React.Component {
 							</MenuOption>
 						)}
 						{/* Comment to adminstrator */}
-						{true && (
-							<MenuOption onSelect={() => null}>
+						{this.props.sendEmail && (
+							<MenuOption onSelect={() => this.props.sendEmail(true)}>
 								<View style={styles.menuOption}>
 									<Image
 										style={styles.menuOptionImage}
@@ -197,9 +197,9 @@ export default class HeaderToolbar extends React.Component {
 				}}
 			>
 				<View style={styles.contentLeft}>
-					<View style={{ justifyContent: 'center', marginRight: 15 }}>
+					{this.props.open && <View style={{ justifyContent: 'center' }}>
 						<IconMenu open={this.props.open} />
-					</View>
+					</View>}
 					<View style={styles.view}>
 						<Text style={styles.text}>{this.props.title}</Text>
 					</View>
@@ -280,7 +280,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	view: {
-		justifyContent: 'center'
+		justifyContent: 'center',
+		marginLeft: 15
 	},
 	text: {
 		fontSize: 22,

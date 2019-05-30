@@ -11,6 +11,7 @@ import {
 	BackHandler
 } from 'react-native';
 import { Card, CardItem, Body } from 'native-base';
+import email from 'react-native-email';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '.././CustomButton/CustomButton';
 import HeaderToolbar from '../HeaderToolbar/HeaderToolbar';
@@ -58,6 +59,22 @@ export default class DescribreData extends Component {
 	}
 	// Disable the native button of return
 	goBackHandler = () => true;
+	//Send email 
+	emailHandler = (isToAdmin) => {
+		const { actividad, noticia, direccion, descripcion, fecha } = this.state.data;
+		if (isToAdmin) {
+			email('admin@admin.com', {
+				subject: 'Asunto',
+				body: 'Comentario'
+			}).catch(console.error)
+		} else {
+			email('tu@contacto.com', {
+				subject: actividad ? actividad : noticia,
+				body: direccion + '\n' + fecha + '\n' + descripcion
+			}).catch(console.error)
+		}
+        
+    }
 
 	render() {
 		let card = (image = null);
@@ -314,7 +331,6 @@ export default class DescribreData extends Component {
 				<View style={styles.container}>
 					<View>
 						<HeaderToolbar
-							open={this.props}
 							title={this.state.data && this.state.data.barProps.title}
 							color={this.state.data && this.state.data.barProps.bar}
 							describeGoBack={() =>
@@ -322,6 +338,7 @@ export default class DescribreData extends Component {
 									{ loaded: false },
 									() => this.state.navigate && this.state.navigate(this.state.data.type)
 								)}
+							sendEmail={this.emailHandler}
 							// here i go
 						/>
 					</View>
