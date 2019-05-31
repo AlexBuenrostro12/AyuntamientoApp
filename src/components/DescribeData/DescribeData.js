@@ -67,7 +67,7 @@ export default class DescribreData extends Component {
 				body: 'Comentario'
 			}).catch(console.error);
 		} else {
-			const { actividad, noticia, asunto, fecha, hora, descripcion, direccion, nombre, email, comentario  } = this.state.data;
+			const { actividad, noticia, asunto, fecha, hora, tipo, descripcion, direccion, municipio, nombre, email, comentario, destino, placa, chofer, horaSalida, horaRegreso, telefono  } = this.state.data;
 			let subject = (body = null);
 			switch (type) {
 				case 'Actividades':
@@ -81,6 +81,14 @@ export default class DescribreData extends Component {
 				case 'Sugerencias':
 						subject = asunto;
 						body = nombre + '\n' + fecha + '\n' + email + '\n' + comentario;
+						break;
+				case 'Bus Escolar': 
+						subject = 'Horario';
+						body = 'Destino: ' + destino + '\n' + 'Placa: ' + placa + '\n' + 'Chofer: ' + chofer + '\n' + 'Salida: ' + horaSalida + '\n' + 'Regreso: ' + horaRegreso;
+						break;
+				case 'Incidencias': 
+						subject = asunto;
+						body = 'DESCRIPCIÓN' + '\n' + tipo  + '\n' + descripcion + '\n' + 'UBICACIÓN' + '\n' + direccion + '\n' + municipio + '\n' + fecha + '\n' + 'DATOS DE QUIEN REPORTA' + '\n' + nombre + '\n' + email + '\n' + telefono;
 						break;
 
 				default:
@@ -151,7 +159,7 @@ export default class DescribreData extends Component {
 													<Image
 														style={styles.btnsAdmImg}
 														source={require('../../assets/images/Delete/delete.png')}
-													/>Noticias
+													/>
 												</TouchableOpacity>
 											</View>
 										)}
@@ -171,7 +179,7 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
-				case 'bus':
+				case 'Bus Escolar':
 					card = (
 						<View style={{ flex: 1, marginBottom: 20, marginTop: 20 }}>
 							<Card key={data.chofer + data.horaSalida + data.destino}>
@@ -201,18 +209,11 @@ export default class DescribreData extends Component {
 								<CardItem footer>
 									<Text style={styles.fecha}>Horarios.</Text>
 								</CardItem>
-								<View style={{ flex: 1, flexGrow: 1, marginTop: 5, marginBottom: 5 }}>
-									<CustomButton
-										style="DangerBorder"
-										name="Cerrar"
-										clicked={() => navigate('Bus Escolar')}
-									/>
-								</View>
 							</Card>
 						</View>
 					);
 					break;
-				case 'incidencia':
+				case 'Incidencias':
 					card = (
 						<View key={data.itemKey}>
 							<Card>
@@ -235,7 +236,7 @@ export default class DescribreData extends Component {
 									<Body>
 										<Text style={styles.fecha}>Descripción</Text>
 										<Text style={styles.descripcion}>
-											{JSON.stringify(data.tipo).toUpperCase()}
+											{data.tipo.toUpperCase()}
 										</Text>
 										<Text style={styles.descripcion}>{data.descripcion}</Text>
 										<TouchableOpacity
@@ -257,13 +258,6 @@ export default class DescribreData extends Component {
 								<CardItem footer>
 									<Text style={styles.fecha}>Reporte de incidencia</Text>
 								</CardItem>
-								<View style={styles.button}>
-									<CustomButton
-										style="DangerBorder"
-										name="Cerrar"
-										clicked={() => navigate('Incidencias')}
-									/>
-								</View>
 							</Card>
 						</View>
 					);

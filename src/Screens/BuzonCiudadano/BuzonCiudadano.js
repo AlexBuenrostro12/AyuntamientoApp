@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { Alert, View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Alert, View, StyleSheet, ScrollView } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
-import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import Buzon from '../../components/Buzon/Buzon';
+import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
 const StyledSafeArea = styled.SafeAreaView`flex: 1;`;
 
@@ -22,8 +22,6 @@ const StyledContainer = styled.View`
 `;
 
 const StyledHeader = styled.View``;
-
-const StyledMainScroll = styled.ScrollView``;
 
 const StyledBuzon = styled.View`
 	flex: 1;
@@ -371,17 +369,16 @@ export default class BuzonCiudadano extends Component {
 			</View>
 		);
 
-		const addSugerencia = (
-			<StyledBuzon>
-				<Card>
-					<CustomCardItemTitle
-						title="Buzón ciudadano"
-						description="Realice cualquier queja 
-                                o sugerencia."
-						image={require('../../assets/images/Buzon/buzon.png')}
-					/>
+		const addSuggestionTitle = (
+			<View style={{ flex: 1, marginBottom: 10 }}>
+				<CustomAddBanner title="NUEVA SUGERENCIA" image={require('../../assets/images/Buzon/buzon.png')} />
+			</View>
+		);
+		const addSuggestionBody = (
+			<Card style={styles.add}>
+				<ScrollView style={{ flex: 1 }}>
 					<CardItem bordered>
-						<StyledForm>
+						<View style={styles.cardBody}>
 							{formElementsArray.map((formElement) => (
 								<CustomInput
 									key={formElement.id}
@@ -390,26 +387,17 @@ export default class BuzonCiudadano extends Component {
 									changed={(text) => this.inputChangedHandler(text, formElement.id)}
 								/>
 							))}
-							{!this.state.loading ? (
-								<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-									<CustomButton
-										style={this.state.btnStyle}
-										name={this.state.btnName}
-										clicked={() => this.orderHandler()}
-									/>
-									<CustomButton
-										style="Danger"
-										name="Regresar"
-										clicked={() => this.getSuggestions()}
-									/>
-								</View>
-							) : (
-								spinner
-							)}
-						</StyledForm>
+						</View>
 					</CardItem>
-				</Card>
-			</StyledBuzon>
+				</ScrollView>
+			</Card>
+		);
+		const addSugerencia = (
+			<View style={{ flex: 1, flexDirection: 'column' }}>
+				{addSuggestionTitle}
+				{this.state.loading && spinner}
+				{addSuggestionBody}
+			</View>
 		);
 		return (
 			<StyledSafeArea>
@@ -425,7 +413,7 @@ export default class BuzonCiudadano extends Component {
 							goBack={() => this.setState({ addSuggestion: false })}
 							isAdd={this.state.addSuggestion}
 							save={this.orderHandler}
-							isAdmin={this.state.isAdmin}
+							isAdmin={true}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
 							changeDisplay={this.changeDisplay}
@@ -478,4 +466,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		flexDirection: 'column'
 	},
+	add: {
+		flex: 2,
+		flexDirection: 'column', 
+		justifyContent: 'flex-start'
+	}
 });

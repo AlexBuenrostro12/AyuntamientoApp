@@ -16,6 +16,7 @@ import axios from '../../../axios-ayuntamiento';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import Incidencia from '../../components/Incidencias/Incidencia';
+import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
 export default class Incidencias extends Component {
     state = {
@@ -125,6 +126,8 @@ export default class Incidencias extends Component {
         isAdmin: null,
         urlUploadedImage: null,
         showButtons: true,
+        showLikeIcons: true,
+		texToSearch: ''
     }
 
     getCurrentDate(){
@@ -325,37 +328,70 @@ export default class Incidencias extends Component {
         }
         this.setState({ formDatosPersonales: updatedPersonalDataForm, formDatosPersonalesIsValid: formIsValid });
     }
-    loadPhotoHandler = () => {
-        ImagePicker.showImagePicker(this.state.options, (response) => {
-            console.log('Response = ', response);
-
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            }
-
-            else {
-                //Preset
-                const UPLOAD_PRESET_NAME = 'ayuntamiento';
-                const { fileName, fileSize, type, data, uri } = response;
-                //Image form data
-                const imageFormData = new FormData();
-				imageFormData.append('file', {
-					name: fileName,
-					size: fileSize,
-					type: type,
-					data: data,
-					uri: uri
-                });
-                imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
-                this.setState({
-                    incidentImage: { uri: uri },
-                    fileNameImage: response.fileName,
-                    imageFormData: imageFormData
-                });
-            }
-        });
+    loadPhotoHandler = (show) => {
+        if (show === 'library') {
+            ImagePicker.launchImageLibrary(this.state.options, (response) => {
+                console.log('Response = ', response);
+    
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                }
+    
+                else {
+                    //Preset
+                    const UPLOAD_PRESET_NAME = 'ayuntamiento';
+                    const { fileName, fileSize, type, data, uri } = response;
+                    //Image form data
+                    const imageFormData = new FormData();
+                    imageFormData.append('file', {
+                        name: fileName,
+                        size: fileSize,
+                        type: type,
+                        data: data,
+                        uri: uri
+                    });
+                    imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
+                    this.setState({
+                        incidentImage: { uri: uri },
+                        fileNameImage: response.fileName,
+                        imageFormData: imageFormData
+                    });
+                }
+            });
+        } else {
+            ImagePicker.launchCamera(this.state.options, (response) => {
+                console.log('Response = ', response);
+    
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                }
+    
+                else {
+                    //Preset
+                    const UPLOAD_PRESET_NAME = 'ayuntamiento';
+                    const { fileName, fileSize, type, data, uri } = response;
+                    //Image form data
+                    const imageFormData = new FormData();
+                    imageFormData.append('file', {
+                        name: fileName,
+                        size: fileSize,
+                        type: type,
+                        data: data,
+                        uri: uri
+                    });
+                    imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
+                    this.setState({
+                        incidentImage: { uri: uri },
+                        fileNameImage: response.fileName,
+                        imageFormData: imageFormData
+                    });
+                }
+            });
+        }
     }
     //Get incidents
     getIncidents = () => {
@@ -418,6 +454,31 @@ export default class Incidencias extends Component {
 				cancelable: false
 			});
 		}
+    };
+    
+    changeDisplay = () => {
+		this.setState({ showLikeIcons: !this.state.showLikeIcons });
+	};
+	searchTextHandler = (text) => {
+		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
+	};
+	filterData = (text) => {
+		if (text !== '') {
+			let ban = false;
+			const filteredIncidents = this.state.incidents.filter((incdt) => {
+				const filterIncident = incdt.descripcionData['asunto'];
+				const filterDate = incdt.ubicacionData['fecha'];
+				console.log('filterNew: ', filterIncident);
+				console.log('filterDate: ', filterDate);
+				if (filterIncident.includes(text) || filterDate.includes(text)) {
+					ban = true;
+					return incdt;
+				}
+			});
+			if (ban) {
+				this.setState({ incidents: filteredIncidents });
+			}
+		} else this.getIncidents();
 	};
 
     render() {
@@ -450,157 +511,156 @@ export default class Incidencias extends Component {
             });
         }
         const ubicacion = (
-            <View style={{ flex: 1, margin: 5 }}>
-                <Card>
-                    <CustomCardItemTitle
-                        title="Ubicación"
-                        description="Seleccione la localidad y
-                            la direccion de la incidencia."
-                        image={require('../../assets/images/Ubicacion/search.png')} />
-
-                    <CardItem bordered>
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            {formElementsUbicacion.map(element => (
-                                <Ubicacion
-                                    key={element.id}
-                                    itemType={element.config.itemType}
-                                    value={element.config.value}
-                                    isValid={element.config.valid}
-                                    changed={(text) => this.inputChangeLocationHandler(text, element.id)} />
-                            ))}
-                        </View>
-                    </CardItem>
-                </Card>
+            <View style={{ flex: 1, marginBottom: 5 }}>
+                <CustomCardItemTitle
+                    title="Ubicación"
+                    description="Seleccione la localidad y la dirección."
+                    image={require('../../assets/images/Ubicacion/search.png')} />
+                <CardItem bordered>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                        {formElementsUbicacion.map(element => (
+                            <Ubicacion
+                                key={element.id}
+                                itemType={element.config.itemType}
+                                value={element.config.value}
+                                isValid={element.config.valid}
+                                changed={(text) => this.inputChangeLocationHandler(text, element.id)} />
+                        ))}
+                    </View>
+                </CardItem>
             </View>
         );
         const multimedia = (
-            <View style={{ flex: 1, margin: 5 }}>
-                <Card>
-                    <CustomCardItemTitle
-                        title="Multimedia"
-                        description="Seleccione una imagen desde su galeria
-                            o directamente de la camara para conocer la incidencia."
-                        image={require('../../assets/images/Multimedia/multimedia.png')} />
-
-                    <CardItem bordered>
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            {formElementsMultimedia.map(element => (
-                                <Multimedia
-                                    key={element.id}
-                                    itemType={element.config.itemType}
-                                    holder={element.config.holder}
-                                    loadPhoto={() => this.loadPhotoHandler()}
-                                    image={this.state.incidentImage}
-                                    name={this.state.fileNameImage} />
-                            ))}
-                        </View>
-                    </CardItem>
-                </Card>
+            <View style={{ flex: 1, marginBottom: 5 }}>
+                <CustomCardItemTitle
+                    title="Multimedia"
+                    description="Seleccione una imagen de la incidencia."
+                    image={require('../../assets/images/Multimedia/multimedia.png')} />
+                <CardItem bordered>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                        {formElementsMultimedia.map(element => (
+                            <Multimedia
+                                key={element.id}
+                                itemType={element.config.itemType}
+                                holder={element.config.holder}
+                                loadPhoto={this.loadPhotoHandler}
+                                image={this.state.incidentImage}
+                                name={this.state.fileNameImage} />
+                        ))}
+                    </View>
+                </CardItem>
             </View>
         );
         const description = (
-            <View style={{ flex: 1, margin: 5 }}>
-                <Card>
-                    <CustomCardItemTitle
-                        title="Descripción"
-                        description="Llena los siguientes campos
-                            para describir la incidencia."
-                        image={require('../../assets/images/Descripcion/descripcion.png')} />
-
-                    <CardItem bordered>
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            {formElementsDescripcion.map(element => (
-                                <Descripcion
-                                    key={element.id}
-                                    itemType={element.config.itemType}
-                                    value={element.config.value}
-                                    isValid={this.state.formDescripcionIsValid}
-                                    changed={(text) => this.inputChangeDescriptionHandler(text, element.id)} />
-                            ))}
-                        </View>
-                    </CardItem>
-                </Card>
+            <View style={{ flex: 1, marginBottom: 5 }}>
+                <CustomCardItemTitle
+                    title="Descripción"
+                    description="Descripción de la incidencia."
+                    image={require('../../assets/images/Descripcion/descripcion.png')} />
+                <CardItem bordered>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                        {formElementsDescripcion.map(element => (
+                            <Descripcion
+                                key={element.id}
+                                itemType={element.config.itemType}
+                                value={element.config.value}
+                                isValid={this.state.formDescripcionIsValid}
+                                changed={(text) => this.inputChangeDescriptionHandler(text, element.id)} />
+                        ))}
+                    </View>
+                </CardItem>
             </View>
         );
         const datosPersonales = (
-            <View style={{ flex: 1, margin: 5 }}>
-                <Card>
-                    <CustomCardItemTitle
-                        title="Datos personales"
-                        description="Llena los siguientes campos
-                            para llevar un control de incidencias."
-                        image={require('../../assets/images/Email/email.png')} />
-
-                    <CardItem bordered>
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            {formElementsDatosPersonales.map(element => (
-                                <DatosPersonales
-                                    key={element.id}
-                                    itemType={element.config.itemType}
-                                    value={element.config.value}
-                                    holder={element.config.holder}
-                                    isValid={this.state.formDatosPersonalesIsValid}
-                                    changed={(text) => this.inputChangePersonalDataHandler(text, element.id)} />
-                            ))}
-                        </View>
-                    </CardItem>
-                </Card>
+            <View style={{ flex: 1, marginBottom: 5 }}>
+                <CustomCardItemTitle
+                    title="Datos personales"
+                    description="Datos de quien reporta."
+                    image={require('../../assets/images/Email/email.png')} />
+                <CardItem bordered>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                        {formElementsDatosPersonales.map(element => (
+                            <DatosPersonales
+                                key={element.id}
+                                itemType={element.config.itemType}
+                                value={element.config.value}
+                                holder={element.config.holder}
+                                isValid={this.state.formDatosPersonalesIsValid}
+                                changed={(text) => this.inputChangePersonalDataHandler(text, element.id)} />
+                        ))}
+                    </View>
+                </CardItem>
             </View>
         );
         const spinner = <CustomSpinner color="blue" />;
-        const buttons =  (
-            !this.state.loading ? (
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-				<CustomButton 
-					style="Success" 
-					name="Agregar" 
-					clicked={() => this.uploadPhotoHandler()} />
-				<CustomButton
-					style="Danger"
-					name="Regresar"
-					clicked={() => this.getIncidents()} />
-            </View>) : spinner
-        );
-        const addIncident = (
-            <Form>
-                {ubicacion}
-                {multimedia}
-                {description}
-                {datosPersonales}
-                {buttons}
-            </Form>
-        );
-        const list = this.state.incidents.map((inct) => <Incidencia 
-															key={inct.id} 
-															id={inct.id} 
-															token={this.state.token}
-															isAdmin={this.state.isAdmin} 
-															refresh={this.getIncidents} 
-                                                            personalData={inct.personalData}
-                                                            descripcionData={inct.descripcionData}
-                                                            multimediaData={inct.multimediaData}
-                                                            ubicacionData={inct.ubicacionData}
-                                                            describe={this.props} />);
-        const body = (
-			<View style={styles.body}>
-				<Card>
-					<CustomCardItemTitle
-						title="Incidencias"
-						description="Visualice, agregue algún tipo de incidencia facilmente."
-                        image={require('../../assets/images/Noticia/noticia.png')}
-                        showButtons={this.state.showButtons}
-						get={this.getIncidents}
-						add={() => this.setState({ addIncident: true, showButtons: false })}
-						isAdmin={true}
-					/>
-					<CardItem bordered>
-						<View style={styles.cardBody}>
-                            {this.state.loading ? spinner: <View style={styles.scrollDataList}>{list}</View>}
-						</View>
-					</CardItem>
-				</Card>
+        
+        const addIncidentTitle = (
+			<View style={{ flex: 1, marginBottom: 10 }}>
+				<CustomAddBanner title="NUEVA INCIDENCIA" image={require('../../assets/images/Buzon/buzon.png')} />
 			</View>
 		);
+        const addIncident = (
+            <View style={{ flex: 1, flexDirection: 'column' }}>
+                {addIncidentTitle}
+                <Card style={styles.add}>
+                    <ScrollView style={{ flex: 1 }}>
+                        <CardItem bordered>
+                            <View style={styles.cardBody}>
+                                {ubicacion}
+                                {multimedia}
+                                {description}
+                                {datosPersonales}
+                            </View>
+                        </CardItem>
+                    </ScrollView>
+                </Card>
+            </View>
+        );
+        const list = this.state.incidents.map((inct, index) => <Incidencia 
+                                                                    key={inct.id} 
+                                                                    id={inct.id} 
+                                                                    token={this.state.token}
+                                                                    isAdmin={this.state.isAdmin} 
+                                                                    refresh={this.getIncidents} 
+                                                                    personalData={inct.personalData}
+                                                                    descripcionData={inct.descripcionData}
+                                                                    multimediaData={inct.multimediaData}
+                                                                    ubicacionData={inct.ubicacionData}
+                                                                    describe={this.props}
+                                                                    index={index + 1}
+                                                                    showLikeIcons={this.state.showLikeIcons} />);
+        const title = (
+            <ScrollView style={{ flex: 1 }}>
+                <CustomCardItemTitle
+                    title="Incidencias"
+                    description="Visualice y realice reporte de incidencias de una manera sencilla."
+                    info="Delice hacia abajo, para los reportes más antiguos."
+                    image={require('../../assets/images/Noticia/noticia.png')}
+                />
+            </ScrollView>
+        );
+
+        const body = (
+            <Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
+                <ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+                    <View style={styles.cardBody}>
+                        {this.state.loading ? (
+                                spinner
+                            ) : (
+                                <View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
+                                    {list}
+                                </View>
+                            )}
+                    </View>
+                </ScrollView>
+            </Card>
+        );
+        const incidencias = (
+            <View style={{ flex: 1 }}>
+                {title}
+                {body}
+            </View>
+        );
 
         return (
             <SafeAreaView style={{ flex: 1 }}>
@@ -608,12 +668,26 @@ export default class Incidencias extends Component {
                     <View>
                         <HeaderToolbar
                             open={this.props}
-                            title="Incidencias" />
+                            title="Incidencias"
+							color="#00a19a"
+							titleOfAdd="Nueva incidiencia"
+							get={this.getIncidents}
+							add={() => this.setState({ addIncident: true })}
+							goBack={() => this.setState({ addIncident: false })}
+							isAdd={this.state.addIncident}
+							save={this.uploadPhotoHandler}
+							isAdmin={true}
+							changeDisplay={this.changeDisplay}
+							showLikeIcons={this.state.showLikeIcons}
+							changed={(text) => this.searchTextHandler(text)}
+							value={this.state.texToSearch}
+							search={this.filterData}
+                        />
                     </View>
                     <StatusBar color="#FEA621" />
-                    <ScrollView>
-                        {!this.state.addIncident ? body : addIncident}
-                    </ScrollView>
+                    <View style={{ flex: 1, margin: 10 }}>
+                        {!this.state.addIncident ? incidencias : addIncident}
+                    </View>
                 </View>
             </SafeAreaView>
         );
@@ -655,10 +729,20 @@ const styles = StyleSheet.create({
 		margin: 5,
 		borderRadius: 5
     },
-    scrollDataList: {
+    scrollDataListIcons: {
 		flex: 1,
 		justifyContent: 'space-between',
 		flexDirection: 'row',
-		flexWrap: 'wrap',
+		flexWrap: 'wrap'
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'column'
+    },
+    add: {
+		flex: 2,
+		flexDirection: 'column', 
+		justifyContent: 'flex-start'
 	}
 });

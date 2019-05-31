@@ -6,8 +6,6 @@ import {
 	SafeAreaView,
 	ScrollView,
 	Alert,
-	Image,
-	TouchableOpacity,
 	TimePickerAndroid
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -20,6 +18,7 @@ import axios from '../../../axios-ayuntamiento';
 import Buses from '../../components/Buses/Buses';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomButton from '../../components/CustomButton/CustomButton';
+import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
 export default class BusEscolar extends Component {
 	state = {
@@ -79,7 +78,9 @@ export default class BusEscolar extends Component {
 			}
 		},
 		formIsValid: false,
-		showButtons: true
+		showButtons: true,
+		showLikeIcons: true,
+		texToSearch: ''
 	};
 
 	async componentDidMount() {
@@ -263,6 +264,31 @@ export default class BusEscolar extends Component {
 		}
 	};
 
+	changeDisplay = () => {
+		this.setState({ showLikeIcons: !this.state.showLikeIcons });
+	};
+	searchTextHandler = (text) => {
+		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
+	};
+	filterData = (text) => {
+		if (text !== '') {
+			let ban = false;
+			const filteredBusses = this.state.buses.filter((bs) => {
+				const filterDriver = bs.busData['chofer'];
+				const filterDestiny = bs.busData['destino'];
+				console.log('filterDriver: ', filterDriver);
+				console.log('filterDestiny: ', filterDestiny);
+				if (filterDriver.includes(text) || filterDestiny.includes(text)) {
+					ban = true;
+					return bs;
+				}
+			});
+			if (ban) {
+				this.setState({ buses: filteredBusses });
+			}
+		} else this.getBuses();
+	};
+
 	render() {
 		console.log(this.state);
 		const formElements = [];
@@ -272,7 +298,7 @@ export default class BusEscolar extends Component {
 				config: this.state.form[key]
 			});
 		}
-		const list = this.state.buses.map((bss) => (
+		const list = this.state.buses.map((bss, index) => (
 			<Buses
 				key={bss.id}
 				id={bss.id}
@@ -281,40 +307,55 @@ export default class BusEscolar extends Component {
 				refresh={this.getBuses}
 				data={bss.busData}
 				describe={this.props}
+				index={index + 1}
+				showLikeIcons={this.state.showLikeIcons}
 			/>
 		));
 
 		const spinner = <CustommSpinner color="blue" />;
 
+		const title = (
+			<ScrollView style={{ flex: 1 }}>
+				<CustomCardItemTitle
+					title="BUS ESCOLAR"
+					description="Consulta los horarios y destinos de tus camiones"
+					info="Delice hacia abajo, para los horarios más antiguos."
+					image={require('../../assets/images/Ubicacion/search.png')}
+				/>
+			</ScrollView>
+		);
+
+		const body = (
+			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
+				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+					<View style={styles.cardBody}>
+						{this.state.loading ? (
+								spinner
+							) : (
+								<View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
+									{list}
+								</View>
+							)}
+					</View>
+				</ScrollView>
+			</Card>
+		);
+
 		const bus = (
-			<View style={{ flex: 1, margin: 5 }}>
-				<Card>
-					<CustomCardItemTitle
-						title="Bus escolar"
-						description="Consulta los horarios y destinos de tus camiones."
-						image={require('../../assets/images/Ubicacion/search.png')}
-						showButtons={this.state.showButtons}
-						get={this.getBuses}
-						add={() => this.setState({ addBus: true, showButtons: false })}
-						isAdmin={this.state.isAdmin}
-					/>
-					<CardItem bordered>
-						<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-							{this.state.loading ? spinner : <View style={styles.scrollDataList}>{list}</View>}
-						</View>
-					</CardItem>
-				</Card>
+			<View style={{ flex: 1 }}>
+				{title}
+				{body}
 			</View>
 		);
 
-		const addBus = (
-			<View style={styles.body}>
-				<Card>
-					<CustomCardItemTitle
-						title="Agregar nuevo horario"
-						description="Agregue un nuevo horario"
-						image={require('../../assets/images/Descripcion/descripcion.png')}
-					/>
+		const addBusTitle = (
+			<View style={{ flex: 1, marginBottom: 10 }}>
+				<CustomAddBanner title="NUEVO HORARIO" image={require('../../assets/images/Descripcion/descripcion.png')} />
+			</View>
+		);
+		const addBusBody = (
+			<Card style={styles.add}>
+				<ScrollView style={{ flex: 1 }}>
 					<CardItem bordered>
 						<View style={styles.cardBody}>
 							{formElements.map((e) => (
@@ -327,31 +368,46 @@ export default class BusEscolar extends Component {
 									changed1={() => this.getTime(e.id)}
 								/>
 							))}
-							{!this.state.loading ? (
-								<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-									<CustomButton
-										style="Success"
-										name="Agregar"
-										clicked={() => this.sendNewBusHandler()}
-									/>
-									<CustomButton style="Danger" name="Regresar" clicked={() => this.getBuses()} />
-								</View>
-							) : (
-								spinner
-							)}
 						</View>
 					</CardItem>
-				</Card>
+				</ScrollView>
+			</Card>
+		);
+
+		const addBus = (
+			<View style={{ flex: 1, flexDirection: 'column' }}>
+				{addBusTitle}
+				{this.state.loading && spinner}
+				{addBusBody}
 			</View>
 		);
 
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={styles.container}>
-					<HeaderToolbar open={this.props} title={!this.state.addBus ? 'Bus escolar' : 'Agregar Bus'} />
-
+					<View>
+						<HeaderToolbar 
+							open={this.props} 
+							title="Buses"
+							color="#00a19a"
+							titleOfAdd="Nuevo bus"
+							get={this.getBuses}
+							add={() => this.setState({ addBus: true })}
+							goBack={() => this.setState({ addBus: false })}
+							isAdd={this.state.addBus}
+							save={this.sendNewBusHandler}
+							isAdmin={this.state.isAdmin}
+							changeDisplay={this.changeDisplay}
+							showLikeIcons={this.state.showLikeIcons}
+							changed={(text) => this.searchTextHandler(text)}
+							value={this.state.texToSearch}
+							search={this.filterData} 
+						/>	
+					</View>
 					<StatusBar color="#FEA621" />
-					<ScrollView>{!this.state.addBus ? bus : addBus}</ScrollView>
+					<View style={{ flex: 1, margin: 10 }}>
+						{!this.state.addBus ? bus : addBus}
+					</View>
 				</View>
 			</SafeAreaView>
 		);
@@ -391,10 +447,20 @@ const styles = StyleSheet.create({
 		margin: 5,
 		borderRadius: 5
 	},
-	scrollDataList: {
+	scrollDataListIcons: {
 		flex: 1,
 		justifyContent: 'space-between',
 		flexDirection: 'row',
 		flexWrap: 'wrap'
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'column'
+	},
+	add: {
+		flex: 2,
+		flexDirection: 'column', 
+		justifyContent: 'flex-start'
 	}
 });
