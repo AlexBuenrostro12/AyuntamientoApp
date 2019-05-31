@@ -183,7 +183,7 @@ export default class BusEscolar extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, buses: fetchedBuses });
+				this.setState({ loading: false, buses: fetchedBuses.reverse() });
 			})
 			.catch((err) => {
 				this.setState({ loading: false });

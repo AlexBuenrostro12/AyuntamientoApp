@@ -370,7 +370,7 @@ export default class Incidencias extends Component {
 						id: key
 					});
 				}
-                this.setState({ loading: false, incidents: fetchedIncidents });
+                this.setState({ loading: false, incidents: fetchedIncidents.reverse() });
                 console.log('Incidents: ', this.state.incidents);
 			})
 			.catch((err) => {
@@ -591,7 +591,7 @@ export default class Incidencias extends Component {
                         showButtons={this.state.showButtons}
 						get={this.getIncidents}
 						add={() => this.setState({ addIncident: true, showButtons: false })}
-						isAdmin={this.state.isAdmin}
+						isAdmin={true}
 					/>
 					<CardItem bordered>
 						<View style={styles.cardBody}>

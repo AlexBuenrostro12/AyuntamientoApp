@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Platform, Text, Image, Alert, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView, ImageBackground } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -21,6 +21,7 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
+import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
 FCM.on(FCMEvent.Notification, async (notif) => {
 	console.log('FCMEvent: ', FCMEvent);
@@ -59,9 +60,10 @@ FCM.on(FCMEvent.RefreshToken, (token) => {
 
 const theme = {
 	commonFlex: '1',
-	customMarginValue: '5px'
+	customMarginValue: '5px',
+	backgroundColor: '#00a19a'
 };
-
+const { height, width } = Dimensions.get('window');
 const StyledSafeArea = styled.SafeAreaView`flex: ${theme.commonFlex};`;
 
 const StyledContainer = styled.View`
@@ -73,13 +75,6 @@ const StyledContainer = styled.View`
 
 const StyledHeader = styled.View``;
 
-const StyledMainScroll = styled.ScrollView``;
-
-const StyledNoticias = styled.View`
-	flex: ${theme.commonFlex};
-	margin: ${theme.customMarginValue};
-`;
-
 const StyledCardBody = styled.View`
 	flex: ${theme.commonFlex};
 	flex-direction: column;
@@ -89,10 +84,9 @@ const StyledCardBody = styled.View`
 export default class Noticias extends Component {
 	state = {
 		news: [],
-		loading: true,
+		loading: false,
 		addNew: false,
 		isAdmin: null,
-		addNew: false,
 		token: null,
 		formIsValid: false,
 		form: {
@@ -151,7 +145,9 @@ export default class Noticias extends Component {
 		notificationToken: null,
 		fcmTokens: [],
 		allReadyToNotification: false,
-		showButtons: true,
+		notifications: true,
+		showLikeIcons: true,
+		texToSearch: ''
 	};
 
 	async componentDidMount() {
@@ -244,7 +240,7 @@ export default class Noticias extends Component {
 	};
 	//Get news
 	getNews = () => {
-		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null, showButtons: true });
+		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null });
 		axios
 			.get('/news.json?auth=' + this.state.token)
 			.then((res) => {
@@ -256,7 +252,7 @@ export default class Noticias extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, news: fetchedNews });
+				this.setState({ loading: false, news: fetchedNews.reverse() });
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
@@ -269,7 +265,6 @@ export default class Noticias extends Component {
 		axios
 			.get('/fcmtokens.json?auth=' + this.state.token)
 			.then((res) => {
-				console.log('Noticias, resfcmTokens: ', res);
 				for (let key in res.data) {
 					fetchedfcmTokens.push({
 						...res.data[key],
@@ -282,7 +277,6 @@ export default class Noticias extends Component {
 					let fcmToken = element.tokenData[Object.keys(element.tokenData)];
 					fcmtkns[i] = fcmToken;
 				}
-				console.log('fcmtkns: ', fcmtkns);
 				this.setState({ fcmTokens: fcmtkns }, () => this.verifyfcmTokens());
 			})
 			.catch((err) => {});
@@ -290,13 +284,11 @@ export default class Noticias extends Component {
 	//Verify tokens
 	verifyfcmTokens = () => {
 		let exist = false;
-		console.log('fetchedfcmToken: ', this.state.fcmTokens);
 		//Check if this token already exist in db
 		for (let i = 0; i < this.state.fcmTokens.length; i++) {
 			const element = this.state.fcmTokens[i];
 			if (element === this.state.notificationToken) exist = true;
 		}
-		console.log('Element: ', exist);
 
 		if (!exist) {
 			const formData = {};
@@ -304,11 +296,9 @@ export default class Noticias extends Component {
 			const fcmtoken = {
 				tokenData: formData
 			};
-			console.log('Noticias.js: formData, ', formData);
 			axios
 				.post('/fcmtokens.json?auth=' + this.state.token, fcmtoken)
 				.then((response) => {
-					console.log('Noticias.js: responsefcm, ', response);
 					this.getFCMTokens();
 				})
 				.catch((error) => {
@@ -370,32 +360,56 @@ export default class Noticias extends Component {
 		return isValid;
 	}
 
-	loadPhotoHandler = () => {
-		ImagePicker.showImagePicker(this.state.options, (response) => {
-			console.log('ResponseImagePicker: ', response);
-
-			if (response.didCancel) {
-				console.log('User cancelled image picker');
-			} else if (response.error) {
-				console.log('ImagePicker Error: ', response.error);
-			} else {
-				//Destructuring response object
-				const { fileName, fileSize, type, data, uri } = response;
-				//Preset
-				const UPLOAD_PRESET_NAME = 'ayuntamiento';
-				//Image form data
-				const imageFormData = new FormData();
-				imageFormData.append('file', {
-					name: fileName,
-					size: fileSize,
-					type: type,
-					data: data,
-					uri: uri
-				});
-				imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
-				this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
-			} // else
-		});
+	loadPhotoHandler = (show) => {
+		if (show === 'library'){
+			ImagePicker.launchImageLibrary(this.state.options, (response) => {
+				if (response.didCancel) {
+					console.log('User cancelled image picker');
+				} else if (response.error) {
+					console.log('ImagePicker Error: ', response.error);
+				} else {
+					//Destructuring response object
+					const { fileName, fileSize, type, data, uri } = response;
+					//Preset
+					const UPLOAD_PRESET_NAME = 'ayuntamiento';
+					//Image form data
+					const imageFormData = new FormData();
+					imageFormData.append('file', {
+						name: fileName,
+						size: fileSize,
+						type: type,
+						data: data,
+						uri: uri
+					});
+					imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
+					this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
+				} // else
+			});
+		} else {
+			ImagePicker.launchCamera(this.state.options, (response) => {
+				if (response.didCancel) {
+					console.log('User cancelled image picker');
+				} else if (response.error) {
+					console.log('ImagePicker Error: ', response.error);
+				} else {
+					//Destructuring response object
+					const { fileName, fileSize, type, data, uri } = response;
+					//Preset
+					const UPLOAD_PRESET_NAME = 'ayuntamiento';
+					//Image form data
+					const imageFormData = new FormData();
+					imageFormData.append('file', {
+						name: fileName,
+						size: fileSize,
+						type: type,
+						data: data,
+						uri: uri
+					});
+					imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
+					this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
+				} // else
+			});
+		}
 	};
 
 	uploadPhotoHandler = () => {
@@ -477,9 +491,37 @@ export default class Noticias extends Component {
 			});
 		}
 	};
+
+	actOrDescNotification = () => {
+		this.setState({ notifications: !this.state.notifications });
+	};
+
+	changeDisplay = () => {
+		this.setState({ showLikeIcons: !this.state.showLikeIcons });
+	};
+	searchTextHandler = (text) => {
+		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
+	};
+	filterData = (text) => {
+		if (text !== '') {
+			let ban = false;
+			const filteredNews = this.state.news.filter((nw) => {
+				const filterNew = nw.newData['noticia'];
+				const filterDate = nw.newData['fecha'].split('T', 1);
+				console.log('filterNew: ', filterNew);
+				console.log('filterDate: ', filterDate[0]);
+				if (filterNew.includes(text) || filterDate[0].includes(text)) {
+					ban = true;
+					return nw;
+				}
+			});
+			if (ban) {
+				this.setState({ news: filteredNews });
+			}
+		} else this.getNews();
+	};
 	render() {
-		console.log('Noticias.js:props: ', this.props);
-		const list = this.state.news.map((nw) => (
+		const list = this.state.news.map((nw, index) => (
 			<Noticia
 				key={nw.id}
 				id={nw.id}
@@ -488,8 +530,11 @@ export default class Noticias extends Component {
 				refresh={this.getNews}
 				data={nw.newData}
 				describe={this.props}
+				index={index + 1}
+				showLikeIcons={this.state.showLikeIcons}
 			/>
 		));
+
 		const spinner = <CustomSpinner color="blue" />;
 		const formElements = [];
 		for (let key in this.state.form) {
@@ -498,35 +543,46 @@ export default class Noticias extends Component {
 				config: this.state.form[key]
 			});
 		}
-		const noticias = (
-			<StyledNoticias>
-				<Card>
-					<CustomCardItemTitle
-						title="Noticias"
-						description="Las noticias más 
-                            relebantes de Tecalitlán a tu alcance."
-						image={require('../../assets/images/Noticia/noticia.png')}
-						showButtons={this.state.showButtons}
-						get={this.getNews}
-						add={() => this.setState({ addNew: true, showButtons: false })}
-						isAdmin={this.state.isAdmin}
-					/>
-					<CardItem bordered>
-						<StyledCardBody>
-							{this.state.loading ? spinner : <View style={styles.scrollDataList}>{list}</View>}
-						</StyledCardBody>
-					</CardItem>
-				</Card>
-			</StyledNoticias>
+		const title = (
+			<ScrollView style={{ flex: 1 }}>
+				<CustomCardItemTitle
+					title="NOTICIAS"
+					description="Las Noticias más 
+					relevantes de tu gobierno ciudadano."
+					info="Delice hacia abajo, para las noticias mas antiguas."
+					image={require('../../assets/images/Noticia/speaker.png')}
+				/>
+			</ScrollView>
 		);
-		const addNew = (
-			<View style={styles.body}>
-				<Card>
-					<CustomCardItemTitle
-						title="Agregar noticia"
-						description="Agregue una noticia"
-						image={require('../../assets/images/Descripcion/descripcion.png')}
-					/>
+		const body = (
+			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
+				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+					<StyledCardBody>
+						{this.state.loading ? (
+							spinner
+						) : (
+							<View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
+								{list}
+							</View>
+						)}
+					</StyledCardBody>
+				</ScrollView>
+			</Card>
+		);
+		const noticias = (
+			<View style={{ flex: 1 }}>
+				{title}
+				{body}
+			</View>
+		);
+		const addNewTitle = (
+			<View style={{ flex: 1, marginBottom: 10 }}>
+				<CustomAddBanner title="AGREGAR NOTA" image={require('../../assets/images/Preferences/add-orange.png')} />
+			</View>
+		);
+		const addNewBody = (
+			<Card style={styles.addNew}>
+				<ScrollView style={{ flex: 1 }}>
 					<CardItem bordered>
 						<View style={styles.cardBody}>
 							{formElements.map((e) => (
@@ -536,26 +592,21 @@ export default class Noticias extends Component {
 									holder={e.config.holder}
 									value={e.config.value}
 									changed={(text) => this.inputChangeHandler(text, e.id)}
-									loadPhoto={() => this.loadPhotoHandler()}
+									loadPhoto={this.loadPhotoHandler}
 									image={this.state.image}
 									name={this.state.fileNameImage}
 								/>
 							))}
-							{!this.state.loading ? (
-								<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-									<CustomButton
-										style="Success"
-										name="Agregar"
-										clicked={() => this.uploadPhotoHandler()}
-									/>
-									<CustomButton style="Danger" name="Regresar" clicked={() => this.getNews()} />
-								</View>
-							) : (
-								spinner
-							)}
 						</View>
 					</CardItem>
-				</Card>
+				</ScrollView>
+			</Card>
+		);
+		const addNew = (
+			<View style={{ flex: 1, flexDirection: 'column' }}>
+				{addNewTitle}
+				{this.state.loading && spinner}
+				{addNewBody}
 			</View>
 		);
 
@@ -563,12 +614,30 @@ export default class Noticias extends Component {
 			<StyledSafeArea>
 				<StyledContainer>
 					<StyledHeader>
-						<HeaderToolbar open={this.props} title="Noticias" />
+						<HeaderToolbar
+							open={this.props}
+							title="Noticias"
+							color="#00a19a"
+							titleOfAdd="Nueva noticia"
+							get={this.getNews}
+							add={() => this.setState({ addNew: true })}
+							goBack={() => this.setState({ addNew: false })}
+							isAdd={this.state.addNew}
+							save={this.uploadPhotoHandler}
+							isAdmin={this.state.isAdmin}
+							notifications={this.actOrDescNotification}
+							actOrDesc={this.state.notifications}
+							changeDisplay={this.changeDisplay}
+							showLikeIcons={this.state.showLikeIcons}
+							changed={(text) => this.searchTextHandler(text)}
+							value={this.state.texToSearch}
+							search={this.filterData}
+						/>
 					</StyledHeader>
-					<StatusBar color="#FEA621" />
-					<StyledMainScroll>
+					<StatusBar color="#00847b" />
+					<View style={{ flex: 1, margin: 10 }}>
 						<ThemeProvider theme={theme}>{!this.state.addNew ? noticias : addNew}</ThemeProvider>
-					</StyledMainScroll>
+					</View>
 				</StyledContainer>
 			</StyledSafeArea>
 		);
@@ -593,10 +662,20 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center'
 	},
-	scrollDataList: {
+	scrollDataListIcons: {
 		flex: 1,
 		justifyContent: 'space-between',
 		flexDirection: 'row',
-		flexWrap: 'wrap',
+		flexWrap: 'wrap'
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'column'
+	},
+	addNew: {
+		flex: 2,
+		flexDirection: 'column', 
+		justifyContent: 'flex-start'
 	}
 });

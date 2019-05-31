@@ -3,6 +3,7 @@ package com.ayuntamientoapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.calendarevents.CalendarEventsPackage;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
             new FIRMessagingPackage(),
             new MainReactPackage(),
+            new CalendarEventsPackage(),
             new RNGestureHandlerPackage(),
             new AsyncStoragePackage(),
             new RCTPdfView(),
