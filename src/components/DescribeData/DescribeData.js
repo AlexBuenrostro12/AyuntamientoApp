@@ -11,7 +11,7 @@ import {
 	BackHandler
 } from 'react-native';
 import { Card, CardItem, Body } from 'native-base';
-import email from 'react-native-email';
+import Email from 'react-native-email';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '.././CustomButton/CustomButton';
 import HeaderToolbar from '../HeaderToolbar/HeaderToolbar';
@@ -59,22 +59,40 @@ export default class DescribreData extends Component {
 	}
 	// Disable the native button of return
 	goBackHandler = () => true;
-	//Send email 
-	emailHandler = (isToAdmin) => {
-		const { actividad, noticia, direccion, descripcion, fecha } = this.state.data;
+	//Send email
+	emailHandler = (isToAdmin, type) => {
 		if (isToAdmin) {
-			email('admin@admin.com', {
+			Email('admin@admin.com', {
 				subject: 'Asunto',
 				body: 'Comentario'
-			}).catch(console.error)
+			}).catch(console.error);
 		} else {
-			email('tu@contacto.com', {
-				subject: actividad ? actividad : noticia,
-				body: direccion + '\n' + fecha + '\n' + descripcion
-			}).catch(console.error)
+			const { actividad, noticia, asunto, fecha, hora, descripcion, direccion, nombre, email, comentario  } = this.state.data;
+			let subject = (body = null);
+			switch (type) {
+				case 'Actividades':
+					subject = actividad;
+					body = direccion + '\n' + fecha + ' / ' + hora + '\n' + descripcion;
+					break;
+				case 'Noticias':
+					subject = noticia;
+					body = direccion + '\n' + fecha + '\n' + descripcion;
+					break;
+				case 'Sugerencias':
+						subject = asunto;
+						body = nombre + '\n' + fecha + '\n' + email + '\n' + comentario;
+						break;
+
+				default:
+					null;
+					break;
+			}
+			Email('tu@contacto.com', {
+				subject: subject,
+				body: body
+			}).catch(console.error);
 		}
-        
-    }
+	};
 
 	render() {
 		let card = (image = null);
@@ -120,7 +138,7 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
-				case 'buzon':
+				case 'Buzón Ciudadano':
 					card = (
 						<View>
 							<Card>
@@ -133,7 +151,7 @@ export default class DescribreData extends Component {
 													<Image
 														style={styles.btnsAdmImg}
 														source={require('../../assets/images/Delete/delete.png')}
-													/>
+													/>Noticias
 												</TouchableOpacity>
 											</View>
 										)}
@@ -149,13 +167,6 @@ export default class DescribreData extends Component {
 								<CardItem footer>
 									<Text style={styles.fecha}>Fecha: {data.fecha}</Text>
 								</CardItem>
-								<View style={styles.button}>
-									<CustomButton
-										style="DangerBorder"
-										name="Cerrar"
-										clicked={() => navigate('Buzón Ciudadano')}
-									/>
-								</View>
 							</Card>
 						</View>
 					);

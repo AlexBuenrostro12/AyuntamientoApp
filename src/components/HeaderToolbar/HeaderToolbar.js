@@ -144,7 +144,7 @@ export default class HeaderToolbar extends React.Component {
 						)}
 						{/* Send by email */}
 						{this.props.sendEmail && (
-							<MenuOption onSelect={() => this.props.sendEmail(false)}>
+							<MenuOption onSelect={() => this.props.sendEmail(false, this.props.title)}>
 								<View style={styles.menuOption}>
 									<Image
 										style={styles.menuOptionImage}
@@ -156,7 +156,7 @@ export default class HeaderToolbar extends React.Component {
 						)}
 						{/* Comment to adminstrator */}
 						{this.props.sendEmail && (
-							<MenuOption onSelect={() => this.props.sendEmail(true)}>
+							<MenuOption onSelect={() => this.props.sendEmail(true, 'notAvailable')}>
 								<View style={styles.menuOption}>
 									<Image
 										style={styles.menuOptionImage}

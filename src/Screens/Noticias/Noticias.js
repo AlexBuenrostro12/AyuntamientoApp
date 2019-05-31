@@ -495,7 +495,6 @@ export default class Noticias extends Component {
 	actOrDescNotification = () => {
 		this.setState({ notifications: !this.state.notifications });
 	};
-
 	changeDisplay = () => {
 		this.setState({ showLikeIcons: !this.state.showLikeIcons });
 	};
