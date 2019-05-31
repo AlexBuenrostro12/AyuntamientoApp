@@ -1,31 +1,28 @@
 import React from 'react';
-import { Text, View, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { CardItem } from 'native-base';
+import { Text, View, Image, StyleSheet, Dimensions, ImageBackground } from 'react-native';
 
 const { height, width } = Dimensions.get('window');
 
 const customCardItemTitle = (props) => (
-	<CardItem header bordered>
-        {console.log('props: ', props)}
-		<View style={styles.container}>
+		<ImageBackground
+			style={styles.container}
+			resizeMode="cover"
+			width={width * 0.95}
+			source={require('../../assets/images/Preferences/banner.jpeg')}
+		>
+			<View style={styles.responsiveContainer}>
+			{/* View image */}
+			<View style={styles.buttonsContainer}>
+				<Image style={styles.image} source={props.image} />
+			</View>
+			{/* View text */}
 			<View style={styles.textContainer}>
 				<Text style={styles.title}>{props.title}</Text>
 				<Text style={styles.description}>{props.description}</Text>
+				<Text style={styles.info}>{props.info}</Text>
 			</View>
-			<View style={styles.buttonsContainer}>
-				{/* Image */}
-				<Image style={styles.image} source={props.image} />
-				{/* refresh */}
-				{props.showButtons && <TouchableOpacity onPress={() => props.get()}>
-					<Image style={styles.iconImage} source={require('../../assets/images/Refresh/refresh.png')} />
-				</TouchableOpacity>}
-				{/* refresh */}
-				{props.showButtons && props.isAdmin && <TouchableOpacity onPress={() => props.add()}>
-					<Image style={styles.iconImage} source={require('../../assets/images/Add/add.png')} />
-				</TouchableOpacity>}
 			</View>
-		</View>
-	</CardItem>
+		</ImageBackground>
 );
 
 export default customCardItemTitle;
@@ -33,25 +30,42 @@ export default customCardItemTitle;
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		flexDirection: 'column',
-		justifyContent: 'space-between'
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderWidth: 2,
+		borderColor: 'gainsboro',
+	},
+	responsiveContainer: {
+		flex: 1,
+		flexDirection: 'row',
+		width: width * 0.95,
+		justifyContent: 'space-around',
 	},
 	textContainer: {
-		flex: 1,
-		marginTop: 18
+		flex: 2,
+		flexDirection: 'column',
+		alignSelf: 'center',
+		justifyContent: 'space-around',
+		paddingHorizontal: 6,
 	},
 	title: {
-		color: 'orange',
-		fontSize: 18
+		color: '#f8ae40',
+		fontSize: 18,
+		fontWeight: 'bold'
 	},
 	description: {
-		color: 'grey',
+		color: '#676766',
+		fontStyle: 'italic',
+		fontSize: 16
+	},
+	info: {
+		color: '#f8ae40',
 		fontStyle: 'italic',
 		fontSize: 14
 	},
 	image: {
-        alignSelf: 'center',
-        resizeMode: 'contain',
+		alignSelf: 'center',
+		resizeMode: 'contain',
 		height: width / 3.5,
 		width: width / 3.5
 	},
@@ -59,7 +73,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		paddingHorizontal: 6,
 	},
 	iconImage: {
 		height: 45,

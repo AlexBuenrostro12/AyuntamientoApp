@@ -3,12 +3,13 @@ import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ImageBackground }
 
 const { height, width } = Dimensions.get('window');
 
-const ListData = (props) =>
-	props.data.map((dt) => (
+const ListData = (props) => {
+	const icons = props.data.map((dt) => (
 		<TouchableOpacity
 			style={styles.marginContainer}
 			// in the property onPress, there is an special case to BusEscolar.js and Buses.js that's why pass other properties instead dt.title
-			onPress={() => (dt.title ? props.clicked(dt.title, props.id) : props.clicked(dt.horaSalida, dt.destino, props.id))}
+			onPress={() =>
+				dt.title ? props.clicked(dt.title, props.id) : props.clicked(dt.horaSalida, dt.destino, props.id)}
 			key={props.id}
 		>
 			<ImageBackground
@@ -16,18 +17,54 @@ const ListData = (props) =>
 				source={!dt.imagen ? require('../../assets/images/Ayuntamiento/fondo.jpg') : { uri: dt.imagen }}
 			>
 				<View style={styles.textContainer}>
-					{dt.title ? <Text style={styles.text}>{dt.title}</Text> : <Text style={styles.text}>{dt.destino} - {dt.horaSalida}</Text>}
+					{dt.title ? (
+						<Text style={styles.text}>{dt.title}</Text>
+					) : (
+						<Text style={styles.text}>
+							{dt.destino} - {dt.horaSalida}
+						</Text>
+					)}
 				</View>
 			</ImageBackground>
 		</TouchableOpacity>
 	));
+	const list = props.data.map((dt) => (
+		<TouchableOpacity
+			style={styles.marginContainer}
+			// in the property onPress, there is an special case to BusEscolar.js and Buses.js that's why pass other properties instead dt.title
+			onPress={() =>
+				dt.title ? props.clicked(dt.title, props.id) : props.clicked(dt.horaSalida, dt.destino, props.id)}
+			key={props.id}
+		>
+			<View
+				style={{
+					justifyContent: 'center',
+					width: width / 1.18,
+					backgroundColor: !dt.odd ? 'gainsboro' : 'white',
+				}}
+			>
+				{dt.title ? (
+					<Text style={styles.textList}>
+						{dt.fecha} / {dt.title}
+					</Text>
+				) : (
+					<Text style={styles.text}>
+						{dt.destino} - {dt.horaSalida}
+					</Text>
+				)}
+			</View>
+		</TouchableOpacity>
+	));
+
+	return <View>{props.showLikeIcons ? icons : list}</View>;
+};
 
 export default ListData;
 
 const styles = StyleSheet.create({
 	marginContainer: {
 		marginTop: 2,
-		marginBottom: 2
+		marginBottom: 10
 	},
 	image: {
 		height: width / 2.38,
@@ -48,5 +85,17 @@ const styles = StyleSheet.create({
 		width: width / 2.38,
 		backgroundColor: 'black',
 		opacity: 0.5
+	},
+	textContainerList: {
+		justifyContent: 'center',
+		width: width / 1.18,
+		backgroundColor: 'grey',
+		opacity: 0.5
+	},
+	textList: {
+		alignSelf: 'flex-start',
+		color: '#676766',
+		fontSize: 16,
+		fontWeight: 'bold'
 	}
 });
