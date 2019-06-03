@@ -541,6 +541,7 @@ export default class Actividades extends Component {
 							open={this.props}
 							title={'Actividades'}
 							color="#f8ae40"
+							showContentRight={true}
 							titleOfAdd="Nueva Actividad"
 							get={this.getActivities}
 							add={() => this.setState({ addAct: true })}

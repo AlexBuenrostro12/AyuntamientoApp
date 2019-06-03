@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, View } from 'react-native';
 import axios from '../../../axios-ayuntamiento';
 import ListData from '../ListData/ListData';
 
-export default class Noticia extends Component {
+export default class Incidencia extends Component {
     state = {
         actividad: null,
         hora: null,
@@ -12,7 +12,7 @@ export default class Noticia extends Component {
         imagen: null,
         itemKey: null,
         showItemCard: false,
-        incident: [],
+        data: [],
     }
 
     clickedListHandler = (identifier, key) => {
@@ -72,7 +72,8 @@ export default class Noticia extends Component {
         }
         obj.isAdmin = this.props.isAdmin;
         obj.deleteItem = this.alertCheckDeleteItem;
-        obj.type =  'incidencia';
+        obj.type =  'Incidencias';
+        obj.barProps = { title: 'Incidencias', status: '#00847b', bar: '#00a19a' };
         this.setState({ showItemCard: true }, () => this.goToDescribeData(obj));
     }
 
@@ -121,11 +122,10 @@ export default class Noticia extends Component {
         this.props.refresh();
     }
 
-    render() {
-        console.log('Incidencia.js:props: ', this.props)
-        const data = [];
-        const obj = {};
-        for (let dataName in this.props.descripcionData) {
+    componentDidMount() {
+		const data = [];
+		const obj = {};
+		for (let dataName in this.props.descripcionData) {
             if (dataName === 'asunto') {
                 obj.title = this.props.descripcionData[dataName];
             }
@@ -135,14 +135,31 @@ export default class Noticia extends Component {
                 obj.imagen = this.props.multimediaData[dataName];
             }
         }
-        data.push(obj);
-        const listData = <ListData data={data} id={this.props.id} clicked={this.clickedListHandler} />;
+        for (let dataName in this.props.ubicacionData) {
+            if (dataName === 'fecha') {
+                obj.fecha = this.props.ubicacionData[dataName];
+            }
+        }
+		const oddORnot = (this.props.index % 2);
+		let odd = null;
+		if(oddORnot === 1)
+			odd = false;
+		else
+			odd = true;
+		obj.odd = odd;
+		data.push(obj);
+		this.setState({ data: data });
+	};
 
-        return (
-            <ScrollView>
-                {listData}
-            </ScrollView>
-        );
+    render() {
+
+        const listData = <ListData 
+                            data={this.state.data} 
+                            id={this.props.id} 
+                            clicked={this.clickedListHandler}
+                            showLikeIcons={this.props.showLikeIcons} />;
+
+        return <View>{listData}</View>
     }
 }
 

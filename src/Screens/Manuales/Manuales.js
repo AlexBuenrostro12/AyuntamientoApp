@@ -27,25 +27,20 @@ export default class Manuales extends Component {
 			{
 				name: 'Manual 1',
 				url:
-					'https://firebasestorage.googleapis.com/v0/b/ayuntamiento-77d3b.appspot.com/o/Make-History.pdf?alt=media&token=ffc16829-605f-4307-bbd8-5eb509e14383'
+					'https://firebasestorage.googleapis.com/v0/b/ayuntamiento-77d3b.appspot.com/o/Make-History.pdf?alt=media&token=ffc16829-605f-4307-bbd8-5eb509e14383',
+				fecha: '22-05-2019'
 			},
 			{
 				name: 'Manual 2',
 				url:
-					'https://firebasestorage.googleapis.com/v0/b/ayuntamiento-77d3b.appspot.com/o/doc_iso27000_all.pdf?alt=media&token=eea1e5a7-d3cd-4bcb-b00d-3f364472359d'
+					'https://firebasestorage.googleapis.com/v0/b/ayuntamiento-77d3b.appspot.com/o/doc_iso27000_all.pdf?alt=media&token=eea1e5a7-d3cd-4bcb-b00d-3f364472359d',
+				fecha: '25-05-2019'
 			}
 		],
 		show: false,
 		url: 'nothing',
 		token: null,
-	};
-
-	showManualHandler = (url) => {
-		this.setState({ show: true, url: url });
-	};
-
-	hiddeManualHandler = () => {
-		this.setState({ show: false });
+		showLikeIcons: true,
 	};
 
 	async componentDidMount() {
@@ -59,7 +54,6 @@ export default class Manuales extends Component {
 			const now = new Date();
 			console.log('Manuales.js: ', token);
             console.log('Manuales.js: ', parseExpiresIn, now);
-            console.log('Manuales.js: ', this.state.tokenIsValid);
 			if (token && parseExpiresIn > now) {
 				this.setState({ token: token });
 			} else {
@@ -83,53 +77,81 @@ export default class Manuales extends Component {
 		}
 	}
 
+	changeDisplay = () => {
+		this.setState({ showLikeIcons: !this.state.showLikeIcons });
+	};
+
 	render() {
-		const cardBody = (
-				<Card>
-					<CustomCardItemTitle
-						title="Manuales"
-						description="Da clic sobre el manual que deseas ver."
-						image={require('../../assets/images/Noticia/noticia.png')}
-					/>
-					<CardItem bordered>
-						<StyledViewManuales>
-							{this.state.manuales.map((m, index) => (
-								<ListItem key={index}>
-									<StyledBodyManuales>
-										<TouchableOpacity onPress={() => this.showManualHandler(m.url)}>
-											<Text>{m.name}</Text>
-										</TouchableOpacity>
-										<IconRight describe={() => this.showManualHandler(m.url)} />
-									</StyledBodyManuales>
-								</ListItem>
-							))}
-						</StyledViewManuales>
-					</CardItem>
-				</Card>
-		);
 
-		const button = <CustomButton style="DangerBorder" clicked={() => this.hiddeManualHandler()} name="Cerrar" />;
+		const list = this.state.manuales.map((m, index) => (
+			<Manual
+				key={m.url}
+				id={m.url}
+				token={this.state.token}
+				isAdmin={this.state.isAdmin}
+				data={m}
+				describe={this.props}
+				index={index + 1}
+				changeDisplay={this.changeDisplay}
+				showLikeIcons={this.state.showLikeIcons}
+			/>
+		));
 
-		const manual = (
-			<View style={{ flex: 1, height: Dimensions.get('window').height }}>
-				<Manual url={this.state.url} token={this.state.token} />
-				<View style={{ margin: 1.5 }}>{this.state.show ? button : null}</View>
-			</View>
+
+		const title = (
+			<ScrollView style={{ flex: 1 }}>
+				<CustomCardItemTitle
+					title="MANUALES"
+					description="Visualice los manuales de transparencia"
+					info="Delice hacia abajo, para los manuales más antiguas."
+					image={require('../../assets/images/Buzon/buzon.png')}
+				/>
+			</ScrollView>
 		);
 
 		const body = (
-			<View style={styles.container}>
-				<View>
-					<HeaderToolbar open={this.props} title="Manuales" />
-				</View>
-				<StatusBar color="#FEA621" />
-				{cardBody}
+			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
+				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+					<View style={styles.cardBody}>
+						{this.state.loading ? (
+								spinner
+							) : (
+								<View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
+									{list}
+								</View>
+							)}
+					</View>
+				</ScrollView>
+			</Card>
+		);
+		const manuales = (
+			<View style={{ flex: 1 }}>
+				{title}
+				{body}
 			</View>
 		);
-
+		
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
-				<ScrollView style={{ flex: 1 }}>{this.state.show ? manual : body}</ScrollView>
+				<View style={styles.container}>
+					<View>
+						<HeaderToolbar
+							open={this.props}
+							title="Manuales"
+							color="#00a19a"
+							showContentRight={true}
+							add={() => this.setState({ show: true })}
+							goBack={() => this.setState({ show: false })}
+							isAdd={this.state.show}
+							changeDisplay={this.changeDisplay}
+							showLikeIcons={this.state.showLikeIcons}
+						/>
+					</View>
+					<StatusBar color="#FEA621" />
+					<View style={{ flex: 1, margin: 10 }}>
+						{manuales}
+					</View>
+				</View>
 			</SafeAreaView>
 		);
 	}
@@ -138,7 +160,9 @@ export default class Manuales extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-
+		flexDirection: 'column',
+		flexWrap: 'wrap',
+		overflow: 'scroll'
 	},
 	view: {
 		flex: 1,
@@ -148,5 +172,16 @@ const styles = StyleSheet.create({
 	text: {
 		fontSize: 20,
 		fontWeight: 'bold'
-	}
+	},
+	scrollDataListIcons: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		flexWrap: 'wrap'
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'column'
+	},
 });

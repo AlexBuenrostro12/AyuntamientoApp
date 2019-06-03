@@ -495,7 +495,6 @@ export default class Noticias extends Component {
 	actOrDescNotification = () => {
 		this.setState({ notifications: !this.state.notifications });
 	};
-
 	changeDisplay = () => {
 		this.setState({ showLikeIcons: !this.state.showLikeIcons });
 	};
@@ -618,6 +617,7 @@ export default class Noticias extends Component {
 							open={this.props}
 							title="Noticias"
 							color="#00a19a"
+							showContentRight={true}
 							titleOfAdd="Nueva noticia"
 							get={this.getNews}
 							add={() => this.setState({ addNew: true })}

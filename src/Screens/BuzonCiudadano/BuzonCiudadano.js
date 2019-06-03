@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { Alert, View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Alert, View, StyleSheet, ScrollView } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
-import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import Buzon from '../../components/Buzon/Buzon';
+import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
 const StyledSafeArea = styled.SafeAreaView`flex: 1;`;
 
@@ -22,8 +22,6 @@ const StyledContainer = styled.View`
 `;
 
 const StyledHeader = styled.View``;
-
-const StyledMainScroll = styled.ScrollView``;
 
 const StyledBuzon = styled.View`
 	flex: 1;
@@ -95,6 +93,9 @@ export default class BuzonCiudadano extends Component {
 		addSuggestion: false,
 		loading: false,
 		showButtons: true,
+		notifications: true,
+		showLikeIcons: true,
+		texToSearch: ''
 	};
 
 	async componentDidMount() {
@@ -283,6 +284,34 @@ export default class BuzonCiudadano extends Component {
 		this.setState({ form: updatedSuggestionForm, formIsValid: formIsValid });
 	};
 
+	actOrDescNotification = () => {
+		this.setState({ notifications: !this.state.notifications });
+	};
+	changeDisplay = () => {
+		this.setState({ showLikeIcons: !this.state.showLikeIcons });
+	};
+	searchTextHandler = (text) => {
+		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
+	};
+	filterData = (text) => {
+		if (text !== '') {
+			let ban = false;
+			const filteredSuggestions = this.state.suggestions.filter((sgt) => {
+				const filterSuggestion = sgt.suggestionData['asunto'];
+				const filterDate = sgt.suggestionData['fecha'].split('T', 1);
+				console.log('filterNew: ', filterSuggestion);
+				console.log('filterDate: ', filterDate[0]);
+				if (filterSuggestion.includes(text) || filterDate[0].includes(text)) {
+					ban = true;
+					return sgt;
+				}
+			});
+			if (ban) {
+				this.setState({ suggestions: filteredSuggestions });
+			}
+		} else this.getSuggestions();
+	};
+
 	render() {
 		const formElementsArray = [];
 		for (let key in this.state.form) {
@@ -294,7 +323,7 @@ export default class BuzonCiudadano extends Component {
 		const spinner = <CustomSpinner color="blue" />;
 		console.log('suggestions: ', this.state.suggestions);
 		console.log('sortSuggestion: ', this.state.suggestions.suggestionData);
-		const list = this.state.suggestions.map((sgt) => (
+		const list = this.state.suggestions.map((sgt, index) => (
 			<Buzon
 				key={sgt.id}
 				id={sgt.id}
@@ -303,41 +332,53 @@ export default class BuzonCiudadano extends Component {
 				refresh={this.getSuggestions}
 				data={sgt.suggestionData}
 				describe={this.props}
+				index={index + 1}
+				showLikeIcons={this.state.showLikeIcons}
 			/>
 		));
+		const title = (
+			<ScrollView style={{ flex: 1 }}>
+				<CustomCardItemTitle
+					title="BUZÓN CIUDADANO"
+					description="Visualice y realice sugerencias de una manera sencilla."
+					info="Delice hacia abajo, para las sugerencias más antiguas."
+					image={require('../../assets/images/Buzon/buzon.png')}
+				/>
+			</ScrollView>
+		);
 
 		const body = (
-			<View style={styles.body}>
-				<Card>
-					<CustomCardItemTitle
-						title="Buzón ciudadano"
-						description="Visualice y realice sugerencias de una manera sencilla."
-						image={require('../../assets/images/Buzon/buzon.png')}
-						showButtons={this.state.showButtons}
-						get={this.getSuggestions}
-						add={() => this.setState({ addSuggestion: true, showButtons: false })}
-						isAdmin={true}
-					/>
-					<CardItem bordered>
-						<View style={styles.cardBody}>
-							{this.state.loading ? spinner : <View style={styles.scrollDataList}>{list}</View>}
-						</View>
-					</CardItem>
-				</Card>
+			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
+				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+					<View style={styles.cardBody}>
+						{this.state.loading ? (
+								spinner
+							) : (
+								<View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
+									{list}
+								</View>
+							)}
+					</View>
+				</ScrollView>
+			</Card>
+		);
+		const sugerencia = (
+			<View style={{ flex: 1 }}>
+				{title}
+				{body}
 			</View>
 		);
 
-		const addSugerencia = (
-			<StyledBuzon>
-				<Card>
-					<CustomCardItemTitle
-						title="Buzón ciudadano"
-						description="Realice cualquier queja 
-                                o sugerencia."
-						image={require('../../assets/images/Buzon/buzon.png')}
-					/>
+		const addSuggestionTitle = (
+			<View style={{ flex: 1, marginBottom: 10 }}>
+				<CustomAddBanner title="NUEVA SUGERENCIA" image={require('../../assets/images/Buzon/buzon.png')} />
+			</View>
+		);
+		const addSuggestionBody = (
+			<Card style={styles.add}>
+				<ScrollView style={{ flex: 1 }}>
 					<CardItem bordered>
-						<StyledForm>
+						<View style={styles.cardBody}>
 							{formElementsArray.map((formElement) => (
 								<CustomInput
 									key={formElement.id}
@@ -346,35 +387,47 @@ export default class BuzonCiudadano extends Component {
 									changed={(text) => this.inputChangedHandler(text, formElement.id)}
 								/>
 							))}
-							{!this.state.loading ? (
-								<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-									<CustomButton
-										style={this.state.btnStyle}
-										name={this.state.btnName}
-										clicked={() => this.orderHandler()}
-									/>
-									<CustomButton
-										style="Danger"
-										name="Regresar"
-										clicked={() => this.getSuggestions()}
-									/>
-								</View>
-							) : (
-								spinner
-							)}
-						</StyledForm>
+						</View>
 					</CardItem>
-				</Card>
-			</StyledBuzon>
+				</ScrollView>
+			</Card>
+		);
+		const addSugerencia = (
+			<View style={{ flex: 1, flexDirection: 'column' }}>
+				{addSuggestionTitle}
+				{this.state.loading && spinner}
+				{addSuggestionBody}
+			</View>
 		);
 		return (
 			<StyledSafeArea>
 				<StyledContainer>
 					<StyledHeader>
-						<HeaderToolbar open={this.props} title="Sugerencias" />
+						<HeaderToolbar 
+							open={this.props}
+							title="Sugerencias"
+							color="#00a19a"
+							showContentRight={true}
+							titleOfAdd="Nueva sugerencia"
+							get={this.getSuggestions}
+							add={() => this.setState({ addSuggestion: true })}
+							goBack={() => this.setState({ addSuggestion: false })}
+							isAdd={this.state.addSuggestion}
+							save={this.orderHandler}
+							isAdmin={true}
+							notifications={this.actOrDescNotification}
+							actOrDesc={this.state.notifications}
+							changeDisplay={this.changeDisplay}
+							showLikeIcons={this.state.showLikeIcons}
+							changed={(text) => this.searchTextHandler(text)}
+							value={this.state.texToSearch}
+							search={this.filterData}
+						/>
 					</StyledHeader>
 					<StatusBar color="#FEA621" />
-					<StyledMainScroll>{this.state.addSuggestion ? addSugerencia : body}</StyledMainScroll>
+					<View style={{ flex: 1, margin: 10 }}>
+						{this.state.addSuggestion ? addSugerencia : sugerencia}
+					</View>
 				</StyledContainer>
 			</StyledSafeArea>
 		);
@@ -403,10 +456,20 @@ const styles = StyleSheet.create({
 		margin: 5,
 		borderRadius: 5
 	},
-	scrollDataList: {
+	scrollDataListIcons: {
 		flex: 1,
 		justifyContent: 'space-between',
 		flexDirection: 'row',
-		flexWrap: 'wrap',
+		flexWrap: 'wrap'
+	},
+	scrollDataList: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'column'
+	},
+	add: {
+		flex: 2,
+		flexDirection: 'column', 
+		justifyContent: 'flex-start'
 	}
 });

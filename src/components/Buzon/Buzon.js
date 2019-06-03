@@ -13,7 +13,7 @@ export default class Buzon extends Component {
 		nombre: null,
 		itemKey: null,
 		showItemCard: false,
-		deleted: null
+		data: [],
 	};
 
 	clickedListHandler = (identifier, key) => {
@@ -42,7 +42,8 @@ export default class Buzon extends Component {
 				nombre: this.state.nombre,
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
-				type: 'buzon'
+				type: 'Buzón Ciudadano',
+				barProps: { title: 'Sugerencias', status: '#00847b', bar: '#00a19a' }
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
@@ -97,17 +98,36 @@ export default class Buzon extends Component {
 		this.props.refresh();
 	};
 
-	render() {
+
+	componentDidMount() {
 		const data = [];
-		console.log('data: ', this.props.data);
+		const obj = {};
 		for (let dataName in this.props.data) {
 			if (dataName === 'asunto') {
-				data.push({
-					title: this.props.data[dataName]
-				});
+				obj.title = this.props.data[dataName];
+			}
+			if (dataName === 'fecha') {	
+				const fecha = this.props.data[dataName].split('T', 1);
+				obj.fecha = fecha;
 			}
 		}
-		const listData = <ListData data={data} id={this.props.id} clicked={this.clickedListHandler} />;
+		const oddORnot = (this.props.index % 2);
+		let odd = null;
+		if(oddORnot === 1)
+			odd = false;
+		else
+			odd = true;
+		obj.odd = odd;
+		data.push(obj);
+		this.setState({ data: data });
+	};
+
+	render() {
+		const listData = <ListData 
+							data={this.state.data} 
+							id={this.props.id} 
+							clicked={this.clickedListHandler}
+							showLikeIcons={this.props.showLikeIcons} />;
 
 		return <View>{listData}</View>;
 	}

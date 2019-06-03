@@ -11,7 +11,8 @@ import {
 	BackHandler
 } from 'react-native';
 import { Card, CardItem, Body } from 'native-base';
-import email from 'react-native-email';
+import Email from 'react-native-email';
+import Pdf from 'react-native-pdf';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '.././CustomButton/CustomButton';
 import HeaderToolbar from '../HeaderToolbar/HeaderToolbar';
@@ -59,25 +60,106 @@ export default class DescribreData extends Component {
 	}
 	// Disable the native button of return
 	goBackHandler = () => true;
-	//Send email 
-	emailHandler = (isToAdmin) => {
-		const { actividad, noticia, direccion, descripcion, fecha } = this.state.data;
+	//Send email
+	emailHandler = (isToAdmin, type) => {
 		if (isToAdmin) {
-			email('admin@admin.com', {
+			Email('admin@admin.com', {
 				subject: 'Asunto',
 				body: 'Comentario'
-			}).catch(console.error)
+			}).catch(console.error);
 		} else {
-			email('tu@contacto.com', {
-				subject: actividad ? actividad : noticia,
-				body: direccion + '\n' + fecha + '\n' + descripcion
-			}).catch(console.error)
+			const {
+				actividad,
+				noticia,
+				asunto,
+				fecha,
+				hora,
+				tipo,
+				descripcion,
+				direccion,
+				municipio,
+				nombre,
+				email,
+				comentario,
+				destino,
+				placa,
+				chofer,
+				horaSalida,
+				horaRegreso,
+				telefono
+			} = this.state.data;
+			let subject = (body = null);
+			switch (type) {
+				case 'Actividades':
+					subject = actividad;
+					body = direccion + '\n' + fecha + ' / ' + hora + '\n' + descripcion;
+					break;
+				case 'Noticias':
+					subject = noticia;
+					body = direccion + '\n' + fecha + '\n' + descripcion;
+					break;
+				case 'Sugerencias':
+					subject = asunto;
+					body = nombre + '\n' + fecha + '\n' + email + '\n' + comentario;
+					break;
+				case 'Bus Escolar':
+					subject = 'Horario';
+					body =
+						'Destino: ' +
+						destino +
+						'\n' +
+						'Placa: ' +
+						placa +
+						'\n' +
+						'Chofer: ' +
+						chofer +
+						'\n' +
+						'Salida: ' +
+						horaSalida +
+						'\n' +
+						'Regreso: ' +
+						horaRegreso;
+					break;
+				case 'Incidencias':
+					subject = asunto;
+					body =
+						'DESCRIPCIÓN' +
+						'\n' +
+						tipo +
+						'\n' +
+						descripcion +
+						'\n' +
+						'UBICACIÓN' +
+						'\n' +
+						direccion +
+						'\n' +
+						municipio +
+						'\n' +
+						fecha +
+						'\n' +
+						'DATOS DE QUIEN REPORTA' +
+						'\n' +
+						nombre +
+						'\n' +
+						email +
+						'\n' +
+						telefono;
+					break;
+
+				default:
+					null;
+					break;
+			}
+			Email('tu@contacto.com', {
+				subject: subject,
+				body: body
+			}).catch(console.error);
 		}
-        
-    }
+	};
 
 	render() {
 		let card = (image = null);
+		let elpdf = null;
 		if (this.state.data && this.state.navigate) {
 			const { data, navigate } = this.state;
 			switch (data.type) {
@@ -120,7 +202,7 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
-				case 'buzon':
+				case 'Buzón Ciudadano':
 					card = (
 						<View>
 							<Card>
@@ -149,18 +231,11 @@ export default class DescribreData extends Component {
 								<CardItem footer>
 									<Text style={styles.fecha}>Fecha: {data.fecha}</Text>
 								</CardItem>
-								<View style={styles.button}>
-									<CustomButton
-										style="DangerBorder"
-										name="Cerrar"
-										clicked={() => navigate('Buzón Ciudadano')}
-									/>
-								</View>
 							</Card>
 						</View>
 					);
 					break;
-				case 'bus':
+				case 'Bus Escolar':
 					card = (
 						<View style={{ flex: 1, marginBottom: 20, marginTop: 20 }}>
 							<Card key={data.chofer + data.horaSalida + data.destino}>
@@ -190,18 +265,11 @@ export default class DescribreData extends Component {
 								<CardItem footer>
 									<Text style={styles.fecha}>Horarios.</Text>
 								</CardItem>
-								<View style={{ flex: 1, flexGrow: 1, marginTop: 5, marginBottom: 5 }}>
-									<CustomButton
-										style="DangerBorder"
-										name="Cerrar"
-										clicked={() => navigate('Bus Escolar')}
-									/>
-								</View>
 							</Card>
 						</View>
 					);
 					break;
-				case 'incidencia':
+				case 'Incidencias':
 					card = (
 						<View key={data.itemKey}>
 							<Card>
@@ -223,9 +291,7 @@ export default class DescribreData extends Component {
 								<CardItem>
 									<Body>
 										<Text style={styles.fecha}>Descripción</Text>
-										<Text style={styles.descripcion}>
-											{JSON.stringify(data.tipo).toUpperCase()}
-										</Text>
+										<Text style={styles.descripcion}>{data.tipo.toUpperCase()}</Text>
 										<Text style={styles.descripcion}>{data.descripcion}</Text>
 										<TouchableOpacity
 											style={{ alignSelf: 'center' }}
@@ -246,13 +312,6 @@ export default class DescribreData extends Component {
 								<CardItem footer>
 									<Text style={styles.fecha}>Reporte de incidencia</Text>
 								</CardItem>
-								<View style={styles.button}>
-									<CustomButton
-										style="DangerBorder"
-										name="Cerrar"
-										clicked={() => navigate('Incidencias')}
-									/>
-								</View>
 							</Card>
 						</View>
 					);
@@ -304,6 +363,37 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
+				case 'Manuales':
+					const source = { uri: data.url };
+					elpdf = (
+						<View
+							style={{
+								flex: 1,
+								justifyContent: 'flex-start',
+								alignItems: 'center',
+								overflow: 'hidden',
+								flexGrow: 2
+							}}
+						>
+							<Pdf
+								source={source}
+								onLoadComplete={(numberOfPages, filePath) => {
+									console.log(`number of pages: ${numberOfPages}`);
+								}}
+								onPageChanged={(page, numberOfPages) => {
+									console.log(`current page: ${page}`);
+								}}
+								onError={(error) => {
+									console.log(error);
+								}}
+								style={{
+									flex: 1,
+									width: width
+								}}
+							/>
+						</View>
+					);
+					break;
 				default:
 					card = null;
 					break;
@@ -333,19 +423,20 @@ export default class DescribreData extends Component {
 						<HeaderToolbar
 							title={this.state.data && this.state.data.barProps.title}
 							color={this.state.data && this.state.data.barProps.bar}
+							showContentRight={true}
+							sendEmail={card && this.emailHandler}
 							describeGoBack={() =>
 								this.setState(
 									{ loaded: false },
 									() => this.state.navigate && this.state.navigate(this.state.data.type)
 								)}
-							sendEmail={this.emailHandler}
 							// here i go
 						/>
 					</View>
 					<StatusBar color={this.state.data && this.state.data.barProps.status} />
 					{!this.state.zoomImage && (
 						<View style={{ flex: 1, margin: 5 }}>
-							<ScrollView>{card}</ScrollView>
+							{card ? <ScrollView>{card}</ScrollView> : <View style={{ flex: 1 }}>{elpdf}</View>}
 						</View>
 					)}
 					{this.state.zoomImage && <ScrollView style={{ flex: 1, margin: 2 }}>{image && image}</ScrollView>}
