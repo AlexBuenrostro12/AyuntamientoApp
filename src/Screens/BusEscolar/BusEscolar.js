@@ -390,6 +390,7 @@ export default class BusEscolar extends Component {
 							open={this.props} 
 							title="Buses"
 							color="#00a19a"
+							showContentRight={true}
 							titleOfAdd="Nuevo bus"
 							get={this.getBuses}
 							add={() => this.setState({ addBus: true })}

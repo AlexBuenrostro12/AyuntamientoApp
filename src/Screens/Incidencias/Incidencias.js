@@ -669,7 +669,8 @@ export default class Incidencias extends Component {
                         <HeaderToolbar
                             open={this.props}
                             title="Incidencias"
-							color="#00a19a"
+                            color="#00a19a"
+                            showContentRight={true}
 							titleOfAdd="Nueva incidiencia"
 							get={this.getIncidents}
 							add={() => this.setState({ addIncident: true })}

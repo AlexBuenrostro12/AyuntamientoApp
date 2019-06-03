@@ -404,9 +404,10 @@ export default class BuzonCiudadano extends Component {
 				<StyledContainer>
 					<StyledHeader>
 						<HeaderToolbar 
-							open={this.props} title="Sugerencias" 
+							open={this.props}
 							title="Sugerencias"
 							color="#00a19a"
+							showContentRight={true}
 							titleOfAdd="Nueva sugerencia"
 							get={this.getSuggestions}
 							add={() => this.setState({ addSuggestion: true })}

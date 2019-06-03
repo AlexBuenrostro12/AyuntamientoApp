@@ -204,16 +204,16 @@ export default class HeaderToolbar extends React.Component {
 						<Text style={styles.text}>{this.props.title}</Text>
 					</View>
 				</View>
-				<View style={styles.contentRight}>
+				{this.props.showContentRight && <View style={styles.contentRight}>
 					{/* check if can show the calendar */}
 					{!this.props.describeGoBack && !this.props.isAdd && this.props.calendar && calendar}
 					{/* check if can show the search bar */}
-					{!this.props.describeGoBack && !this.props.isAdd && !this.props.showCalendar && search}
+					{!this.props.describeGoBack && !this.props.isAdd && !this.props.showCalendar && this.props.search && search}
 					{/* check if it's not describeScreen and then check if show menu or menuAdd */}
 					{!this.props.describeGoBack && (!this.props.isAdd ? preferenceMenu : preferenceMenuAdd)}
 					{/* check if show menu of describeData */}
 					{this.props.describeGoBack && preferenceMenuDescribeData}
-				</View>
+				</View>}
 			</View>
 		);
 		const searBar = (
