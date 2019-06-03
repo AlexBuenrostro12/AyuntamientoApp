@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, Image, StyleSheet, Dimensions } from 'react-native';
-
+import { normalize } from '../AuxiliarFunctions/FontResponsive';
 const { height, width } = Dimensions.get('window');
 
 const customAddBanner = (props) => (
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     title: {
-        fontSize: 22,
+        fontSize: normalize(22),
         color: "#f8ae40",
         fontWeight: 'bold',
         alignSelf: 'center',

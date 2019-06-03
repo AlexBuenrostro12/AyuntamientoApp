@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default class Multimedia extends Component {
 
@@ -16,22 +16,47 @@ export default class Multimedia extends Component {
         );
         switch (this.props.itemType) {
             case 'ImageButton':
-                multimedia = (
-                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-                        {this.props.image ? image : null}
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#F3F2F1', borderRadius: 5, paddingLeft: 10, paddingRight: 10 }}>
-                            <Image
-                                style={{ height: 30, width: 30 }}
-                                source={require('../../../assets/images/Imagen/image.png')} />
-                            <Text style={{ fontSize: 20 }}>{this.props.holder}</Text>
-                            <TouchableOpacity onPress={this.props.loadPhoto}>
-                                <Image
-                                    style={{ height: 30, width: 30 }}
-                                    source={require('../../../assets/images/Add/add.png')} />
-                            </TouchableOpacity>
+                    multimedia = (
+                        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+                            {this.props.image && image}
+                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <TouchableOpacity
+                                    style={{
+                                        flex: 1,
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        backgroundColor: '#00a19a',
+                                        flexGrow: 1,
+                                        marginRight: 2
+                                    }}
+                                    onPress={() => this.props.loadPhoto('library')}
+                                >
+                                    <Image
+                                        style={{ height: 30, width: 30 }}
+                                        source={require('../../../assets/images/Imagen/image-white.png')}
+                                    />
+                                    <Text style={styles.photoText}>Agregar Foto</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{
+                                        flex: 1,
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        backgroundColor: '#00847b',
+                                        flexGrow: 1,
+                                        marginRight: 2
+                                    }}
+                                    onPress={() => this.props.loadPhoto('camera')}
+                                >
+                                    <Image
+                                        style={{ height: 30, width: 30 }}
+                                        source={require('../../../assets/images/Imagen/camera.png')}
+                                    />
+                                    <Text style={styles.photoText}>Tomar Foto</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                );
+                    );
                 break;
 
             default:
@@ -45,3 +70,11 @@ export default class Multimedia extends Component {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    photoText: {
+		fontWeight: 'bold',
+		color: 'white',
+		alignSelf: 'center'
+	}
+});

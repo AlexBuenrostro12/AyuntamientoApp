@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native';
-import { ListItem, Right, Left } from 'native-base';
-import IconRight from '../../UI/IconRight/IconRight';
+import { View, StyleSheet, Alert } from 'react-native';
 import axios from '../../../axios-ayuntamiento';
 import ListData from '../ListData/ListData';
 
@@ -10,7 +8,8 @@ export default class Buses extends Component {
 		data: [],
 		bus: [],
 		showItemCard: false,
-		itemKey: null
+		itemKey: null,
+		data: []
 	};
 
 	clickedListHandler = (salida, destino, key) => {
@@ -40,7 +39,8 @@ export default class Buses extends Component {
 		}
 		obj.isAdmin = this.props.isAdmin;
 		obj.deleteItem = this.alertCheckDeleteItem;
-		obj.type = 'bus';
+		obj.type = 'Bus Escolar';
+		obj.barProps = { title: 'Bus Escolar', status: '#00847b', bar: '#00a19a' };
 		this.setState({ showItemCard: true, itemKey: key }, () => this.goToDescribeData(obj));
 	};
 
@@ -115,6 +115,13 @@ export default class Buses extends Component {
 				obj.horaSalida = this.props.data[dataName];
 			}
 		}
+		const oddORnot = (this.props.index % 2);
+		let odd = null;
+		if(oddORnot === 1)
+			odd = false;
+		else
+			odd = true;
+		obj.odd = odd;
 		data.push(obj);
 		this.setState({ data: data });
 		console.log('Componentdidmount: ', data);
@@ -122,7 +129,11 @@ export default class Buses extends Component {
 
 	render() {
 		console.log('Buses.js: ', this.props);
-		const listData = <ListData data={this.state.data} id={this.props.id} clicked={this.clickedListHandler} />;
+		const listData = <ListData 
+							data={this.state.data} 
+							id={this.props.id} 
+							clicked={this.clickedListHandler}
+							showLikeIcons={this.props.showLikeIcons} />;
 
 		return <View>{listData}</View>;
 	}

@@ -48,7 +48,7 @@ const ListData = (props) => {
 						{dt.fecha} / {dt.title}
 					</Text>
 				) : (
-					<Text style={styles.text}>
+					<Text style={styles.textList}>
 						{dt.destino} - {dt.horaSalida}
 					</Text>
 				)}
