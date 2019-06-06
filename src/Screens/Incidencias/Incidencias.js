@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Platform, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Platform, Alert, TouchableOpacity, Dimensions } from 'react-native';
 import { Form, Card, CardItem, Body } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
 import axiosImage from 'axios';
@@ -21,11 +21,6 @@ import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 export default class Incidencias extends Component {
     state = {
         formDescripcion: {
-            tipo: {
-                itemType: 'Picker',
-                value: 'electricidad',
-                valid: true
-            },
             asunto: {
                 itemType: 'FloatingLabel',
                 value: '',
@@ -34,6 +29,11 @@ export default class Incidencias extends Component {
                     maxLength: 35
                 },
                 valid: false
+            },
+            direccion: {
+                itemType: 'Picker',
+                value: 'Direccion 1',
+                valid: true
             },
             descripcion: {
                 itemType: 'Textarea',
@@ -512,10 +512,7 @@ export default class Incidencias extends Component {
         }
         const ubicacion = (
             <View style={{ flex: 1, marginBottom: 5 }}>
-                <CustomCardItemTitle
-                    title="Ubicación"
-                    description="Seleccione la localidad y la dirección."
-                    image={require('../../assets/images/Ubicacion/search.png')} />
+                <View style={styles.addView}><Text style={styles.addTextDesc}>Ubicacion del reporte o queja</Text></View>
                 <CardItem bordered>
                     <View style={{ flex: 1, flexDirection: 'column' }}>
                         {formElementsUbicacion.map(element => (
@@ -532,10 +529,7 @@ export default class Incidencias extends Component {
         );
         const multimedia = (
             <View style={{ flex: 1, marginBottom: 5 }}>
-                <CustomCardItemTitle
-                    title="Multimedia"
-                    description="Seleccione una imagen de la incidencia."
-                    image={require('../../assets/images/Multimedia/multimedia.png')} />
+                <View style={styles.addView}><Text style={styles.addTextDesc}>Foto a reportar.</Text></View>
                 <CardItem bordered>
                     <View style={{ flex: 1, flexDirection: 'column' }}>
                         {formElementsMultimedia.map(element => (
@@ -553,10 +547,7 @@ export default class Incidencias extends Component {
         );
         const description = (
             <View style={{ flex: 1, marginBottom: 5 }}>
-                <CustomCardItemTitle
-                    title="Descripción"
-                    description="Descripción de la incidencia."
-                    image={require('../../assets/images/Descripcion/descripcion.png')} />
+                <View style={styles.addView}><Text style={styles.addTextDesc}>Asunto, departamento y descripción.</Text></View>
                 <CardItem bordered>
                     <View style={{ flex: 1, flexDirection: 'column' }}>
                         {formElementsDescripcion.map(element => (
@@ -573,10 +564,7 @@ export default class Incidencias extends Component {
         );
         const datosPersonales = (
             <View style={{ flex: 1, marginBottom: 5 }}>
-                <CustomCardItemTitle
-                    title="Datos personales"
-                    description="Datos de quien reporta."
-                    image={require('../../assets/images/Email/email.png')} />
+               <View style={styles.addView}><Text style={styles.addTextDesc}>Datos personales.</Text></View>
                 <CardItem bordered>
                     <View style={{ flex: 1, flexDirection: 'column' }}>
                         {formElementsDatosPersonales.map(element => (
@@ -596,7 +584,7 @@ export default class Incidencias extends Component {
         
         const addIncidentTitle = (
 			<View style={{ flex: 1, marginBottom: 10 }}>
-				<CustomAddBanner title="NUEVA INCIDENCIA" image={require('../../assets/images/Buzon/buzon.png')} />
+				<CustomAddBanner title="NUEVO REPORTE" image={require('../../assets/images/Preferences/incidents.png')} />
 			</View>
 		);
         const addIncident = (
@@ -606,9 +594,9 @@ export default class Incidencias extends Component {
                     <ScrollView style={{ flex: 1 }}>
                         <CardItem bordered>
                             <View style={styles.cardBody}>
+                                {description}
                                 {ubicacion}
                                 {multimedia}
-                                {description}
                                 {datosPersonales}
                             </View>
                         </CardItem>
@@ -632,10 +620,10 @@ export default class Incidencias extends Component {
         const title = (
             <ScrollView style={{ flex: 1 }}>
                 <CustomCardItemTitle
-                    title="Incidencias"
-                    description="Visualice y realice reporte de incidencias de una manera sencilla."
-                    info="Delice hacia abajo, para los reportes más antiguos."
-                    image={require('../../assets/images/Noticia/noticia.png')}
+                    title="REPORTE CIUDADANO"
+                    description="Realice reportes de fallas en servicios y otras emergencias en su localidad."
+                    info="Escriba todos los campos que se presenta."
+                    image={require('../../assets/images/Preferences/incidents.png')}
                 />
             </ScrollView>
         );
@@ -668,10 +656,10 @@ export default class Incidencias extends Component {
                     <View>
                         <HeaderToolbar
                             open={this.props}
-                            title="Incidencias"
-                            color="#00a19a"
+                            title="Reporte"
+                            color="#e2487d"
                             showContentRight={true}
-							titleOfAdd="Nueva incidiencia"
+							titleOfAdd="Nuevo reporte"
 							get={this.getIncidents}
 							add={() => this.setState({ addIncident: true })}
 							goBack={() => this.setState({ addIncident: false })}
@@ -685,7 +673,7 @@ export default class Incidencias extends Component {
 							search={this.filterData}
                         />
                     </View>
-                    <StatusBar color="#FEA621" />
+                    <StatusBar color="#c7175b" />
                     <View style={{ flex: 1, margin: 10 }}>
                         {!this.state.addIncident ? incidencias : addIncident}
                     </View>
@@ -694,6 +682,8 @@ export default class Incidencias extends Component {
         );
     }
 };
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
@@ -745,5 +735,18 @@ const styles = StyleSheet.create({
 		flex: 2,
 		flexDirection: 'column', 
 		justifyContent: 'flex-start'
-	}
+    },
+    addView: {
+        flex: 1, 
+        justifyContent: 'center',
+        backgroundColor: '#676766',
+        marginRight: 5,
+    },
+    addTextDesc: {
+        fontSize: 15,
+        fontWeight: 'normal',
+        fontStyle: 'normal',
+		color: 'white',
+		fontFamily: 'AvenirNextLTPro-Regular'
+    },
 });

@@ -120,7 +120,7 @@ export default class DescribreData extends Component {
 						'Regreso: ' +
 						horaRegreso;
 					break;
-				case 'Incidencias':
+				case 'Reporte ciudadano':
 					subject = asunto;
 					body =
 						'DESCRIPCIÓN' +
@@ -269,7 +269,7 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
-				case 'Incidencias':
+				case 'Reporte ciudadano':
 					card = (
 						<View key={data.itemKey}>
 							<Card>
@@ -310,7 +310,7 @@ export default class DescribreData extends Component {
 									</Body>
 								</CardItem>
 								<CardItem footer>
-									<Text style={styles.fecha}>Reporte de incidencia</Text>
+									<Text style={styles.fecha}>Reporte ciudadano</Text>
 								</CardItem>
 							</Card>
 						</View>

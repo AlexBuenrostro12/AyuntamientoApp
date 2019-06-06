@@ -130,18 +130,6 @@ export default class HeaderToolbar extends React.Component {
 						<Image style={styles.settings} source={require('../../assets/images/settings/settings.png')} />
 					</MenuTrigger>
 					<MenuOptions>
-						{/* Go back */}
-						{this.props.describeGoBack && (
-							<MenuOption onSelect={() => this.props.describeGoBack()}>
-								<View style={styles.menuOption}>
-									<Image
-										style={styles.menuOptionImage}
-										source={require('../../assets/images/Preferences/back.png')}
-									/>
-									<Text style={styles.menuOptionText}>Cancelar</Text>
-								</View>
-							</MenuOption>
-						)}
 						{/* Send by email */}
 						{this.props.sendEmail && (
 							<MenuOption onSelect={() => this.props.sendEmail(false, this.props.title)}>
@@ -175,6 +163,11 @@ export default class HeaderToolbar extends React.Component {
 		const search = (
 			<TouchableOpacity onPress={() => this.startSearch()}>
 				<Image style={styles.settings} source={require('../../assets/images/Search/search.png')} />
+			</TouchableOpacity>
+		);
+		const goBack = (
+			<TouchableOpacity onPress={() => this.props.describeGoBack()}>
+				<Image style={styles.settings} source={require('../../assets/images/Preferences/back-white.png')} />
 			</TouchableOpacity>
 		);
 		const calendar = (
@@ -211,6 +204,8 @@ export default class HeaderToolbar extends React.Component {
 					{!this.props.describeGoBack && !this.props.isAdd && !this.props.showCalendar && this.props.search && search}
 					{/* check if it's not describeScreen and then check if show menu or menuAdd */}
 					{!this.props.describeGoBack && (!this.props.isAdd ? preferenceMenu : preferenceMenuAdd)}
+					{/* check if show goBack icon of describeData */}
+					{this.props.describeGoBack && goBack}
 					{/* check if show menu of describeData */}
 					{this.props.describeGoBack && preferenceMenuDescribeData}
 				</View>}

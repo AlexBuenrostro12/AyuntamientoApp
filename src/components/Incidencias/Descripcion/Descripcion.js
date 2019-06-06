@@ -11,7 +11,7 @@ export default class Descripcion extends Component {
             case 'Picker':
                 descripcion = (
                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-                        <Text style={{ fontWeight: 'bold' }}>Selecciona tipo de incidencia:</Text>
+                        <Text style={{ fontWeight: 'bold' }}>Departamento al que se dirige:</Text>
                         <Picker
                             mode="dropdown"
                             iosHeader={this.props.value}
@@ -20,9 +20,10 @@ export default class Descripcion extends Component {
                             selectedValue={this.props.value}
                             onValueChange={this.props.changed}
                         >
-                            <Picker.Item label="Electricidad" value="electricidad" />
-                            <Picker.Item label="Agua" value="agua" />
-                            <Picker.Item label="Calles" value="calles" />
+                            <Picker.Item label="Direccion 1" value="Direccion 1" />
+                            <Picker.Item label="Direccion 2" value="Direccion 2" />
+                            <Picker.Item label="Direccion 3" value="Direccion 3" />
+                            <Picker.Item label="Direccion 4" value="Direccion 4" />
                         </Picker>
                     </View>
                 );

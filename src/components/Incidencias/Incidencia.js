@@ -72,8 +72,8 @@ export default class Incidencia extends Component {
         }
         obj.isAdmin = this.props.isAdmin;
         obj.deleteItem = this.alertCheckDeleteItem;
-        obj.type =  'Incidencias';
-        obj.barProps = { title: 'Incidencias', status: '#00847b', bar: '#00a19a' };
+        obj.type =  'Reporte ciudadano';
+        obj.barProps = { title: 'Reporte', status: '#c7175b', bar: '#e2487d' };
         this.setState({ showItemCard: true }, () => this.goToDescribeData(obj));
     }
 
