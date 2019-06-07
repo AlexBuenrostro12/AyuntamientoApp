@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Platform, Alert, TouchableOpacity, Dimensions } from 'react-native';
-import { Form, Card, CardItem, Body } from 'native-base';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Alert, Dimensions } from 'react-native';
+import { Card, CardItem } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
-import axiosImage from 'axios';
 import axiosCloudinary from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
@@ -86,24 +85,67 @@ export default class Incidencias extends Component {
             }
         },
         formUbicacion: {
-            direccion: {
+            calle: {
                 itemType: 'FloatingLabel',
+                label: 'CALLE',
                 value: '',
                 validation: {
                     minLength: 1,
-                    maxLength: 50
+                    maxLength: 15
                 },
                 valid: false
             },
-            municipio: {
-                itemType: 'Picker',
-                value: 'tecalitlan',
-                valid: true
-            },
-            fecha: {
+            numero: {
+                itemType: 'FloatingLabel',
+                label: 'NUMERO',
                 value: '',
-                valid: true
-            }
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            colonia: {
+                itemType: 'FloatingLabel',
+                label: 'COLONIA',
+                value: '',
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            cp: {
+                itemType: 'FloatingLabel',
+                label: 'CP',
+                value: '',
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            localidad: {
+                itemType: 'FloatingLabel',
+                label: 'LOCALIDAD',
+                value: '',
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            referencia: {
+                itemType: 'FloatingLabel',
+                label: 'REFERENCIA',
+                value: '',
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            
         },
         formUbicacionIsValid: false,
         formDescripcionIsValid: false,
@@ -127,7 +169,9 @@ export default class Incidencias extends Component {
         urlUploadedImage: null,
         showButtons: true,
         showLikeIcons: true,
-		texToSearch: ''
+        texToSearch: '',
+        typeOfLocation: 'Dirección específica',
+        showMap: false,
     }
 
     getCurrentDate(){
@@ -263,6 +307,7 @@ export default class Incidencias extends Component {
         return isValid;
     }
     inputChangeLocationHandler = (text, inputIdentifier) => {
+        console.log('text: ', text, 'identifier: ', inputIdentifier);
         this.getCurrentDate();
         const updatedLocationForm = {
             ...this.state.formUbicacion
@@ -287,6 +332,9 @@ export default class Incidencias extends Component {
             formIsValid = updatedLocationForm[inputIdentifier].valid && formIsValid;
         }
         this.setState({ formUbicacion: updatedLocationForm, formUbicacionIsValid: formIsValid });
+    };
+    typeOfLocation = (text) => {
+        this.setState({ typeOfLocation: text, showMap: !this.state.showMap });
     };
     inputChangeDescriptionHandler = (text, inputIdentifier) => {
         const updatedDescriptionForm = {
@@ -482,6 +530,7 @@ export default class Incidencias extends Component {
 	};
 
     render() {
+        console.log('type: ', this.state.typeOfLocation, 'showMap: ', this.state.showMap)
         const formElementsUbicacion = [];
         for (let key in this.state.formUbicacion) {
             formElementsUbicacion.push({
@@ -514,15 +563,24 @@ export default class Incidencias extends Component {
             <View style={{ flex: 1, marginBottom: 5 }}>
                 <View style={styles.addView}><Text style={styles.addTextDesc}>Ubicacion del reporte o queja</Text></View>
                 <CardItem bordered>
-                    <View style={{ flex: 1, flexDirection: 'column' }}>
-                        {formElementsUbicacion.map(element => (
+                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+                        <Ubicacion
+                            key="selectTypeUbication"
+                            itemType="SelectDirection"
+                            value={this.state.typeOfLocation}
+                            changed={(text) => this.typeOfLocation(text)} />
+                            
+                        {!this.state.showMap ? formElementsUbicacion.map(element => (
                             <Ubicacion
                                 key={element.id}
                                 itemType={element.config.itemType}
+                                label={element.config.label}
                                 value={element.config.value}
                                 isValid={element.config.valid}
                                 changed={(text) => this.inputChangeLocationHandler(text, element.id)} />
-                        ))}
+                        )) : <Ubicacion
+                                key="MapView"
+                                itemType="MapView" />}
                     </View>
                 </CardItem>
             </View>
