@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderWidth: 2,
         borderColor: 'gainsboro',
-        width: width * 0.93,
+        width: width * 0.95,
 		justifyContent: 'space-around',
     },
     image: {

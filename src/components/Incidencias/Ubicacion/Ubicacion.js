@@ -46,9 +46,8 @@ export default class Ubicacion extends Component {
 				break;
 			case 'FloatingLabel':
 				ubicacion = (
-					<Item floatingLabel style={{ marginBottom: 5 }}>
-						<Label>{this.props.label}</Label>
-						<Input onChangeText={this.props.changed} />
+					<Item style={{ marginBottom: 2 }}>
+						<Input placeholder={this.props.label} onChangeText={this.props.changed} />
 					</Item>
 				);
 				break;

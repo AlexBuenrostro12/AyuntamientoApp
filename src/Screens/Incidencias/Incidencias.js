@@ -85,6 +85,11 @@ export default class Incidencias extends Component {
                 valid: true
             }
         },
+        formApproved: {
+            approved: {
+                value: false
+            }
+        },
         formUbicacion: {
             calle: {
                 itemType: 'FloatingLabel',
@@ -283,6 +288,7 @@ export default class Incidencias extends Component {
             const ubicacionFormData = {};
             const descripcionFormData = {};
             const datosPersonalesFormData = {};
+            const approvedFormData = {};
 
             if(!this.state.showMap) {
                 for (let formElementIdentifier in this.state.formUbicacion) {
@@ -298,6 +304,9 @@ export default class Incidencias extends Component {
             for (let formElementIdentifier in this.state.formDatosPersonales) {
                 datosPersonalesFormData[formElementIdentifier] = this.state.formDatosPersonales[formElementIdentifier].value;
             }
+            for(let formElementIdentifier in this.state.formApproved) {
+                approvedFormData[formElementIdentifier] = this.state.formApproved[formElementIdentifier].value;
+            }
 
             const incident = {
                 ubicacionData: ubicacionFormData,
@@ -305,7 +314,8 @@ export default class Incidencias extends Component {
                 personalData: datosPersonalesFormData,
                 multimediaData: {
                     imagen: this.state.urlUploadedImage
-                }
+                },
+                approvedData: approvedFormData,
             }
 
             const { token } = this.state;
@@ -733,8 +743,8 @@ export default class Incidencias extends Component {
         const spinner = <CustomSpinner color="blue" />;
         
         const addIncidentTitle = (
-			<View style={{ flex: 1, marginBottom: 10 }}>
-				<CustomAddBanner title="NUEVO REPORTE" image={require('../../assets/images/Preferences/incidents.png')} />
+			<View style={{ flex: 1, marginBottom: 10, width: '100%' }}>
+				<CustomAddBanner title="AGREGAR REPORTE" image={require('../../assets/images/Preferences/add-orange.png')} />
 			</View>
 		);
         const addIncident = (
@@ -760,7 +770,8 @@ export default class Incidencias extends Component {
                                                                     id={inct.id} 
                                                                     token={this.state.token}
                                                                     isAdmin={this.state.isAdmin} 
-                                                                    refresh={this.getIncidents} 
+                                                                    refresh={this.getIncidents}
+                                                                    approvedData={inct.approvedData} 
                                                                     personalData={inct.personalData}
                                                                     descripcionData={inct.descripcionData}
                                                                     multimediaData={inct.multimediaData}

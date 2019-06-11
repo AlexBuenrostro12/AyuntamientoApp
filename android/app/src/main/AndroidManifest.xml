@@ -62,11 +62,11 @@
             </intent-filter>
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-        <!-- geo api -->
+        <!-- geo api key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCnH6V7DIofwmPbRqYN4ToY15kC-Jx7LbI" />
-        <!-- geo api -->
+        <!-- geo api key -->
     </application>
 
 </manifest>

@@ -20,6 +20,14 @@ export default class Incidencia extends Component {
         //Construct the object with the data nesscesary to display
         let obj = {};
         obj.itemKey = key;
+        //Add approvedData to the object
+        for(let key in this.props.approvedData){
+            switch (key) {
+                case 'approved':
+                    obj.approved = this.props.approvedData[key];
+                    break;
+            }
+        }
         //Add personalData to the object
         for(let key in this.props.personalData){
             switch (key) {
@@ -43,8 +51,8 @@ export default class Incidencia extends Component {
                 case 'descripcion':
                     obj.descripcion = this.props.descripcionData[key];
                     break;
-                case 'tipo':
-                    obj.tipo = this.props.descripcionData[key];
+                case 'direccion':
+                    obj.direccion = this.props.descripcionData[key];
                     break;
             }
         }
@@ -59,18 +67,37 @@ export default class Incidencia extends Component {
         //Add ubicacionData to the object
         for(let key in this.props.ubicacionData){
             switch (key) {
-                case 'direccion':
-                    obj.direccion = this.props.ubicacionData[key];
+                case 'calle':
+                    obj.calle = this.props.ubicacionData[key];
                     break;
-                case 'municipio':
-                    obj.municipio = this.props.ubicacionData[key];
+                case 'colonia':
+                    obj.colonia = this.props.ubicacionData[key];
+                    break;
+                case 'cp':
+                    obj.cp = this.props.ubicacionData[key];
                     break;
                 case 'fecha':
                     obj.fecha = this.props.ubicacionData[key];
                     break;
+                case 'localidad':
+                    obj.localidad = this.props.ubicacionData[key];
+                    break;
+                case 'numero':
+                    obj.numero = this.props.ubicacionData[key];
+                    break;
+                case 'referencia':
+                    obj.referencia = this.props.ubicacionData[key];
+                    break;
+                case 'latitude':
+                    obj.latitude = this.props.ubicacionData[key];
+                    break;
+                case 'longitude':
+                    obj.longitude = this.props.ubicacionData[key];
+                    break;
             }
         }
         obj.isAdmin = this.props.isAdmin;
+        obj.approvedItem = this.approveItemListHandler;
         obj.deleteItem = this.alertCheckDeleteItem;
         obj.type =  'Reporte ciudadano';
         obj.barProps = { title: 'Reporte', status: '#c7175b', bar: '#e2487d' };
@@ -82,12 +109,41 @@ export default class Incidencia extends Component {
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
 		}
-	};
+    };
+
+    approveItemListHandler = (itemKey, approved) => {
+        console.log('approveItemListHandler:res: ', this.props.token, this.state.itemKey);
+        const { navigate } = this.props.describe.navigation;
+        console.log('navigate: ', navigate, 'approved: ', approved);
+        let title = '';
+        if (approved) title = '¡Reporte aprobado con éxito!';
+        else title = '¡Reporte desaprobado con éxito!';
+        const obj = { 
+            approvedData : {
+                approved: approved
+            } 
+        };
+        axios
+		.patch('/incidents' + '/' + itemKey + '.json?auth=' + this.props.token, obj)
+		.then((response) => {
+            console.log('approveItemListHandler:res: ', response);
+			Alert.alert('¡Reporte!', title, [ { text: 'Ok', onPress: () => { navigate('Incidencias'); this.refreshItemsHandler(); } } ], {
+				cancelable: false
+			});
+		})
+		.catch((error) => {
+            console.log('approveItemListHandler:res: ', error)
+			Alert.alert('¡Reporte!', '¡Reporte fallido al aprobar!', [ { text: 'Ok' } ], {
+				cancelable: false
+			});
+		});
+    }
+
 
     alertCheckDeleteItem = (itemKey) => {
         Alert.alert(
-            'Incidencia', 
-            '¿Desea eliminar esta incidencia?', 
+            'Reporte', 
+            '¿Desea eliminar este reporte?', 
             [ 
                 { text: 'Si', onPress: () => this.deleteItemListHandler(itemKey) }, 
                 { text: 'No', }, 
@@ -105,13 +161,13 @@ export default class Incidencia extends Component {
 		.delete('/incidents' + '/' + itemKey + '.json?auth=' + this.props.token)
 		.then((response) => {
             console.log('deleteItemListHandler:res: ', response);
-			Alert.alert('Incidencia', 'Incidencia eliminada con exito!', [ { text: 'Ok', onPress: () => { navigate('Incidencias'); this.refreshItemsHandler(); } } ], {
+			Alert.alert('Reporte', '¡Reporte eliminado con exito!', [ { text: 'Ok', onPress: () => { navigate('Incidencias'); this.refreshItemsHandler(); } } ], {
 				cancelable: false
 			});
 		})
 		.catch((error) => {
             console.log('deleteItemListHandler:res: ', error)
-			Alert.alert('Incidencia', 'Incidencia fallida al eliminar!', [ { text: 'Ok' } ], {
+			Alert.alert('Reporte', '¡Reporte fallido al eliminar!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});
 		});
@@ -162,47 +218,3 @@ export default class Incidencia extends Component {
         return <View>{listData}</View>
     }
 }
-
-const styles = StyleSheet.create({
-    listIncidents: {
-        marginLeft: 2,
-        marginRight: 2,
-        marginTop: 5,
-        marginBottom: 5,
-    },
-    button: {
-        flex: 1,
-        flexGrow: 1,
-        marginTop: 5,
-        marginBottom: 5,
-    },
-    btnsAdm: { 
-        flex: 1, 
-        flexDirection: 'row', 
-        justifyContent: 'flex-end' ,
-    },
-    btnsContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    btnsAdmImg: {
-        height: 30,
-        width: 30,
-        resizeMode: 'contain',
-        marginLeft: 2,
-    },
-    image: {
-        resizeMode: 'contain',
-        height: 160,
-        width: 200,
-        alignSelf: 'center',
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    body: {
-        fontSize: 15
-    }
-});
