@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Alert, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Alert, Dimensions, PermissionsAndroid } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
 import axiosCloudinary from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import Communications from 'react-native-communications';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import Ubicacion from '../../components/Incidencias/Ubicacion/Ubicacion';
@@ -172,6 +173,8 @@ export default class Incidencias extends Component {
         texToSearch: '',
         typeOfLocation: 'Dirección específica',
         showMap: false,
+        latitude: null,
+		longitude: null,
     }
 
     getCurrentDate(){
@@ -194,6 +197,7 @@ export default class Incidencias extends Component {
 
     async componentDidMount() {
         //Get the token and time of expiration
+        this.requestLocationPermission();
 		let token = email = (expiresIn = null);
 		try {
 			console.log('Entro al try');
@@ -238,6 +242,41 @@ export default class Incidencias extends Component {
 		}
     }
 
+    findLocationHandler = () => {
+		this.watchId = navigator.geolocation.watchPosition((position) => {
+			console.log('position: ', position)
+			this.setState({ 
+				latitude: position.coords.latitude,
+				longitude: position.coords.longitude
+			});
+		},
+		(error) => { console.log('Error: ', error) },
+		{
+			enableHighAccuracy: false, timeout: 1, distanceFilter: 1
+		})
+	};
+
+	requestLocationPermission = async () => {
+		try {
+		  const granted = await PermissionsAndroid.request(
+			PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+			{
+			  'title': 'Location Permission',
+			  'message': 'This App needs access to your location ' +
+						 'so we can know where you are.'
+			}
+		  )
+		  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+			this.findLocationHandler();
+			console.log("You can use locations ")
+		  } else {
+			console.log("Location permission denied")
+		  }
+		} catch (err) {
+		  console.warn(err)
+		}
+	  }
+
     sendIncidentHandler = () => {
         this.setState({ loading: true })
         if (this.state.imageFormData && this.state.formDescripcionIsValid && this.state.formDatosPersonalesIsValid && this.state.formUbicacionIsValid) {
@@ -245,8 +284,13 @@ export default class Incidencias extends Component {
             const descripcionFormData = {};
             const datosPersonalesFormData = {};
 
-            for (let formElementIdentifier in this.state.formUbicacion) {
-                ubicacionFormData[formElementIdentifier] = this.state.formUbicacion[formElementIdentifier].value;
+            if(!this.state.showMap) {
+                for (let formElementIdentifier in this.state.formUbicacion) {
+                    ubicacionFormData[formElementIdentifier] = this.state.formUbicacion[formElementIdentifier].value;
+                }
+            } else {
+                ubicacionFormData['latitude'] = this.state.latitude;
+                ubicacionFormData['longitude'] = this.state.longitude;
             }
             for (let formElementIdentifier in this.state.formDescripcion) {
                 descripcionFormData[formElementIdentifier] = this.state.formDescripcion[formElementIdentifier].value;
@@ -307,7 +351,6 @@ export default class Incidencias extends Component {
         return isValid;
     }
     inputChangeLocationHandler = (text, inputIdentifier) => {
-        console.log('text: ', text, 'identifier: ', inputIdentifier);
         this.getCurrentDate();
         const updatedLocationForm = {
             ...this.state.formUbicacion
@@ -321,6 +364,7 @@ export default class Incidencias extends Component {
 
         updatedFormElement.value = text;
         updatedDateElement.value = this.state.date
+        updatedDateElement.valid = true;
         updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
 
         updatedLocationForm[inputIdentifier] = updatedFormElement;
@@ -334,7 +378,33 @@ export default class Incidencias extends Component {
         this.setState({ formUbicacion: updatedLocationForm, formUbicacionIsValid: formIsValid });
     };
     typeOfLocation = (text) => {
-        this.setState({ typeOfLocation: text, showMap: !this.state.showMap });
+        this.setState({ typeOfLocation: text }, () => {
+            if (this.state.typeOfLocation === 'Su ubicación actual'){
+                const updatedLocationForm = {
+                    ...this.state.formUbicacion
+                };
+               for (let key in updatedLocationForm) {
+                   updatedLocationForm[key].valid = true;
+               }
+                this.setState({ 
+                    formUbicacion: updatedLocationForm,
+                    formUbicacionIsValid: true,
+                    showMap: true 
+                });
+            } else {
+                const updatedLocationForm = {
+                    ...this.state.formUbicacion
+                };
+                for (let key in updatedLocationForm) {
+                   updatedLocationForm[key].valid = false;
+                }
+                this.setState({ 
+                    formUbicacion: updatedLocationForm,
+                    formUbicacionIsValid: false,
+                    showMap: false 
+                });
+            }
+        });
     };
     inputChangeDescriptionHandler = (text, inputIdentifier) => {
         const updatedDescriptionForm = {
@@ -530,7 +600,7 @@ export default class Incidencias extends Component {
 	};
 
     render() {
-        console.log('type: ', this.state.typeOfLocation, 'showMap: ', this.state.showMap)
+        console.log('type: ', this.state.typeOfLocation, 'showMap: ', this.state.showMap, 'ubicationForm: ', this.state.formUbicacion, 'ubicacionisValid: ', this.state.formUbicacionIsValid)
         const formElementsUbicacion = [];
         for (let key in this.state.formUbicacion) {
             formElementsUbicacion.push({
@@ -559,6 +629,25 @@ export default class Incidencias extends Component {
                 config: this.state.formMultimedia[key]
             });
         }
+
+        const specificLocation = formElementsUbicacion.map(element => (
+            <Ubicacion
+                key={element.id}
+                itemType={element.config.itemType}
+                label={element.config.label}
+                value={element.config.value}
+                isValid={element.config.valid}
+                changed={(text) => this.inputChangeLocationHandler(text, element.id)} />
+        ));
+
+        const currentLocation = (
+            <Ubicacion
+                key="MapView"
+                itemType="MapView"
+                latitude={this.state.latitude}
+                longitude={this.state.longitude} />
+        );
+
         const ubicacion = (
             <View style={{ flex: 1, marginBottom: 5 }}>
                 <View style={styles.addView}><Text style={styles.addTextDesc}>Ubicacion del reporte o queja</Text></View>
@@ -570,17 +659,7 @@ export default class Incidencias extends Component {
                             value={this.state.typeOfLocation}
                             changed={(text) => this.typeOfLocation(text)} />
                             
-                        {!this.state.showMap ? formElementsUbicacion.map(element => (
-                            <Ubicacion
-                                key={element.id}
-                                itemType={element.config.itemType}
-                                label={element.config.label}
-                                value={element.config.value}
-                                isValid={element.config.valid}
-                                changed={(text) => this.inputChangeLocationHandler(text, element.id)} />
-                        )) : <Ubicacion
-                                key="MapView"
-                                itemType="MapView" />}
+                        {this.state.showMap ? currentLocation : specificLocation}
                     </View>
                 </CardItem>
             </View>
@@ -638,6 +717,19 @@ export default class Incidencias extends Component {
                 </CardItem>
             </View>
         );
+
+        const buttons = (
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <CustomButton
+                    style="SuccessReport"
+                    clicked={() => this.uploadPhotoHandler()}
+                    name="ENVIAR REPORTE" />
+                <CustomButton
+                    style="CallReport"
+                    clicked={() => Communications.phonecall('3411255469', true)}
+                    name="LLAMAR POR TEL." />
+            </View>
+        );
         const spinner = <CustomSpinner color="blue" />;
         
         const addIncidentTitle = (
@@ -656,6 +748,7 @@ export default class Incidencias extends Component {
                                 {ubicacion}
                                 {multimedia}
                                 {datosPersonales}
+                                {buttons}
                             </View>
                         </CardItem>
                     </ScrollView>
@@ -722,7 +815,7 @@ export default class Incidencias extends Component {
 							add={() => this.setState({ addIncident: true })}
 							goBack={() => this.setState({ addIncident: false })}
 							isAdd={this.state.addIncident}
-							save={this.uploadPhotoHandler}
+							// save={this.uploadPhotoHandler}
 							isAdmin={true}
 							changeDisplay={this.changeDisplay}
 							showLikeIcons={this.state.showLikeIcons}

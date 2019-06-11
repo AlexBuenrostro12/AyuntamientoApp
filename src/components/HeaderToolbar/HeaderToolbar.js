@@ -107,7 +107,7 @@ export default class HeaderToolbar extends React.Component {
 							</MenuOption>
 						)}
 						{/* Publicar */}
-						{this.props.isAdmin && (
+						{this.props.isAdmin && this.props.save && (
 							<MenuOption onSelect={() => this.props.save()}>
 								<View style={styles.menuOption}>
 									<Image
