@@ -368,8 +368,8 @@ export default class DescribreData extends Component {
 										<Text style={styles.descripcion}>{data.nombre}</Text>
 										<Text style={styles.descripcion}>{data.email}</Text>
 										<Text style={styles.descripcion}>{data.telefono}</Text>
-										<Text style={styles.fecha}>Aprobar reporte</Text>
-										<View style={{ flex: 1, justifyContent: 'space-between', flexDirection: 'row' }}>
+										{data.isAdmin && <Text style={styles.fecha}>Aprobar reporte</Text>}
+										{data.isAdmin && <View style={{ flex: 1, justifyContent: 'space-between', flexDirection: 'row' }}>
 											<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly' }}>
 												<Text>Aprobado</Text>
 												<TouchableOpacity onPress={() => { this.setState({ approved: true, noApproved: false }); data.approvedItem(data.itemKey, true) }}>
@@ -382,7 +382,7 @@ export default class DescribreData extends Component {
 													<View style={this.state.noApproved ? styles.approved : styles.noApproved}></View>
 												</TouchableOpacity>
 											</View>
-										</View>
+										</View>}
 									</Body>
 								</CardItem>
 								<CardItem footer>

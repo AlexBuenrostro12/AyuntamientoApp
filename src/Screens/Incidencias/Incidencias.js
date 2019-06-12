@@ -533,9 +533,22 @@ export default class Incidencias extends Component {
 						...res.data[key],
 						id: key
 					});
-				}
-                this.setState({ loading: false, incidents: fetchedIncidents.reverse() });
-                console.log('Incidents: ', this.state.incidents);
+                }
+                if (this.state.isAdmin) {
+                    this.setState({ loading: false, incidents: fetchedIncidents.reverse() });
+                } else {
+                    let ban = false;
+                    const filterData = fetchedIncidents.filter(incdt => { 
+                        const approved = incdt.approvedData['approved'];
+                        if (approved) {
+                            ban = true;
+                            return incdt;
+                        }
+                    });
+                    if (ban) {
+                        this.setState({ loading: false, incidents: filterData.reverse() });
+                    }
+                }
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
@@ -610,7 +623,7 @@ export default class Incidencias extends Component {
 	};
 
     render() {
-        console.log('type: ', this.state.typeOfLocation, 'showMap: ', this.state.showMap, 'ubicationForm: ', this.state.formUbicacion, 'ubicacionisValid: ', this.state.formUbicacionIsValid)
+        // console.log('type: ', this.state.typeOfLocation, 'showMap: ', this.state.showMap, 'ubicationForm: ', this.state.formUbicacion, 'ubicacionisValid: ', this.state.formUbicacionIsValid)
         const formElementsUbicacion = [];
         for (let key in this.state.formUbicacion) {
             formElementsUbicacion.push({
