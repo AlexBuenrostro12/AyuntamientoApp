@@ -78,7 +78,10 @@ export default class DescribreData extends Component {
 		const data = getParam('data', null);
 		if (data.imagen) this.getFullImageSize(data.imagen);
 		// if (data.latitude && data.longitude) this.getAddressHandler(data.latitude, data.longitude);
-		this.setState({ data: data, navigate: navigate, loaded: true, approved: data.approved, noApproved: !data.approved }, () => console.log('data: ', this.state));
+		this.setState(
+			{ data: data, navigate: navigate, loaded: true, approved: data.approved, noApproved: !data.approved },
+			() => console.log('data: ', this.state)
+		);
 	};
 	componentWillUpdate() {
 		if (!this.state.loaded) this.getDataHandler();
@@ -99,10 +102,16 @@ export default class DescribreData extends Component {
 				asunto,
 				fecha,
 				hora,
-				tipo,
+				localidad,
+				calle,
+				numero,
+				colonia,
+				cp,
+				referencia,
+				latitude,
+				longitude,
 				descripcion,
 				direccion,
-				municipio,
 				nombre,
 				email,
 				comentario,
@@ -145,23 +154,20 @@ export default class DescribreData extends Component {
 						'Regreso: ' +
 						horaRegreso;
 					break;
-				case 'Reporte ciudadano':
+				case 'Reporte':
+					const specific = '' + localidad + '\n' + calle  + ' #' + numero + '\n' + colonia + '\n' + cp + '\n' + fecha + '\n' + referencia;
+					const current = '' + latitude + '\n' + longitude;
 					subject = asunto;
 					body =
 						'DESCRIPCIÓN' +
 						'\n' +
-						tipo +
+						direccion +
 						'\n' +
 						descripcion +
 						'\n' +
-						'UBICACIÓN' +
-						'\n' +
-						direccion +
-						'\n' +
-						municipio +
-						'\n' +
-						fecha +
-						'\n' +
+						'UBICACIÓN' + '\n' +
+						(latitude ? current : specific)
+						+ '\n' +
 						'DATOS DE QUIEN REPORTA' +
 						'\n' +
 						nombre +
@@ -170,11 +176,8 @@ export default class DescribreData extends Component {
 						'\n' +
 						telefono;
 					break;
-
-				default:
-					null;
-					break;
 			}
+			console.log('subject: ', subject, 'body: ', body);
 			Email('tu@contacto.com', {
 				subject: subject,
 				body: body
@@ -362,6 +365,7 @@ export default class DescribreData extends Component {
 													/>
 												</MapView>
 												{/* <Text style={styles.descripcion}>{this.state.address}</Text> */}
+												<Text style={styles.descripcion}>{data.fecha}</Text>
 											</View>
 										)}
 										<Text style={styles.fecha}>Datos de quien reporta</Text>
@@ -369,20 +373,66 @@ export default class DescribreData extends Component {
 										<Text style={styles.descripcion}>{data.email}</Text>
 										<Text style={styles.descripcion}>{data.telefono}</Text>
 										{data.isAdmin && <Text style={styles.fecha}>Aprobar reporte</Text>}
-										{data.isAdmin && <View style={{ flex: 1, justifyContent: 'space-between', flexDirection: 'row' }}>
-											<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-												<Text>Aprobado</Text>
-												<TouchableOpacity onPress={() => { this.setState({ approved: true, noApproved: false }); data.approvedItem(data.itemKey, true) }}>
-													<View style={this.state.approved ? styles.approved : styles.noApproved}></View>
-												</TouchableOpacity>
+										{data.isAdmin && (
+											<View
+												style={{
+													flex: 1,
+													justifyContent: 'space-between',
+													flexDirection: 'row'
+												}}
+											>
+												<View
+													style={{
+														flex: 1,
+														flexDirection: 'row',
+														justifyContent: 'space-evenly'
+													}}
+												>
+													<Text>Aprobado</Text>
+													<TouchableOpacity
+														onPress={() => {
+															this.setState({ approved: true, noApproved: false });
+															data.approvedItem(data.itemKey, true);
+														}}
+													>
+														<View
+															style={
+																this.state.approved ? (
+																	styles.approved
+																) : (
+																	styles.noApproved
+																)
+															}
+														/>
+													</TouchableOpacity>
+												</View>
+												<View
+													style={{
+														flex: 1,
+														flexDirection: 'row',
+														justifyContent: 'space-evenly'
+													}}
+												>
+													<Text>No aprobado</Text>
+													<TouchableOpacity
+														onPress={() => {
+															this.setState({ noApproved: true, approved: false });
+															data.approvedItem(data.itemKey, false);
+														}}
+													>
+														<View
+															style={
+																this.state.noApproved ? (
+																	styles.approved
+																) : (
+																	styles.noApproved
+																)
+															}
+														/>
+													</TouchableOpacity>
+												</View>
 											</View>
-											<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-												<Text>No aprobado</Text>
-												<TouchableOpacity onPress={() => { this.setState({ noApproved: true, approved: false }); data.approvedItem(data.itemKey, false) }}>
-													<View style={this.state.noApproved ? styles.approved : styles.noApproved}></View>
-												</TouchableOpacity>
-											</View>
-										</View>}
+										)}
 									</Body>
 								</CardItem>
 								<CardItem footer>
@@ -613,7 +663,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#008EFE',
 		borderWidth: 2,
 		borderColor: '#008EFE',
-		borderRadius: 20,
+		borderRadius: 20
 	},
 	noApproved: {
 		width: 25,
@@ -621,6 +671,6 @@ const styles = StyleSheet.create({
 		backgroundColor: '#FFFFFF',
 		borderWidth: 2,
 		borderColor: '#008EFE',
-		borderRadius: 20,
+		borderRadius: 20
 	}
 });

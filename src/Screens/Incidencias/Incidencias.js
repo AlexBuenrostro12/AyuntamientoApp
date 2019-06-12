@@ -202,6 +202,7 @@ export default class Incidencias extends Component {
 
     async componentDidMount() {
         //Get the token and time of expiration
+        this.getCurrentDate();
         this.requestLocationPermission();
 		let token = email = (expiresIn = null);
 		try {
@@ -297,6 +298,7 @@ export default class Incidencias extends Component {
             } else {
                 ubicacionFormData['latitude'] = this.state.latitude;
                 ubicacionFormData['longitude'] = this.state.longitude;
+                ubicacionFormData['fecha'] = this.state.date;
             }
             for (let formElementIdentifier in this.state.formDescripcion) {
                 descripcionFormData[formElementIdentifier] = this.state.formDescripcion[formElementIdentifier].value;
@@ -771,7 +773,7 @@ export default class Incidencias extends Component {
                                 {ubicacion}
                                 {multimedia}
                                 {datosPersonales}
-                                {buttons}
+                                {this.state.loading ? spinner : buttons}
                             </View>
                         </CardItem>
                     </ScrollView>
@@ -839,7 +841,6 @@ export default class Incidencias extends Component {
 							add={() => this.setState({ addIncident: true })}
 							goBack={() => this.setState({ addIncident: false })}
 							isAdd={this.state.addIncident}
-							// save={this.uploadPhotoHandler}
 							isAdmin={true}
 							changeDisplay={this.changeDisplay}
 							showLikeIcons={this.state.showLikeIcons}
