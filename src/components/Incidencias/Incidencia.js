@@ -127,7 +127,7 @@ export default class Incidencia extends Component {
 		.patch('/incidents' + '/' + itemKey + '.json?auth=' + this.props.token, obj)
 		.then((response) => {
             console.log('approveItemListHandler:res: ', response);
-			Alert.alert('¡Reporte!', title, [ { text: 'Ok', onPress: () => { navigate('Incidencias'); this.refreshItemsHandler(); } } ], {
+			Alert.alert('¡Reporte!', title, [ { text: 'Ok', onPress: () => { navigate('Reporte ciudadano'); this.refreshItemsHandler(); } } ], {
 				cancelable: false
 			});
 		})
@@ -161,7 +161,7 @@ export default class Incidencia extends Component {
 		.delete('/incidents' + '/' + itemKey + '.json?auth=' + this.props.token)
 		.then((response) => {
             console.log('deleteItemListHandler:res: ', response);
-			Alert.alert('Reporte', '¡Reporte eliminado con exito!', [ { text: 'Ok', onPress: () => { navigate('Incidencias'); this.refreshItemsHandler(); } } ], {
+			Alert.alert('Reporte', '¡Reporte eliminado con exito!', [ { text: 'Ok', onPress: () => { navigate('Reporte ciudadano'); this.refreshItemsHandler(); } } ], {
 				cancelable: false
 			});
 		})
@@ -208,7 +208,7 @@ export default class Incidencia extends Component {
 	};
 
     render() {
-
+        console.log('this.props: ', this.props);
         const listData = <ListData 
                             data={this.state.data} 
                             id={this.props.id} 
