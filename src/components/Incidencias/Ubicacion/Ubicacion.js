@@ -1,19 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, PermissionsAndroid } from 'react-native';
-import { Picker, Item, Label, Input } from 'native-base';
+import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import { Picker, Item, Input } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 
 const { height, width } = Dimensions.get('window');
 
 export default class Ubicacion extends Component {
-	state = {
-		initialRegion: {
-			latitude: 19.470763,
-			longitude: -103.306613,
-			latitudeDelta: 0.0122,
-			longitudeDelta: width / height * 0.0122
-		}
-	};
 
 	render() {
 		let ubicacion = null;
@@ -52,8 +44,14 @@ export default class Ubicacion extends Component {
 				);
 				break;
 			case 'MapView':
+				const initialRegion = {
+					latitude: this.props.latitude,
+					longitude: this.props.longitude,
+					latitudeDelta: 0.0122,
+					longitudeDelta: width / height * 0.0122
+				};
 				ubicacion = (
-					<MapView style={styles.map} initialRegion={this.state.initialRegion}>
+					<MapView style={styles.map} initialRegion={initialRegion}>
 						<Marker
 							pinColor="red"
 							coordinate={{ latitude: this.props.latitude, longitude: this.props.longitude }}

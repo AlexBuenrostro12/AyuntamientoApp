@@ -267,9 +267,9 @@ export default class Incidencias extends Component {
 		  const granted = await PermissionsAndroid.request(
 			PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
 			{
-			  'title': 'Location Permission',
-			  'message': 'This App needs access to your location ' +
-						 'so we can know where you are.'
+			  'title': 'Permiso de ubicación',
+			  'message': 'Esta app necesita acceso a tú ubicación ' +
+						 'y que actives el icono de ubicación'
 			}
 		  )
 		  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
