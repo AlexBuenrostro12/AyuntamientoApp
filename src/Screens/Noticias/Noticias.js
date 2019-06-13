@@ -242,7 +242,7 @@ export default class Noticias extends Component {
 	getNews = () => {
 		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null });
 		axios
-			.get('/news.json?auth=' + this.state.token)
+			.get('/news.json?auth=' + this.state.token,)
 			.then((res) => {
 				const fetchedNews = [];
 				console.log('Noticias, res: ', res);

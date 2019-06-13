@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, Platform, Alert, TouchableOpacity } from 'react-native';
-import { Form, Card, CardItem, Body } from 'native-base';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Alert, Dimensions, PermissionsAndroid } from 'react-native';
+import { Card, CardItem } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
-import axiosImage from 'axios';
 import axiosCloudinary from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import Communications from 'react-native-communications';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import Ubicacion from '../../components/Incidencias/Ubicacion/Ubicacion';
@@ -21,11 +21,6 @@ import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 export default class Incidencias extends Component {
     state = {
         formDescripcion: {
-            tipo: {
-                itemType: 'Picker',
-                value: 'electricidad',
-                valid: true
-            },
             asunto: {
                 itemType: 'FloatingLabel',
                 value: '',
@@ -34,6 +29,11 @@ export default class Incidencias extends Component {
                     maxLength: 35
                 },
                 valid: false
+            },
+            direccion: {
+                itemType: 'Picker',
+                value: 'Direccion 1',
+                valid: true
             },
             descripcion: {
                 itemType: 'Textarea',
@@ -85,25 +85,73 @@ export default class Incidencias extends Component {
                 valid: true
             }
         },
+        formApproved: {
+            approved: {
+                value: false
+            }
+        },
         formUbicacion: {
-            direccion: {
+            calle: {
                 itemType: 'FloatingLabel',
+                label: 'CALLE',
                 value: '',
                 validation: {
                     minLength: 1,
-                    maxLength: 50
+                    maxLength: 15
                 },
                 valid: false
             },
-            municipio: {
-                itemType: 'Picker',
-                value: 'tecalitlan',
-                valid: true
-            },
-            fecha: {
+            numero: {
+                itemType: 'FloatingLabel',
+                label: 'NUMERO',
                 value: '',
-                valid: true
-            }
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            colonia: {
+                itemType: 'FloatingLabel',
+                label: 'COLONIA',
+                value: '',
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            cp: {
+                itemType: 'FloatingLabel',
+                label: 'CP',
+                value: '',
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            localidad: {
+                itemType: 'FloatingLabel',
+                label: 'LOCALIDAD',
+                value: '',
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            referencia: {
+                itemType: 'FloatingLabel',
+                label: 'REFERENCIA',
+                value: '',
+                validation: {
+                    minLength: 1,
+                    maxLength: 15
+                },
+                valid: false
+            },
+            
         },
         formUbicacionIsValid: false,
         formDescripcionIsValid: false,
@@ -127,7 +175,11 @@ export default class Incidencias extends Component {
         urlUploadedImage: null,
         showButtons: true,
         showLikeIcons: true,
-		texToSearch: ''
+        texToSearch: '',
+        typeOfLocation: 'Dirección específica',
+        showMap: false,
+        latitude: null,
+		longitude: null,
     }
 
     getCurrentDate(){
@@ -150,6 +202,8 @@ export default class Incidencias extends Component {
 
     async componentDidMount() {
         //Get the token and time of expiration
+        this.getCurrentDate();
+        this.requestLocationPermission();
 		let token = email = (expiresIn = null);
 		try {
 			console.log('Entro al try');
@@ -194,21 +248,66 @@ export default class Incidencias extends Component {
 		}
     }
 
+    findLocationHandler = () => {
+		this.watchId = navigator.geolocation.watchPosition((position) => {
+			console.log('position: ', position)
+			this.setState({ 
+				latitude: position.coords.latitude,
+				longitude: position.coords.longitude
+			});
+		},
+		(error) => { console.log('Error: ', error) },
+		{
+			enableHighAccuracy: false, timeout: 1, distanceFilter: 1
+		})
+	};
+
+	requestLocationPermission = async () => {
+		try {
+		  const granted = await PermissionsAndroid.request(
+			PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+			{
+			  'title': 'Permiso de ubicación',
+			  'message': 'Esta app necesita acceso a tú ubicación ' +
+						 'y que actives el icono de ubicación'
+			}
+		  )
+		  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+			this.findLocationHandler();
+			console.log("You can use locations ")
+		  } else {
+			console.log("Location permission denied")
+		  }
+		} catch (err) {
+		  console.warn(err)
+		}
+	  }
+
     sendIncidentHandler = () => {
         this.setState({ loading: true })
         if (this.state.imageFormData && this.state.formDescripcionIsValid && this.state.formDatosPersonalesIsValid && this.state.formUbicacionIsValid) {
             const ubicacionFormData = {};
             const descripcionFormData = {};
             const datosPersonalesFormData = {};
+            const approvedFormData = {};
 
-            for (let formElementIdentifier in this.state.formUbicacion) {
-                ubicacionFormData[formElementIdentifier] = this.state.formUbicacion[formElementIdentifier].value;
+            if(!this.state.showMap) {
+                for (let formElementIdentifier in this.state.formUbicacion) {
+                    ubicacionFormData[formElementIdentifier] = this.state.formUbicacion[formElementIdentifier].value;
+                }
+            } else {
+                ubicacionFormData['latitude'] = this.state.latitude;
+                ubicacionFormData['longitude'] = this.state.longitude;
+                ubicacionFormData['fecha'] = this.state.date;
             }
             for (let formElementIdentifier in this.state.formDescripcion) {
                 descripcionFormData[formElementIdentifier] = this.state.formDescripcion[formElementIdentifier].value;
             }
             for (let formElementIdentifier in this.state.formDatosPersonales) {
                 datosPersonalesFormData[formElementIdentifier] = this.state.formDatosPersonales[formElementIdentifier].value;
+            }
+            for(let formElementIdentifier in this.state.formApproved) {
+                approvedFormData[formElementIdentifier] = this.state.formApproved[formElementIdentifier].value;
             }
 
             const incident = {
@@ -217,7 +316,8 @@ export default class Incidencias extends Component {
                 personalData: datosPersonalesFormData,
                 multimediaData: {
                     imagen: this.state.urlUploadedImage
-                }
+                },
+                approvedData: approvedFormData,
             }
 
             const { token } = this.state;
@@ -276,6 +376,7 @@ export default class Incidencias extends Component {
 
         updatedFormElement.value = text;
         updatedDateElement.value = this.state.date
+        updatedDateElement.valid = true;
         updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
 
         updatedLocationForm[inputIdentifier] = updatedFormElement;
@@ -287,6 +388,35 @@ export default class Incidencias extends Component {
             formIsValid = updatedLocationForm[inputIdentifier].valid && formIsValid;
         }
         this.setState({ formUbicacion: updatedLocationForm, formUbicacionIsValid: formIsValid });
+    };
+    typeOfLocation = (text) => {
+        this.setState({ typeOfLocation: text }, () => {
+            if (this.state.typeOfLocation === 'Su ubicación actual'){
+                const updatedLocationForm = {
+                    ...this.state.formUbicacion
+                };
+               for (let key in updatedLocationForm) {
+                   updatedLocationForm[key].valid = true;
+               }
+                this.setState({ 
+                    formUbicacion: updatedLocationForm,
+                    formUbicacionIsValid: true,
+                    showMap: true 
+                });
+            } else {
+                const updatedLocationForm = {
+                    ...this.state.formUbicacion
+                };
+                for (let key in updatedLocationForm) {
+                   updatedLocationForm[key].valid = false;
+                }
+                this.setState({ 
+                    formUbicacion: updatedLocationForm,
+                    formUbicacionIsValid: false,
+                    showMap: false 
+                });
+            }
+        });
     };
     inputChangeDescriptionHandler = (text, inputIdentifier) => {
         const updatedDescriptionForm = {
@@ -405,9 +535,22 @@ export default class Incidencias extends Component {
 						...res.data[key],
 						id: key
 					});
-				}
-                this.setState({ loading: false, incidents: fetchedIncidents.reverse() });
-                console.log('Incidents: ', this.state.incidents);
+                }
+                if (this.state.isAdmin) {
+                    this.setState({ loading: false, incidents: fetchedIncidents.reverse() });
+                } else {
+                    let ban = false;
+                    const filterData = fetchedIncidents.filter(incdt => { 
+                        const approved = incdt.approvedData['approved'];
+                        if (approved) {
+                            ban = true;
+                            return incdt;
+                        }
+                    });
+                    if (ban) {
+                        this.setState({ loading: false, incidents: filterData.reverse() });
+                    }
+                }
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
@@ -482,6 +625,7 @@ export default class Incidencias extends Component {
 	};
 
     render() {
+        // console.log('type: ', this.state.typeOfLocation, 'showMap: ', this.state.showMap, 'ubicationForm: ', this.state.formUbicacion, 'ubicacionisValid: ', this.state.formUbicacionIsValid)
         const formElementsUbicacion = [];
         for (let key in this.state.formUbicacion) {
             formElementsUbicacion.push({
@@ -510,32 +654,44 @@ export default class Incidencias extends Component {
                 config: this.state.formMultimedia[key]
             });
         }
+
+        const specificLocation = formElementsUbicacion.map(element => (
+            <Ubicacion
+                key={element.id}
+                itemType={element.config.itemType}
+                label={element.config.label}
+                value={element.config.value}
+                isValid={element.config.valid}
+                changed={(text) => this.inputChangeLocationHandler(text, element.id)} />
+        ));
+
+        const currentLocation = (
+            <Ubicacion
+                key="MapView"
+                itemType="MapView"
+                latitude={this.state.latitude}
+                longitude={this.state.longitude} />
+        );
+
         const ubicacion = (
             <View style={{ flex: 1, marginBottom: 5 }}>
-                <CustomCardItemTitle
-                    title="Ubicación"
-                    description="Seleccione la localidad y la dirección."
-                    image={require('../../assets/images/Ubicacion/search.png')} />
+                <View style={styles.addView}><Text style={styles.addTextDesc}>Ubicacion del reporte o queja</Text></View>
                 <CardItem bordered>
-                    <View style={{ flex: 1, flexDirection: 'column' }}>
-                        {formElementsUbicacion.map(element => (
-                            <Ubicacion
-                                key={element.id}
-                                itemType={element.config.itemType}
-                                value={element.config.value}
-                                isValid={element.config.valid}
-                                changed={(text) => this.inputChangeLocationHandler(text, element.id)} />
-                        ))}
+                    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+                        <Ubicacion
+                            key="selectTypeUbication"
+                            itemType="SelectDirection"
+                            value={this.state.typeOfLocation}
+                            changed={(text) => this.typeOfLocation(text)} />
+                            
+                        {this.state.showMap ? currentLocation : specificLocation}
                     </View>
                 </CardItem>
             </View>
         );
         const multimedia = (
             <View style={{ flex: 1, marginBottom: 5 }}>
-                <CustomCardItemTitle
-                    title="Multimedia"
-                    description="Seleccione una imagen de la incidencia."
-                    image={require('../../assets/images/Multimedia/multimedia.png')} />
+                <View style={styles.addView}><Text style={styles.addTextDesc}>Foto a reportar.</Text></View>
                 <CardItem bordered>
                     <View style={{ flex: 1, flexDirection: 'column' }}>
                         {formElementsMultimedia.map(element => (
@@ -553,10 +709,7 @@ export default class Incidencias extends Component {
         );
         const description = (
             <View style={{ flex: 1, marginBottom: 5 }}>
-                <CustomCardItemTitle
-                    title="Descripción"
-                    description="Descripción de la incidencia."
-                    image={require('../../assets/images/Descripcion/descripcion.png')} />
+                <View style={styles.addView}><Text style={styles.addTextDesc}>Asunto, departamento y descripción.</Text></View>
                 <CardItem bordered>
                     <View style={{ flex: 1, flexDirection: 'column' }}>
                         {formElementsDescripcion.map(element => (
@@ -573,10 +726,7 @@ export default class Incidencias extends Component {
         );
         const datosPersonales = (
             <View style={{ flex: 1, marginBottom: 5 }}>
-                <CustomCardItemTitle
-                    title="Datos personales"
-                    description="Datos de quien reporta."
-                    image={require('../../assets/images/Email/email.png')} />
+               <View style={styles.addView}><Text style={styles.addTextDesc}>Datos personales.</Text></View>
                 <CardItem bordered>
                     <View style={{ flex: 1, flexDirection: 'column' }}>
                         {formElementsDatosPersonales.map(element => (
@@ -592,11 +742,24 @@ export default class Incidencias extends Component {
                 </CardItem>
             </View>
         );
+
+        const buttons = (
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <CustomButton
+                    style="SuccessReport"
+                    clicked={() => this.uploadPhotoHandler()}
+                    name="ENVIAR REPORTE" />
+                <CustomButton
+                    style="CallReport"
+                    clicked={() => Communications.phonecall('3411255469', true)}
+                    name="LLAMAR POR TEL." />
+            </View>
+        );
         const spinner = <CustomSpinner color="blue" />;
         
         const addIncidentTitle = (
-			<View style={{ flex: 1, marginBottom: 10 }}>
-				<CustomAddBanner title="NUEVA INCIDENCIA" image={require('../../assets/images/Buzon/buzon.png')} />
+			<View style={{ flex: 1, marginBottom: 10, width: '100%' }}>
+				<CustomAddBanner title="AGREGAR REPORTE" image={require('../../assets/images/Preferences/add-orange.png')} />
 			</View>
 		);
         const addIncident = (
@@ -606,10 +769,11 @@ export default class Incidencias extends Component {
                     <ScrollView style={{ flex: 1 }}>
                         <CardItem bordered>
                             <View style={styles.cardBody}>
+                                {description}
                                 {ubicacion}
                                 {multimedia}
-                                {description}
                                 {datosPersonales}
+                                {this.state.loading ? spinner : buttons}
                             </View>
                         </CardItem>
                     </ScrollView>
@@ -621,7 +785,8 @@ export default class Incidencias extends Component {
                                                                     id={inct.id} 
                                                                     token={this.state.token}
                                                                     isAdmin={this.state.isAdmin} 
-                                                                    refresh={this.getIncidents} 
+                                                                    refresh={this.getIncidents}
+                                                                    approvedData={inct.approvedData} 
                                                                     personalData={inct.personalData}
                                                                     descripcionData={inct.descripcionData}
                                                                     multimediaData={inct.multimediaData}
@@ -632,10 +797,10 @@ export default class Incidencias extends Component {
         const title = (
             <ScrollView style={{ flex: 1 }}>
                 <CustomCardItemTitle
-                    title="Incidencias"
-                    description="Visualice y realice reporte de incidencias de una manera sencilla."
-                    info="Delice hacia abajo, para los reportes más antiguos."
-                    image={require('../../assets/images/Noticia/noticia.png')}
+                    title="REPORTE CIUDADANO"
+                    description="Realice reportes de fallas en servicios y otras emergencias en su localidad."
+                    info="Escriba todos los campos que se presenta."
+                    image={require('../../assets/images/Preferences/incidents.png')}
                 />
             </ScrollView>
         );
@@ -668,15 +833,14 @@ export default class Incidencias extends Component {
                     <View>
                         <HeaderToolbar
                             open={this.props}
-                            title="Incidencias"
-                            color="#00a19a"
+                            title="Reporte"
+                            color="#e2487d"
                             showContentRight={true}
-							titleOfAdd="Nueva incidiencia"
+							titleOfAdd="Nuevo reporte"
 							get={this.getIncidents}
 							add={() => this.setState({ addIncident: true })}
 							goBack={() => this.setState({ addIncident: false })}
 							isAdd={this.state.addIncident}
-							save={this.uploadPhotoHandler}
 							isAdmin={true}
 							changeDisplay={this.changeDisplay}
 							showLikeIcons={this.state.showLikeIcons}
@@ -685,7 +849,7 @@ export default class Incidencias extends Component {
 							search={this.filterData}
                         />
                     </View>
-                    <StatusBar color="#FEA621" />
+                    <StatusBar color="#c7175b" />
                     <View style={{ flex: 1, margin: 10 }}>
                         {!this.state.addIncident ? incidencias : addIncident}
                     </View>
@@ -694,6 +858,8 @@ export default class Incidencias extends Component {
         );
     }
 };
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
@@ -745,5 +911,18 @@ const styles = StyleSheet.create({
 		flex: 2,
 		flexDirection: 'column', 
 		justifyContent: 'flex-start'
-	}
+    },
+    addView: {
+        flex: 1, 
+        justifyContent: 'center',
+        backgroundColor: '#676766',
+        marginRight: 5,
+    },
+    addTextDesc: {
+        fontSize: 15,
+        fontWeight: 'normal',
+        fontStyle: 'normal',
+		color: 'white',
+		fontFamily: 'AvenirNextLTPro-Regular'
+    },
 });
