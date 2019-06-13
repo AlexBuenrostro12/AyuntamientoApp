@@ -30,7 +30,7 @@ const AppDrawer = createDrawerNavigator({
   'Buzón Ciudadano': BuzonCiudadanoScreen,
   'Noticias': NoticiasScreen,
   'Bus Escolar': BusEscolarScreen,
-  'Incidencias': IncidenciasScreen,
+  'Reporte ciudadano': IncidenciasScreen,
   'Actividades': ActividadesScreen,
   'Describe' : DescribeDataScreen,
   'Salir': LogoutScreen,

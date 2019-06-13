@@ -26,13 +26,19 @@ const customButton = (props) => {
 		case 'Emergencia':
 			button = <Button onPress={props.clicked} title={props.name} color="red" />;
 			break;
+		case 'SuccessReport':
+			button = <Button onPress={props.clicked} title={props.name} color="#bac95f" />;
+			break;
+		case 'CallReport':
+			button = <Button onPress={props.clicked} title={props.name} color="#c7175b" />;
+			break;
 		case 'SaveActivity':
 			button = (
 				<View style={styles.saveActivity}>
-					<View style={{ flex: 1, flexDirection: 'column', }}>
-            <Text style={styles.saveActivityText}>{props.date}</Text>
-            <Text style={styles.saveActivityTextInfo}>Guardar en calendario</Text>
-          </View>
+					<View style={{ flex: 1, flexDirection: 'column' }}>
+						<Text style={styles.saveActivityText}>{props.date}</Text>
+						<Text style={styles.saveActivityTextInfo}>Guardar en calendario</Text>
+					</View>
 					<TouchableOpacity onPress={props.clicked}>
 						<Image
 							resizeMode="contain"
@@ -74,8 +80,8 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		color: 'white',
 		fontFamily: 'AvenirNextLTPro-Regular'
-    },
-    saveActivityTextInfo: {
+	},
+	saveActivityTextInfo: {
 		fontSize: 16,
 		fontStyle: 'italic',
 		fontWeight: 'normal',

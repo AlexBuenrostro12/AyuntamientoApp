@@ -3,6 +3,7 @@ package com.ayuntamientoapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.calendarevents.CalendarEventsPackage;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -31,6 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
             new FIRMessagingPackage(),
             new MainReactPackage(),
+            new MapsPackage(),
             new CalendarEventsPackage(),
             new RNGestureHandlerPackage(),
             new AsyncStoragePackage(),

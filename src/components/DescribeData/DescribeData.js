@@ -13,6 +13,8 @@ import {
 import { Card, CardItem, Body } from 'native-base';
 import Email from 'react-native-email';
 import Pdf from 'react-native-pdf';
+import MapView, { Marker } from 'react-native-maps';
+import Geocoder from 'react-native-geocoding';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '.././CustomButton/CustomButton';
 import HeaderToolbar from '../HeaderToolbar/HeaderToolbar';
@@ -26,7 +28,16 @@ export default class DescribreData extends Component {
 		data: null,
 		navigate: null,
 		loaded: false,
-		nativeGoBAck: null
+		nativeGoBAck: null,
+		initialRegion: {
+			latitude: 19.470763,
+			longitude: -103.306613,
+			latitudeDelta: 0.0122,
+			longitudeDelta: width / height * 0.0122
+		},
+		address: 'null',
+		approved: false,
+		noApproved: true
 	};
 	static navigationOptions = {
 		header: null,
@@ -43,9 +54,22 @@ export default class DescribreData extends Component {
 		});
 	};
 	componentDidMount() {
+		// Geocoder.init('AIzaSyCnH6V7DIofwmPbRqYN4ToY15kC-Jx7LbI'); only works fine if pay for this api
 		this.getDataHandler();
 		BackHandler.addEventListener('hardwareBackPress', this.goBackHandler);
 	}
+	getAddressHandler = (latitude, longitude) => {
+		Geocoder.from({
+			latitude: latitude,
+			longitude: longitude
+		})
+			.then((json) => {
+				const addressComponent = json.results[0].formatted_address;
+				console.log('address: ', addressComponent);
+				this.setState({ address: addressComponent });
+			})
+			.catch((error) => console.warn(error));
+	};
 	componentWillUnmount() {
 		BackHandler.removeEventListener('hardwareBackPress', this.goBackHandler);
 	}
@@ -53,7 +77,11 @@ export default class DescribreData extends Component {
 		const { getParam, navigate } = this.props.navigation;
 		const data = getParam('data', null);
 		if (data.imagen) this.getFullImageSize(data.imagen);
-		this.setState({ data: data, navigate: navigate, loaded: true }, () => console.log('data: ', this.state));
+		// if (data.latitude && data.longitude) this.getAddressHandler(data.latitude, data.longitude);
+		this.setState(
+			{ data: data, navigate: navigate, loaded: true, approved: data.approved, noApproved: !data.approved },
+			() => console.log('data: ', this.state)
+		);
 	};
 	componentWillUpdate() {
 		if (!this.state.loaded) this.getDataHandler();
@@ -74,10 +102,16 @@ export default class DescribreData extends Component {
 				asunto,
 				fecha,
 				hora,
-				tipo,
+				localidad,
+				calle,
+				numero,
+				colonia,
+				cp,
+				referencia,
+				latitude,
+				longitude,
 				descripcion,
 				direccion,
-				municipio,
 				nombre,
 				email,
 				comentario,
@@ -120,23 +154,20 @@ export default class DescribreData extends Component {
 						'Regreso: ' +
 						horaRegreso;
 					break;
-				case 'Incidencias':
+				case 'Reporte':
+					const specific = '' + localidad + '\n' + calle  + ' #' + numero + '\n' + colonia + '\n' + cp + '\n' + fecha + '\n' + referencia;
+					const current = '' + latitude + '\n' + longitude;
 					subject = asunto;
 					body =
 						'DESCRIPCIÓN' +
 						'\n' +
-						tipo +
+						direccion +
 						'\n' +
 						descripcion +
 						'\n' +
-						'UBICACIÓN' +
-						'\n' +
-						direccion +
-						'\n' +
-						municipio +
-						'\n' +
-						fecha +
-						'\n' +
+						'UBICACIÓN' + '\n' +
+						(latitude ? current : specific)
+						+ '\n' +
 						'DATOS DE QUIEN REPORTA' +
 						'\n' +
 						nombre +
@@ -145,11 +176,8 @@ export default class DescribreData extends Component {
 						'\n' +
 						telefono;
 					break;
-
-				default:
-					null;
-					break;
 			}
+			console.log('subject: ', subject, 'body: ', body);
 			Email('tu@contacto.com', {
 				subject: subject,
 				body: body
@@ -157,11 +185,18 @@ export default class DescribreData extends Component {
 		}
 	};
 
+	approvedHandler = (approved) => {
+		this.setState({ approved: true, noApproved: false });
+	};
+	noApprovedHandler = () => {
+		this.setState({ noApproved: true, approved: false });
+	};
+
 	render() {
 		let card = (image = null);
 		let elpdf = null;
 		if (this.state.data && this.state.navigate) {
-			const { data, navigate } = this.state;
+			const { data, navigate, address } = this.state;
 			switch (data.type) {
 				case 'Noticias':
 					card = (
@@ -269,7 +304,7 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
-				case 'Incidencias':
+				case 'Reporte ciudadano':
 					card = (
 						<View key={data.itemKey}>
 							<Card>
@@ -291,7 +326,7 @@ export default class DescribreData extends Component {
 								<CardItem>
 									<Body>
 										<Text style={styles.fecha}>Descripción</Text>
-										<Text style={styles.descripcion}>{data.tipo.toUpperCase()}</Text>
+										<Text style={styles.descripcion}>{data.direccion.toUpperCase()}</Text>
 										<Text style={styles.descripcion}>{data.descripcion}</Text>
 										<TouchableOpacity
 											style={{ alignSelf: 'center' }}
@@ -300,17 +335,108 @@ export default class DescribreData extends Component {
 											<Image style={styles.image} source={{ uri: data.imagen }} />
 										</TouchableOpacity>
 										<Text style={styles.fecha}>Ubicación</Text>
-										<Text style={styles.descripcion}>{data.direccion}</Text>
-										<Text style={styles.descripcion}>{data.municipio}</Text>
-										<Text style={styles.descripcion}>{data.fecha}</Text>
+										{!data.latitude ? (
+											<View style={{ flex: 1 }}>
+												<Text style={styles.descripcion}>{data.localidad}</Text>
+												<Text style={styles.descripcion}>
+													{data.calle} #{data.numero}
+												</Text>
+												<Text style={styles.descripcion}>{data.colonia}</Text>
+												<Text style={styles.descripcion}>{data.cp}</Text>
+												<Text style={styles.descripcion}>{data.fecha}</Text>
+												<Text style={styles.descripcion}>{data.referencia}</Text>
+											</View>
+										) : (
+											<View
+												style={{
+													flex: 1,
+													flexDirection: 'column',
+													justifyContent: 'space-between',
+													width: '100%'
+												}}
+											>
+												<MapView style={styles.map} initialRegion={this.state.initialRegion}>
+													<Marker
+														pinColor="red"
+														coordinate={{
+															latitude: data.latitude,
+															longitude: data.longitude
+														}}
+													/>
+												</MapView>
+												{/* <Text style={styles.descripcion}>{this.state.address}</Text> */}
+												<Text style={styles.descripcion}>{data.fecha}</Text>
+											</View>
+										)}
 										<Text style={styles.fecha}>Datos de quien reporta</Text>
 										<Text style={styles.descripcion}>{data.nombre}</Text>
 										<Text style={styles.descripcion}>{data.email}</Text>
 										<Text style={styles.descripcion}>{data.telefono}</Text>
+										{data.isAdmin && <Text style={styles.fecha}>Aprobar reporte</Text>}
+										{data.isAdmin && (
+											<View
+												style={{
+													flex: 1,
+													justifyContent: 'space-between',
+													flexDirection: 'row'
+												}}
+											>
+												<View
+													style={{
+														flex: 1,
+														flexDirection: 'row',
+														justifyContent: 'space-evenly'
+													}}
+												>
+													<Text>Aprobado</Text>
+													<TouchableOpacity
+														onPress={() => {
+															this.setState({ approved: true, noApproved: false });
+															data.approvedItem(data.itemKey, true);
+														}}
+													>
+														<View
+															style={
+																this.state.approved ? (
+																	styles.approved
+																) : (
+																	styles.noApproved
+																)
+															}
+														/>
+													</TouchableOpacity>
+												</View>
+												<View
+													style={{
+														flex: 1,
+														flexDirection: 'row',
+														justifyContent: 'space-evenly'
+													}}
+												>
+													<Text>No aprobado</Text>
+													<TouchableOpacity
+														onPress={() => {
+															this.setState({ noApproved: true, approved: false });
+															data.approvedItem(data.itemKey, false);
+														}}
+													>
+														<View
+															style={
+																this.state.noApproved ? (
+																	styles.approved
+																) : (
+																	styles.noApproved
+																)
+															}
+														/>
+													</TouchableOpacity>
+												</View>
+											</View>
+										)}
 									</Body>
 								</CardItem>
 								<CardItem footer>
-									<Text style={styles.fecha}>Reporte de incidencia</Text>
+									<Text style={styles.fecha}>Reporte ciudadano</Text>
 								</CardItem>
 							</Card>
 						</View>
@@ -522,5 +648,29 @@ const styles = StyleSheet.create({
 		flexGrow: 1,
 		marginTop: 5,
 		marginBottom: 5
+	},
+	map: {
+		width: '100%',
+		height: 250,
+		left: 0,
+		top: 0,
+		right: 0,
+		bottom: 0
+	},
+	approved: {
+		width: 25,
+		height: 25,
+		backgroundColor: '#008EFE',
+		borderWidth: 2,
+		borderColor: '#008EFE',
+		borderRadius: 20
+	},
+	noApproved: {
+		width: 25,
+		height: 25,
+		backgroundColor: '#FFFFFF',
+		borderWidth: 2,
+		borderColor: '#008EFE',
+		borderRadius: 20
 	}
 });
