@@ -127,7 +127,7 @@ export default class Incidencia extends Component {
 		.patch('/incidents' + '/' + itemKey + '.json?auth=' + this.props.token, obj)
 		.then((response) => {
             console.log('approveItemListHandler:res: ', response);
-			Alert.alert('¡Reporte!', title, [ { text: 'Ok', onPress: () => { navigate('Reporte ciudadano'); this.refreshItemsHandler(); } } ], {
+			Alert.alert('¡Reporte!', title, [ { text: 'Ok', onPress: () => { this.refreshItemsHandler(); } } ], {
 				cancelable: false
 			});
 		})

@@ -219,16 +219,18 @@ export default class HeaderToolbar extends React.Component {
 					justifyContent: 'space-between',
                     alignItems: 'center',
 					backgroundColor: 'white',
-					marginRight: 5,
-					marginBottom: 5,
-					marginTop: 5,
+					alignSelf: 'center',
+					marginBottom: 4,
+					marginTop: 4,
+					marginRight: 4,
 					borderRadius: 2,
+					width: width * .93,
 				}}
 			>
 				<TouchableOpacity onPress={() => this.startSearch()}>
 					<Image style={styles.settings} source={require('../../assets/images/Preferences/back.png')} />
 				</TouchableOpacity>
-				<View style={{ flex: 1, alignSelf: 'center' }}>
+				<View style={{ alignSelf: 'center' }}>
 					<CustomInput 
 						itemType="InlineLabel"
                         value={this.props.value}
@@ -243,6 +245,7 @@ export default class HeaderToolbar extends React.Component {
 					flex: 1,
 					flexDirection: 'row',
 					justifyContent: 'space-between',
+					alignContent: 'center',
 					height: height / 11,
 					width: width,
 					backgroundColor: this.props.color ? this.props.color : '#78888D',
