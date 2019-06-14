@@ -350,7 +350,7 @@ export default class BusEscolar extends Component {
 
 		const addBusTitle = (
 			<View style={{ flex: 1, marginBottom: 10 }}>
-				<CustomAddBanner title="NUEVO HORARIO" image={require('../../assets/images/Descripcion/descripcion.png')} />
+				<CustomAddBanner title="NUEVO HORARIO" image={require('../../assets/images/Preferences/add-orange.png')} />
 			</View>
 		);
 		const addBusBody = (

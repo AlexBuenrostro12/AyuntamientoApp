@@ -550,6 +550,7 @@ export default class Incidencias extends Component {
                     if (ban) {
                         this.setState({ loading: false, incidents: filterData.reverse() });
                     }
+                    if (!ban) this.setState({ loading: false, incidents: [] })
                 }
 			})
 			.catch((err) => {
