@@ -3,6 +3,7 @@ package com.ayuntamientoapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.calendarevents.CalendarEventsPackage;
 import com.evollu.react.fcm.FIRMessagingPackage;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
             new FIRMessagingPackage(),
             new MainReactPackage(),
+            new ReactNativeDocumentPicker(),
             new MapsPackage(),
             new CalendarEventsPackage(),
             new RNGestureHandlerPackage(),

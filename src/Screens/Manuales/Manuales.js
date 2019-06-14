@@ -1,25 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Dimensions, Alert, ScrollView } from 'react-native';
-import { Card, ListItem, CardItem } from 'native-base';
-import styled from 'styled-components';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Dimensions, Alert, ScrollView, Image } from 'react-native';
+import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
+import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
+import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
-import IconRight from '../../UI/IconRight/IconRight';
-import CustomButton from '../../components/CustomButton/CustomButton';
 import Manual from '../../components/Manual/Manual';
+import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
+import Pdf from 'react-native-pdf';
 
-const StyledViewManuales = styled.View`
-	flex: 1;
-	margin: 5px;
-`;
-
-const StyledBodyManuales = styled.View`
-	flex: 1;
-	flex-direction: row;
-	justify-content: space-between;
-`;
+const { height, width } = Dimensions.get('window');
 
 export default class Manuales extends Component {
 	state = {
@@ -41,6 +33,7 @@ export default class Manuales extends Component {
 		url: 'nothing',
 		token: null,
 		showLikeIcons: true,
+		resPdf: null
 	};
 
 	async componentDidMount() {
@@ -81,7 +74,24 @@ export default class Manuales extends Component {
 		this.setState({ showLikeIcons: !this.state.showLikeIcons });
 	};
 
+	onSelectPdfHandler = () => {
+		DocumentPicker.show({
+			filetype: [DocumentPickerUtil.pdf()],
+		  },(error,res) => {
+			// Android
+			console.log(
+			   res.uri,
+			   res.type, // mime type
+			   res.fileName,
+			   res.fileSize
+			);
+			this.setState({ resPdf: res });
+		  });
+	  
+	};
+
 	render() {
+		const spinner = <CustomSpinner color="blue"/>
 
 		const list = this.state.manuales.map((m, index) => (
 			<Manual
@@ -130,7 +140,62 @@ export default class Manuales extends Component {
 				{body}
 			</View>
 		);
-		
+
+		const addManualTitle = (
+			<View style={{ flex: 1, marginBottom: 10 }}>
+				<CustomAddBanner title="NUEVO MANUAL" image={require('../../assets/images/Preferences/add-orange.png')} />
+			</View>
+		);
+		const elpdf = (
+			<View
+				style={{
+					flex: 1,
+					justifyContent: 'flex-start',
+					alignItems: 'center',
+					overflow: 'hidden',
+					flexGrow: 2
+				}}
+			>
+				{this.state.resPdf && <Pdf
+					source={{ uri: this.state.resPdf.uri }}
+					onLoadComplete={(numberOfPages, filePath) => {
+						console.log(`number of pages: ${numberOfPages}`);
+					}}
+					onPageChanged={(page, numberOfPages) => {
+						console.log(`current page: ${page}`);
+					}}
+					onError={(error) => {
+						console.log(error);
+					}}
+					style={{
+						flex: 1,
+						width: width
+					}}
+				/>}
+			</View>
+		);
+
+		const addManualBody = (
+			<Card style={styles.add}>
+				<CardItem>
+					<TouchableOpacity style={styles.selectButton} onPress={() => this.onSelectPdfHandler()}>
+						<Text style={styles.textSelect}>Seleccionar pdf</Text>
+						<Image style={styles.imageSelect} resizeMode='contain' source={require('../../assets/images/Preferences/pdf.png')} />
+					</TouchableOpacity>
+				</CardItem>
+				<CardItem style={{ flex: 1 }}>
+					{this.state.resPdf && elpdf}
+				</CardItem>
+			</Card>
+		);
+		const addManual = (
+			<View style={{ flex: 1, flexDirection: 'column' }}>
+				{addManualTitle}
+				{this.state.loading && spinner}
+				{addManualBody}
+			</View>
+		);
+			
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={styles.container}>
@@ -139,7 +204,9 @@ export default class Manuales extends Component {
 							open={this.props}
 							title="Manuales"
 							color="#00a19a"
+							titleOfAdd="Nuevo manual"
 							showContentRight={true}
+							isAdmin={true}
 							add={() => this.setState({ show: true })}
 							goBack={() => this.setState({ show: false })}
 							isAdd={this.state.show}
@@ -149,7 +216,7 @@ export default class Manuales extends Component {
 					</View>
 					<StatusBar color="#FEA621" />
 					<View style={{ flex: 1, margin: 10 }}>
-						{manuales}
+						{!this.state.show ? manuales : addManual}
 					</View>
 				</View>
 			</SafeAreaView>
@@ -184,4 +251,35 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		flexDirection: 'column'
 	},
+	cardBody: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center',
+	},
+	add: {
+		flex: 2,
+		flexDirection: 'column', 
+		justifyContent: 'flex-start'
+	},
+	selectButton: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		backgroundColor: '#00847b',
+		alignSelf: 'center',
+		alignContent: 'center',
+	},
+	textSelect :{
+		alignSelf: 'center',
+		fontSize: 16,
+		fontWeight: 'bold',
+		fontStyle: 'normal',
+		color: 'white',
+		fontFamily: 'AvenirNextLTPro-Regular',
+		marginRight: 5,
+	},
+	imageSelect: {
+		width: width * .10,
+		height: width * .10,
+	}
 });
