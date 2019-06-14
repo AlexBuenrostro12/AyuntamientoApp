@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Text, Dimensions } from 'react-native';
 import { Item, Input, Label, Textarea, DatePicker, Picker } from 'native-base';
 import { normalize } from '../AuxiliarFunctions/FontResponsive';
+
+const { height, width } = Dimensions.get('window');
 
 const customInput = (props) => {
 	let input = null;
@@ -22,8 +24,7 @@ const customInput = (props) => {
 	switch (props.itemType) {
 		case 'InlineLabel':
 			input = (
-				<Item>
-                    <Label></Label>
+				<Item style={{ alignItems: 'center', width: width * .80, height: width * .10 }}>
 					<Input placeholder={props.holder} value={props.value} onChangeText={props.changed} />
 				</Item>
 			);
