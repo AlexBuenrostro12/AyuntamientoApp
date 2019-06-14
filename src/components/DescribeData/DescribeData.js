@@ -29,12 +29,6 @@ export default class DescribreData extends Component {
 		navigate: null,
 		loaded: false,
 		nativeGoBAck: null,
-		initialRegion: {
-			latitude: 19.470763,
-			longitude: -103.306613,
-			latitudeDelta: 0.0122,
-			longitudeDelta: width / height * 0.0122
-		},
 		address: 'null',
 		approved: false,
 		noApproved: true
@@ -185,13 +179,6 @@ export default class DescribreData extends Component {
 		}
 	};
 
-	approvedHandler = (approved) => {
-		this.setState({ approved: true, noApproved: false });
-	};
-	noApprovedHandler = () => {
-		this.setState({ noApproved: true, approved: false });
-	};
-
 	render() {
 		let card = (image = null);
 		let elpdf = null;
@@ -261,6 +248,67 @@ export default class DescribreData extends Component {
 										<Text style={styles.descripcion}>Sugerencia por: {data.nombre}</Text>
 										<Text style={styles.descripcion}>Correo: {data.email}</Text>
 										<Text style={styles.descripcion}>{data.comentario}</Text>
+										{data.isAdmin && <Text style={styles.headerTitle}>Aprobar sugerencia</Text>}
+										{data.isAdmin && (
+											<View
+												style={{
+													flex: 1,
+													justifyContent: 'space-between',
+													flexDirection: 'row'
+												}}
+											>
+												<View
+													style={{
+														flex: 1,
+														flexDirection: 'row',
+														justifyContent: 'space-evenly'
+													}}
+												>
+													<Text>Aprobado</Text>
+													<TouchableOpacity
+														onPress={() => {
+															this.setState({ approved: true, noApproved: false });
+															data.approvedItem(true);
+														}}
+													>
+														<View
+															style={
+																this.state.approved ? (
+																	styles.approved
+																) : (
+																	styles.noApproved
+																)
+															}
+														/>
+													</TouchableOpacity>
+												</View>
+												<View
+													style={{
+														flex: 1,
+														flexDirection: 'row',
+														justifyContent: 'space-evenly'
+													}}
+												>
+													<Text>No aprobado</Text>
+													<TouchableOpacity
+														onPress={() => {
+															this.setState({ noApproved: true, approved: false });
+															data.approvedItem(false);
+														}}
+													>
+														<View
+															style={
+																this.state.noApproved ? (
+																	styles.approved
+																) : (
+																	styles.noApproved
+																)
+															}
+														/>
+													</TouchableOpacity>
+												</View>
+											</View>
+										)}
 									</Body>
 								</CardItem>
 								<CardItem footer>
@@ -305,6 +353,12 @@ export default class DescribreData extends Component {
 					);
 					break;
 				case 'Reporte ciudadano':
+					const initialRegion = {
+						latitude: data.latitude,
+						longitude: data.longitude,
+						latitudeDelta: 0.0122,
+						longitudeDelta: width / height * 0.0122
+					};
 					card = (
 						<View key={data.itemKey}>
 							<Card>
@@ -325,7 +379,7 @@ export default class DescribreData extends Component {
 								</CardItem>
 								<CardItem>
 									<Body>
-										<Text style={styles.fecha}>Descripción</Text>
+										<Text style={styles.headerTitle}>Descripción</Text>
 										<Text style={styles.descripcion}>{data.direccion.toUpperCase()}</Text>
 										<Text style={styles.descripcion}>{data.descripcion}</Text>
 										<TouchableOpacity
@@ -334,7 +388,7 @@ export default class DescribreData extends Component {
 										>
 											<Image style={styles.image} source={{ uri: data.imagen }} />
 										</TouchableOpacity>
-										<Text style={styles.fecha}>Ubicación</Text>
+										<Text style={styles.headerTitle}>Ubicación</Text>
 										{!data.latitude ? (
 											<View style={{ flex: 1 }}>
 												<Text style={styles.descripcion}>{data.localidad}</Text>
@@ -355,7 +409,7 @@ export default class DescribreData extends Component {
 													width: '100%'
 												}}
 											>
-												<MapView style={styles.map} initialRegion={this.state.initialRegion}>
+												<MapView style={styles.map} initialRegion={initialRegion}>
 													<Marker
 														pinColor="red"
 														coordinate={{
@@ -368,11 +422,11 @@ export default class DescribreData extends Component {
 												<Text style={styles.descripcion}>{data.fecha}</Text>
 											</View>
 										)}
-										<Text style={styles.fecha}>Datos de quien reporta</Text>
+										<Text style={styles.headerTitle}>Datos de quien reporta</Text>
 										<Text style={styles.descripcion}>{data.nombre}</Text>
 										<Text style={styles.descripcion}>{data.email}</Text>
 										<Text style={styles.descripcion}>{data.telefono}</Text>
-										{data.isAdmin && <Text style={styles.fecha}>Aprobar reporte</Text>}
+										{data.isAdmin && <Text style={styles.headerTitle}>Aprobar reporte</Text>}
 										{data.isAdmin && (
 											<View
 												style={{
@@ -637,6 +691,16 @@ const styles = StyleSheet.create({
 		fontStyle: 'italic',
 		color: 'black',
 		fontFamily: 'AvenirNextLTPro-Regular'
+	},
+	headerTitle: {
+		marginBottom: 5,
+		marginRight: 5,
+		fontSize: 17,
+		fontWeight: 'normal',
+		fontStyle: 'normal',
+		color: 'white',
+		fontFamily: 'AvenirNextLTPro-Regular',
+		backgroundColor: '#676766',
 	},
 	header: {
 		flex: 1,

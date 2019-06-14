@@ -82,8 +82,13 @@ export default class BuzonCiudadano extends Component {
 				itemType: 'Fecha',
 				value: '',
 				valid: true
-			}
+			},
 		},
+		formApproved: {
+            approved: {
+                value: false
+            }
+        },
 		loading: false,
 		formIsValid: false,
 		date: 'null',
@@ -166,7 +171,26 @@ export default class BuzonCiudadano extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, suggestions: fetchedSuggestions.reverse() });
+				console.log('fetched: ', fetchedSuggestions);
+				if (this.state.isAdmin) {
+					this.setState({ loading: false, suggestions: fetchedSuggestions.reverse() });
+					console.log('sugst: ', this.state.suggestions);
+                } else {
+                    let ban = false;
+                    const filterData = fetchedSuggestions.filter(incdt => { 
+						const approved = incdt.approvedData['approved'];
+						console.log('approved: ', approved, this.state.isAdmin);
+						console.log('sugst: ', this.state.suggestions);
+                        if (approved) {
+                            ban = true;
+							return incdt;
+                        }
+                    });
+                    if (ban) {
+                        this.setState({ loading: false, suggestions: filterData.reverse() });
+					}
+					if (!ban) this.setState({ loading: false, suggestions: [] })
+                }
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
@@ -195,11 +219,16 @@ export default class BuzonCiudadano extends Component {
 		this.setState({ loading: true });
 		if (this.state.formIsValid) {
 			const formData = {};
+			const approvedData = {};
 			for (let formElementIdentifier in this.state.form) {
 				formData[formElementIdentifier] = this.state.form[formElementIdentifier].value;
 			}
+			for (let formElementIdentifier in this.state.formApproved) {
+				approvedData[formElementIdentifier] = this.state.formApproved[formElementIdentifier].value;
+			}
 			const suggetion = {
-				suggestionData: formData
+				suggestionData: formData,
+				approvedData: approvedData,
 			};
 
 			axios
@@ -321,8 +350,6 @@ export default class BuzonCiudadano extends Component {
 			});
 		}
 		const spinner = <CustomSpinner color="blue" />;
-		console.log('suggestions: ', this.state.suggestions);
-		console.log('sortSuggestion: ', this.state.suggestions.suggestionData);
 		const list = this.state.suggestions.map((sgt, index) => (
 			<Buzon
 				key={sgt.id}
@@ -331,6 +358,7 @@ export default class BuzonCiudadano extends Component {
 				isAdmin={this.state.isAdmin}
 				refresh={this.getSuggestions}
 				data={sgt.suggestionData}
+				approvedData={sgt.approvedData}
 				describe={this.props}
 				index={index + 1}
 				showLikeIcons={this.state.showLikeIcons}
@@ -371,7 +399,7 @@ export default class BuzonCiudadano extends Component {
 
 		const addSuggestionTitle = (
 			<View style={{ flex: 1, marginBottom: 10 }}>
-				<CustomAddBanner title="NUEVA SUGERENCIA" image={require('../../assets/images/Buzon/buzon.png')} />
+				<CustomAddBanner title="NUEVA SUGERENCIA" image={require('../../assets/images/Preferences/add-orange.png')} />
 			</View>
 		);
 		const addSuggestionBody = (
@@ -415,8 +443,6 @@ export default class BuzonCiudadano extends Component {
 							isAdd={this.state.addSuggestion}
 							save={this.orderHandler}
 							isAdmin={true}
-							notifications={this.actOrDescNotification}
-							actOrDesc={this.state.notifications}
 							changeDisplay={this.changeDisplay}
 							showLikeIcons={this.state.showLikeIcons}
 							changed={(text) => this.searchTextHandler(text)}

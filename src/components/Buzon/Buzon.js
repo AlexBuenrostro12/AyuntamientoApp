@@ -12,6 +12,7 @@ export default class Buzon extends Component {
 		fecha: null,
 		nombre: null,
 		itemKey: null,
+		approved: null,
 		showItemCard: false,
 		data: [],
 	};
@@ -29,18 +30,24 @@ export default class Buzon extends Component {
 				this.setState({ itemKey: key });
 			}
 		}
+		for (let key in this.props.approvedData) {
+			console.log('apr: ', this.props.approvedData[key]);
+			this.setState({ approved: this.props.approvedData[key] });
+		}
 		this.setState({ showItemCard: true }, () => this.goToDescribeData());
 	};
 
 	goToDescribeData = () => {
 		if (this.state.showItemCard) {
 			const obj = {
+				approved: this.state.approved,
 				asunto: this.state.asunto,
 				comentario: this.state.comentario,
 				email: this.state.email,
 				fecha: this.state.fecha,
 				nombre: this.state.nombre,
 				isAdmin: this.props.isAdmin,
+				approvedItem: this.approveItemListHandler,
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'Buzón Ciudadano',
 				barProps: { title: 'Sugerencias', status: '#00847b', bar: '#00a19a' }
@@ -49,6 +56,34 @@ export default class Buzon extends Component {
 			navigate('Describe', { data: obj });
 		}
 	};
+
+	approveItemListHandler = (approved) => {
+        console.log('approveItemListHandler:res: ', this.props.token, this.state.itemKey);
+        const { navigate } = this.props.describe.navigation;
+        console.log('navigate: ', navigate, 'approved: ', approved);
+        let title = '';
+        if (approved) body = '¡Sugerencia aprobada con éxito!';
+        else title = 'Sugerencia desaprobada con éxito!';
+        const obj = { 
+            approvedData : {
+                approved: approved
+            } 
+        };
+        axios
+		.patch('/suggestions' + '/' + this.state.itemKey + '.json?auth=' + this.props.token, obj)
+		.then((response) => {
+            console.log('approveItemListHandler:res: ', response);
+			Alert.alert('¡Buzón ciudadano!', body, [ { text: 'Ok', onPress: () => this.refreshItemsHandler() } ], {
+				cancelable: false
+			});
+		})
+		.catch((error) => {
+            console.log('approveItemListHandler:res: ', error)
+			Alert.alert('¡Buzón ciudadano!', '¡Sugerencia fallida al aprobar!', [ { text: 'Ok' } ], {
+				cancelable: false
+			});
+		});
+    }
 
 	alertCheckDeleteItem = () => {
 		Alert.alert(

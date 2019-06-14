@@ -163,12 +163,7 @@ const customInput = (props) => {
 			);
 			break;
 		default:
-			input = (
-				<Item floatingLabel>
-					<Label>Defaul input</Label>
-					<Input />
-				</Item>
-			);
+			input = null
 			break;
 	}
 
