@@ -19,7 +19,7 @@ export default class Manual extends Component {
 			if (this.props.data[dataName] === identifier) {
 				this.setState({ nombre: this.props.data[dataName] });
 				this.setState({ url: this.props.data['url'] });
-				this.setState({ fecha: this.props.data['fecha'] });
+				this.setState({ fecha: this.props.data['date'] });
 				this.setState({ itemKey: key });
 			}
 		}
@@ -48,7 +48,7 @@ export default class Manual extends Component {
 			if (dataName === 'name') {
 				obj.title = this.props.data[dataName];
 			}
-			if (dataName === 'fecha') {	
+			if (dataName === 'date') {	
 				obj.fecha = this.props.data[dataName];;
 			}
 		}
