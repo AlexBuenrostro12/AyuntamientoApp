@@ -24,11 +24,11 @@ import Manual from '../../components/Manual/Manual';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 import firebaseConfig from '../../../firebase-config';
 import axios from '../../../axios-ayuntamiento';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const firebaseapp = firebase.initializeApp(firebaseConfig);
 
 const { height, width } = Dimensions.get('window');
-
 
 export default class Manuales extends Component {
 	state = {
@@ -106,6 +106,7 @@ export default class Manuales extends Component {
 				filetype: [ DocumentPickerUtil.pdf() ]
 			},
 			(error, res) => {
+				console.log('resPDF: ', res)
 				// Android
 				console.log(
 					res.uri,
@@ -118,6 +119,11 @@ export default class Manuales extends Component {
 		);
 	};
 
+	createFile = (uri, type, name) => {
+		const enc = encodeURIComponent(uri);
+		console.log('encodeuri: ', enc);
+	};
+
 	savePdfHandler = () => {
 		console.log('Save pdf: ', this.state.resPdf);
 		const { uri, type, fileName, fileSize } = this.state.resPdf;
@@ -125,16 +131,18 @@ export default class Manuales extends Component {
 		const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 		const storage = firebaseapp.storage();
 		const storageRef = storage.ref();
-		//const blob = new Blob([ uploadUri ], { type: type });
+		const file = this.createFile(uri, type, name);
+		const blob = new Blob([ file ], { type: type });
+		console.log('File: ', file);
+		console.log('Blob: ', blob);
+		const enc = encodeURIComponent(uri);
 
 		const metadata = {
 			contentType: type
 		};
 
 		// Upload file and metadata to the object 'images/mountains.jpg'
-		// const uploadTask = storageRef.child('manuals/' + fileName).put(blob, metadata);
-		//upload like other way
-		const uploadTask = storageRef.ref(`manuales/${fileName}`).put(this.state.resPdf);
+		const uploadTask = storageRef.child('manuals/' + fileName).putString(enc, 'base64');
 
 		uploadTask.on(
 			firebase.storage.TaskEvent.STATE_CHANGED,
