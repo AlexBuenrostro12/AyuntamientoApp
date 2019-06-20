@@ -16,6 +16,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
 import Pdf from 'react-native-pdf';
 import * as firebase from 'firebase';
+import axiosPDF from 'axios';
+import RNFetchBlob from 'rn-fetch-blob';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
@@ -24,7 +26,6 @@ import Manual from '../../components/Manual/Manual';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 import firebaseConfig from '../../../firebase-config';
 import axios from '../../../axios-ayuntamiento';
-import RNFetchBlob from 'rn-fetch-blob';
 
 const firebaseapp = firebase.initializeApp(firebaseConfig);
 
@@ -106,7 +107,7 @@ export default class Manuales extends Component {
 				filetype: [ DocumentPickerUtil.pdf() ]
 			},
 			(error, res) => {
-				console.log('resPDF: ', res)
+				console.log('resPDF: ', res);
 				// Android
 				console.log(
 					res.uri,
@@ -119,70 +120,53 @@ export default class Manuales extends Component {
 		);
 	};
 
-	createFile = (uri, type, name) => {
-		const enc = encodeURIComponent(uri);
-		console.log('encodeuri: ', enc);
+	uploadFile = ({ uri, fileName, fileSize, type } = res) => {
+		console.log('Res: ', uri, type, fileName, fileSize);
+		// const uploadUri = Platform.OS === 'ios' ? res.uri.replace('file://', '') : res.uri;
+		const fd = new FormData();
+		fd.append('file', {
+			name: fileName,
+			size: fileSize,
+			type: type,
+			uri: uri
+		});
+		axiosPDF({
+			url: 'https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/uploadFile',
+			method: 'POST',
+			headers: {
+				'Content-Type': type,
+			},
+			data: fd,
+		})
+			.then((response) => {
+				console.log('response: ', response);
+				//Get url
+				axiosPDF({
+					url: 'https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/getURL',
+					method: 'GET',
+					headers: {
+						'Content-Type': type
+					}, 
+					data: fd
+				})
+					.then(url => {
+						console.log('url: ', url);
+					})
+					.catch(err => {
+						console.log('error: ', err);		
+					})
+			})
+			.catch((err) => {
+				console.log('error: ', err);
+			});
+		
 	};
 
 	savePdfHandler = () => {
-		console.log('Save pdf: ', this.state.resPdf);
 		const { uri, type, fileName, fileSize } = this.state.resPdf;
 		console.log('Save pdf: ', uri, 'type: ', type, 'file: ', fileName);
-		const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-		const storage = firebaseapp.storage();
-		const storageRef = storage.ref();
-		const file = this.createFile(uri, type, name);
-		const blob = new Blob([ file ], { type: type });
-		console.log('File: ', file);
-		console.log('Blob: ', blob);
-		const enc = encodeURIComponent(uri);
-
-		const metadata = {
-			contentType: type
-		};
-
-		// Upload file and metadata to the object 'images/mountains.jpg'
-		const uploadTask = storageRef.child('manuals/' + fileName).putString(enc, 'base64');
-
-		uploadTask.on(
-			firebase.storage.TaskEvent.STATE_CHANGED,
-			(snapshot) => {
-				// Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-				var progress = snapshot.bytesTransferred / snapshot.totalBytes * 100;
-				console.log('Upload is ' + progress + '% done');
-				switch (snapshot.state) {
-					case firebase.storage.TaskState.PAUSED: // or 'paused'
-						console.log('Upload is paused');
-						break;
-					case firebase.storage.TaskState.RUNNING: // or 'running'
-						console.log('Upload is running');
-						this.setState({ loading: true });
-						break;
-					case firebase.storage.TaskState.SUCCESS:
-						console.log('Upload is success');
-						break;
-				}
-			},
-			(error) => {
-				switch (error.code) {
-					case 'storage/unauthorized':
-						// User doesn't have permission to access the object
-						break;
-
-					case 'storage/canceled':
-						// User canceled the upload
-						break;
-					case 'storage/unknown':
-						// Unknown error occurred, inspect error.serverResponse
-						break;
-				}
-			},
-			async () => {
-				const url = await uploadTask.snapshot.ref.getDownloadURL();
-				console.log('url: ', url);
-				if (url) this.saveDataHandler(fileName, url);
-			}
-		);
+		
+		this.uploadFile(this.state.resPdf);
 	};
 
 	saveDataHandler = (file, url) => {
