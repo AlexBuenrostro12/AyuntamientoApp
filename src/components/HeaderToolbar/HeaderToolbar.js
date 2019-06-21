@@ -154,6 +154,18 @@ export default class HeaderToolbar extends React.Component {
 								</View>
 							</MenuOption>
 						)}
+						{/* Delete manual */}
+						{this.props.isAdmin && this.props.deleteManual && (
+							<MenuOption onSelect={() => this.props.deleteManual()}>
+								<View style={styles.menuOption}>
+									<Image
+										style={styles.menuOptionImage}
+										source={require('../../assets/images/Delete/delete-grey.png')}
+									/>
+									<Text style={styles.menuOptionText}>Eliminar manual.</Text>
+								</View>
+							</MenuOption>
+						)}
 						{/* Here could be other options */}
 					</MenuOptions>
 				</Menu>

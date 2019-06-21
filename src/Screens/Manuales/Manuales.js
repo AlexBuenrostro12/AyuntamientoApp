@@ -33,22 +33,7 @@ const { height, width } = Dimensions.get('window');
 
 export default class Manuales extends Component {
 	state = {
-		manuales: [
-			{
-				name: 'Manual 1',
-				url:
-					'https://firebasestorage.googleapis.com/v0/b/ayuntamiento-77d3b.appspot.com/o/Make-History.pdf?alt=media&token=ffc16829-605f-4307-bbd8-5eb509e14383',
-				fecha: '22-05-2019'
-			},
-			{
-				name: 'Manual 2',
-				url:
-					'https://firebasestorage.googleapis.com/v0/b/ayuntamiento-77d3b.appspot.com/o/doc_iso27000_all.pdf?alt=media&token=eea1e5a7-d3cd-4bcb-b00d-3f364472359d',
-				fecha: '25-05-2019'
-			}
-		],
 		show: false,
-		url: 'nothing',
 		token: null,
 		showLikeIcons: true,
 		resPdf: null,
@@ -86,7 +71,7 @@ export default class Manuales extends Component {
 					//Catch posible errors
 				}
 				Alert.alert(
-					'Manuales',
+					'Transparencia',
 					'¡Tiempo de espera agotado, inicie sesion de nuevo!',
 					[ { text: 'Ok', onPress: () => this.props.navigation.navigate('Auth') } ],
 					{ cancelable: false }
@@ -122,7 +107,7 @@ export default class Manuales extends Component {
 
 	uploadFile = ({ uri, fileName, fileSize, type } = res) => {
 		console.log('Res: ', uri, type, fileName, fileSize);
-		// const uploadUri = Platform.OS === 'ios' ? res.uri.replace('file://', '') : res.uri;
+		this.setState({ loading: true });
 		const fd = new FormData();
 		fd.append('file', {
 			name: fileName,
@@ -140,21 +125,30 @@ export default class Manuales extends Component {
 		})
 			.then((response) => {
 				console.log('response: ', response);
-				//Get url
-				axiosPDF({
-					url: 'https://us-central1-ayuntamiento-77d3b.cloudfunctions.net/getURL',
-					method: 'GET',
-					headers: {
-						'Content-Type': type
-					}, 
-					data: fd
-				})
-					.then(url => {
-						console.log('url: ', url);
-					})
-					.catch(err => {
-						console.log('error: ', err);		
-					})
+				const { data } = response;
+				console.log('data: ', data);
+				const { resp } = data;
+				console.log('resp: ', resp);
+				let name = null;
+				let encodeName = null;
+				let bucket = null;
+				for (let i = 0; i < resp.length; i++) {
+					if (i === 0) {
+						const element = resp[i];
+						console.log('elementResp: ', element);
+						encodeName = element.id;
+						console.log('encode: ', encodeName); 
+						name = element.name;
+						console.log('name: ', name); 
+						bucket = element.metadata['bucket'];
+						console.log('bucket: ', bucket); 
+					}
+					
+				}
+				//Make the url to download the pdf file
+				const url = "https://firebasestorage.googleapis.com/v0/b/" + bucket + "/o/" + encodeName + "?alt=media&token=" + this.state.token;
+				console.log('url: ', url);
+				this.saveDataHandler(name, url);
 			})
 			.catch((err) => {
 				console.log('error: ', err);
@@ -184,7 +178,7 @@ export default class Manuales extends Component {
 				this.setState({ loading: false });
 				Alert.alert(
 					'Transparencia',
-					'¡Manual enviado con exito!',
+					'¡Documento enviado con exito!',
 					[ { text: 'Ok', onPress: () => this.getManuals() } ],
 					{
 						cancelable: false
@@ -193,7 +187,7 @@ export default class Manuales extends Component {
 			})
 			.catch((error) => {
 				this.setState({ loading: false });
-				Alert.alert('Transparencia', '¡Manual fallido al enviar!', [ { text: 'Ok' } ], {
+				Alert.alert('Transparencia', 'Documento fallido al enviar!', [ { text: 'Ok' } ], {
 					cancelable: false
 				});
 			});
@@ -245,6 +239,7 @@ export default class Manuales extends Component {
 				key={m.id}
 				id={m.id}
 				token={this.state.token}
+				refresh={this.getManuals}
 				isAdmin={this.state.isAdmin}
 				data={m.manualData}
 				describe={this.props}
@@ -257,7 +252,7 @@ export default class Manuales extends Component {
 		const title = (
 			<ScrollView style={{ flex: 1 }}>
 				<CustomCardItemTitle
-					title="MANUALES"
+					title="Transparencia"
 					description="Visualice los manuales de transparencia"
 					info="Delice hacia abajo, para los manuales más antiguas."
 					image={require('../../assets/images/Buzon/buzon.png')}
@@ -290,13 +285,13 @@ export default class Manuales extends Component {
 		const addManualTitle = (
 			<View style={{ flex: 1, marginBottom: 10 }}>
 				<CustomAddBanner
-					title="NUEVO MANUAL"
+					title="NUEVO DOCUMENTO"
 					image={require('../../assets/images/Preferences/add-orange.png')}
 				/>
 			</View>
 		);
 		const elpdf = (
-			<View
+			(this.state.resPdf && <View
 				style={{
 					flex: 1,
 					justifyContent: 'flex-start',
@@ -305,7 +300,6 @@ export default class Manuales extends Component {
 					flexGrow: 2
 				}}
 			>
-				{this.state.resPdf && (
 					<Pdf
 						source={{ uri: this.state.resPdf.uri }}
 						onLoadComplete={(numberOfPages, filePath) => {
@@ -322,8 +316,7 @@ export default class Manuales extends Component {
 							width: width
 						}}
 					/>
-				)}
-			</View>
+			</View>)
 		);
 
 		const addManualBody = (
@@ -355,11 +348,11 @@ export default class Manuales extends Component {
 					<View>
 						<HeaderToolbar
 							open={this.props}
-							title="Manuales"
+							title="Transparencia"
 							color="#00a19a"
-							titleOfAdd="Nuevo manual"
+							titleOfAdd="Nuevo documento"
 							showContentRight={true}
-							isAdmin={true}
+							isAdmin={this.state.isAdmin}
 							get={this.getManuals}
 							add={() => this.setState({ show: true })}
 							goBack={() => this.setState({ show: false })}

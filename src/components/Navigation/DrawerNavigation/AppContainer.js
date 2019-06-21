@@ -26,7 +26,7 @@ const CustomDrawerComponent = (props) => (
 
 const AppDrawer = createDrawerNavigator({
   'Home':  HomeScreen,
-  'Manuales': ManualesScreen,
+  'Transparencia': ManualesScreen,
   'Buzón Ciudadano': BuzonCiudadanoScreen,
   'Noticias': NoticiasScreen,
   'Bus Escolar': BusEscolarScreen,

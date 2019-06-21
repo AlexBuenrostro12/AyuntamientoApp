@@ -14,7 +14,7 @@ export default class Manual extends Component {
 	};
 
 	clickedListHandler = (identifier, key) => {
-		console.log('Actividad.js:clickList: ', identifier, key);
+		console.log('Manual.js:clickList: ', identifier, key);
 		for (let dataName in this.props.data) {
 			if (this.props.data[dataName] === identifier) {
 				this.setState({ nombre: this.props.data[dataName] });
@@ -32,14 +32,64 @@ export default class Manual extends Component {
 				nombre: this.state.nombre,
 				url: this.state.url,
 				fecha: this.state.fecha,
-				isAdmin: true,
-				type: 'Manuales',
-				barProps: { title: 'Manuales', status: '#00847b', bar: '#00a19a' }
+				isAdmin: this.props.isAdmin,
+				type: 'Transparencia',
+				deleteItem: this.alertCheckDeleteItem,
+				barProps: { title: 'Transparencia', status: '#00847b', bar: '#00a19a' }
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
 		}
 	};
+
+	alertCheckDeleteItem = () => {
+		Alert.alert(
+			'Transparencia',
+			'¿Desea eliminar este documento?',
+			[ { text: 'Si', onPress: () => this.deleteItemListHandler() }, { text: 'No' } ],
+			{
+				cancelable: false
+			}
+		);
+	};
+
+	deleteItemListHandler = () => {
+		console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
+		const { navigate } = this.props.describe.navigation;
+		axios
+			.delete('/manuales' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
+			.then((response) => {
+				console.log('deleteItemListHandler:res: ', response);
+				Alert.alert(
+					'Transparencia',
+					'¡Documento eliminado con exito!',
+					[
+						{
+							text: 'Ok',
+							onPress: () => {
+								navigate('Transparencia');
+								this.refreshItemsHandler();
+							}
+						}
+					],
+					{
+						cancelable: false
+					}
+				);
+			})
+			.catch((error) => {
+				console.log('deleteItemListHandler:res: ', error);
+				Alert.alert('Transparencia', 'Documento fallida al eliminar!', [ { text: 'Ok' } ], {
+					cancelable: false
+				});
+			});
+	};
+
+	refreshItemsHandler = () => {
+		this.setState({ showItemCard: false });
+		this.props.refresh();
+	};
+
 
 	componentDidMount() {
 		const data = [];
