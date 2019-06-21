@@ -94,12 +94,12 @@ export default class Manuales extends Component {
 			(error, res) => {
 				console.log('resPDF: ', res);
 				// Android
-				console.log(
-					res.uri,
-					res.type, // mime type
-					res.fileName,
-					res.fileSize
-				);
+				// console.log(
+				// 	res.uri,
+				// 	res.type, // mime type
+				// 	res.fileName,
+				// 	res.fileSize
+				// );
 				this.setState({ resPdf: res });
 			}
 		);
@@ -290,8 +290,10 @@ export default class Manuales extends Component {
 				/>
 			</View>
 		);
+		let source = null;
+		source = this.state.resPdf ? { uri: this.state.resPdf.uri } : null;
 		const elpdf = (
-			(this.state.resPdf && <View
+			(this.state.resPdf && source && <View
 				style={{
 					flex: 1,
 					justifyContent: 'flex-start',
@@ -300,8 +302,8 @@ export default class Manuales extends Component {
 					flexGrow: 2
 				}}
 			>
-					<Pdf
-						source={{ uri: this.state.resPdf.uri }}
+					{source && <Pdf
+						source={source}
 						onLoadComplete={(numberOfPages, filePath) => {
 							console.log(`number of pages: ${numberOfPages}`);
 						}}
@@ -315,7 +317,7 @@ export default class Manuales extends Component {
 							flex: 1,
 							width: width
 						}}
-					/>
+					/>}
 			</View>)
 		);
 
