@@ -543,8 +543,9 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
-				case 'Manuales':
+				case 'Transparencia':
 					const source = { uri: data.url };
+					console.log('source: ', source);
 					elpdf = (
 						<View
 							style={{
@@ -610,6 +611,8 @@ export default class DescribreData extends Component {
 									{ loaded: false },
 									() => this.state.navigate && this.state.navigate(this.state.data.type)
 								)}
+							deleteManual={this.state.data && this.state.data.deleteItem}
+							isAdmin={this.state.data && this.state.data.isAdmin}
 							// here i go
 						/>
 					</View>
