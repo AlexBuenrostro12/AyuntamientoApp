@@ -1,45 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Alert, SafeAreaView, ScrollView, Platform } from 'react-native';
+import { View, StyleSheet, Alert, SafeAreaView, ScrollView, Platform, ImageBackground, Image, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import SwiperBanner from '../../components/SwiperBanner/SwiperBanner';
-import FCM, { NotificationActionType, RemoteNotificationResult, WillPresentNotificationResult, NotificationType, FCMEvent } from "react-native-fcm";
-
-// FCM.on(FCMEvent.Notification, async (notif) => {
-// 	if (notif.local_notification) {
-// 		//This is a local notification
-// 	}
-// 	if (notif.opened_from_tray) {
-// 		//IOS: app is open/resumed because user clicked banner
-// 		//Android: app is open/resumed because user clicked banner o tapped app icon
-// 		console.warn('Clicked in the notification!');
-// 	}
-// 	// await someAsyncCall();
-// 	if (Platform.OS === 'ios') {
-// 		//Optionial 
-// 		//IOS requires developers to call completionHandler to end notification process.
-// 		//This library handles it for you automatically with default behavior 
-// 		//notif._notificationType is acailable for iOS platfrom
-// 		switch (notif._notificationType) {
-// 			case NotificationType.Remote:
-// 				notif.finish(RemoteNotificationResult.NewData);
-// 				break;
-// 			case NotificationType.NotificationResponse:
-// 				notif.finish();
-// 				break;
-// 			case NotificationType.WillPresent:
-// 				notif.finish(WillPresentNotificationResult.All);
-// 				break;
-// 		}
-// 	}
-// });
-// FCM.on(FCMEvent.RefreshToken, (token) => {
-// 	console.log(token);
-// 	//fcm token may not available on first load, catch it here
-// });
 
 export default class Home extends Component {
 	state = {
@@ -111,19 +77,27 @@ export default class Home extends Component {
 
 		return (
 			<SafeAreaView style={styles.container}>
-				<View style={styles.view}>
+				<ImageBackground 
+					style={styles.view}
+					source={require('../../assets/images/Gif/galaxy.gif')}
+				>
 					<View>
-						<HeaderToolbar open={this.props} title="Home" />
+						<HeaderToolbar 
+							open={this.props} 
+							title="Home"
+							color="rgba(52, 52, 52, 0.8)" />
 					</View>
-					<StatusBar color="#FEA621" />
+					<StatusBar color="rgba(52, 52, 52, 0.8)" />
 					<View style={{ flex: 1 }}>
-						<ScrollView>{this.state.loading ? spinner : swiperBanner}</ScrollView>
+						<View style={{ flex: 1 }}>{this.state.loading ? spinner : swiperBanner}</View>
 					</View>
-				</View>
+				</ImageBackground>
 			</SafeAreaView>
 		);
 	}
 }
+
+const { height,  width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	container: {
@@ -138,7 +112,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexWrap: 'wrap',
 		flexDirection: 'column',
-		overflow: 'scroll'
+		overflow: 'scroll',
 	},
 	text: {
 		fontSize: 20,
