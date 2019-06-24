@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Dimensions, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native';
 import { Card, CardItem, Thumbnail, Left, Body } from 'native-base';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
+import { thisExpression } from '@babel/types';
+import CustomSpinner from '../CustomSpinner/CustomSpinner';
 
 const SCROLLVIEW_REF = 'scrollview';
 
@@ -17,46 +19,8 @@ export default class SwiperBanner extends Component {
 		width: 0,
 		preScrollX: null,
 		scrollInterval: 2500
-	};
-
-	// componentDidMount() {
-	// 	if (this.state.startAutoPlay) this.startAutoPlayHandler();
-	// 	else this.stopAutoPlayHandler();
-	// }
-
-	// onScrollHandler = (e) => {
-	// 	let { x } = e.nativeEvent.contentOffset,
-	// 		offset,
-	// 		position = Math.floor(x / this.state.width);
-	// 	if (x === this.state.preScrollX) return;
-	// 	this.setState({ preScrollX: x });
-	// 	offset = x / this.state.width - position;
-
-	// 	if (offset === 0) {
-	// 		let timerid = setInterval(this.goToNextPageHandler, this.state.scrollInterval);
-	// 		this.setState({ currentIndex: position, timerID: timerid });
-	// 	}
-	// };
-	// onScrollViewLayoutHandler = (e) => {
-	// 	let { width } = e.nativeEvent.layout;
-	// 	this.setState({ width: width });
-	// };
-	// goToNextPageHandler = () => {
-	// 	this.stopAutoPlayHandler();
-	// 	let nextIndex = (this.state.currentIndex + 1) % this.state.childrenCount;
-	// 	this.refs[SCROLLVIEW_REF].scrollTo({ x: this.state.width * nextIndex });
-	// };
-	// startAutoPlayHandler = () => {
-	// 	let timerid = setInterval(this.goToNextPageHandler, this.state.scrollInterval);
-	// 	this.setState({ timerID: timerid });
-	// };
-	// stopAutoPlayHandler = () => {
-	// 	if (this.state.timerID) {
-	// 		clearInterval(this.state.timerID);
-	// 		this.setState({ timerID: null });
-	// 	}
-	// };
-
+    };
+    
 	componentWillMount() {
 		this.getNewsHandler();
 	}
@@ -105,19 +69,33 @@ export default class SwiperBanner extends Component {
 			</TouchableOpacity>
 		</View>
 	);
-	_keyExtractor = (item, index) => item.noticia;
+    _keyExtractor = (item, index) => item.noticia;
+    _handleLoadMore = () => {
+        this.props.refresh();
+        this.getNewsHandler();
+    }
+    _loading = () => <View style={styles.loader}>
+        <ActivityIndicator size="large" />
+    </View>
 
 	render() {
 		return (
-			<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center' }}>
-				<Text style={styles.title}>GOBIERNO DE TECALITLÁN</Text>
-				<FlatList
-					horizontal
-					ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
-					data={this.state.bannerItems}
-					keyExtractor={this._keyExtractor}
-					renderItem={this._renderItem}
-				/>
+			<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+				<View style={{ flex: 1, alignItems: 'center' }}>
+					<Text style={styles.title}>GOBIERNO DE TECALITLÁN</Text>
+				</View>
+				<View style={styles.bottomView}>
+					<FlatList
+						horizontal
+						ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
+						data={this.state.bannerItems}
+						keyExtractor={this._keyExtractor}
+						renderItem={this._renderItem}
+						onEndReached={this._handleLoadMore}
+                        onEndReachedThreshold={0.5}
+                        ListFooterComponent={this._loading}
+					/>
+				</View>
 			</View>
 		);
 	}
@@ -159,7 +137,7 @@ const styles = StyleSheet.create({
 	card: {
 		flex: 1,
 		flexDirection: 'column',
-		justifyContent: 'center',
+		justifyContent: 'flex-start',
 		height: width * 0.8,
 		width: width * 0.9,
 		borderRadius: 3,
@@ -186,8 +164,7 @@ const styles = StyleSheet.create({
 		fontStyle: 'normal',
 		color: 'white',
 		fontFamily: 'AvenirNextLTPro-Regular',
-		marginBottom: 45,
-		marginTop: 45
+		marginTop: 30
 	},
 	textContainer: {
 		flex: 1,
@@ -204,5 +181,16 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		borderTopLeftRadius: 3,
 		borderTopRightRadius: 3
-	}
+	},
+	bottomView: {
+		width: '100%',
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		bottom: 0
+    },
+    loader: {
+        marginTop: 10,
+        alignItems: 'center'
+    }
 });
