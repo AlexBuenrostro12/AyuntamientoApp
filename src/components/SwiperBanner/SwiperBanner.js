@@ -20,7 +20,7 @@ export default class SwiperBanner extends Component {
 		refreshing: false,
 		news: [],
 		useState: false,
-		dontLoad: false,
+		dontLoad: false
 	};
 
 	componentWillMount() {
@@ -57,7 +57,7 @@ export default class SwiperBanner extends Component {
 
 		if (this.state.news) {
 			this.setState({ bannerItems: null });
-			console.log('banner: ', this.state.bannerItems)
+			console.log('banner: ', this.state.bannerItems);
 			this.state.news.map((nw, index) => {
 				let currentDate = new Date(nw.newData.fecha);
 				let expiryDate = new Date(currentDate);
@@ -84,6 +84,32 @@ export default class SwiperBanner extends Component {
 		}
 	};
 
+	_loadMoreHadler = () => {
+		console.log('load more!');
+		console.log('refreshEntro');
+		this.setState({ refreshing: true });
+		axios
+			.get('/news.json?auth=' + this.props.token)
+			.then((res) => {
+				const fetchedNews = [];
+				for (let key in res.data) {
+					fetchedNews.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				setTimeout(() => {
+					this.setState({ refreshing: false, news: fetchedNews, useState: true });
+					this.getNewsHandler();
+				}, 1500);
+			})
+			.catch((err) => {
+				console.log(err);
+				setTimeout(() => {
+					this.setState({ refreshing: false });
+				}, 1500);
+			});
+	};
 	_renderItem = ({ item }) => (
 		<View key={item.noticia} style={styles.card}>
 			{/* {console.log('item: ', item)} */}
@@ -101,37 +127,12 @@ export default class SwiperBanner extends Component {
 	);
 	_keyExtractor = (item, index) => item.noticia.toString() + index.toString();
 
-	_loadMoreHadler = () => {
-		console.log('load more!');
-		console.log('refreshEntro')
-		this.setState({ refreshing: true });
-		axios
-			.get('/news.json?auth=' + this.props.token)
-			.then((res) => {
-				const fetchedNews = [];
-				for (let key in res.data) {
-					fetchedNews.push({
-						...res.data[key],
-						id: key
-					});
-				}
-				setTimeout(() => {
-					this.setState({ refreshing: false, news: fetchedNews, useState: true });
-					this.getNewsHandler()
-				}, 1500);
-			})
-			.catch((err) => {
-				console.log(err);
-				setTimeout(() => {
-					this.setState({ refreshing: false });
-				}, 1500);
-			});
-	}
-	
-	_loading = () => this.state.refreshing && <View style={styles.loader}>
-		<CustomSpinner color="blue" />
-	</View>;
-
+	_loading = () =>
+		this.state.refreshing && (
+			<View style={styles.loader}>
+				<CustomSpinner color="blue" />
+			</View>
+		);
 
 	render() {
 		console.log('index: ', this.state.childrenCount);
@@ -149,11 +150,10 @@ export default class SwiperBanner extends Component {
 						renderItem={this._renderItem}
 						ListFooterComponent={this._loading}
 						onEndReached={this._loadMoreHadler}
-						onEndReachedThreshold={0.0001}
+						onEndReachedThreshold={0.1}
 						refreshing={this.state.refreshing}
 						inverted={true}
 						initialScrollIndex={this.state.childrenCount - 1}
-
 					/>
 				</View>
 			</View>
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
 		height: width * 0.8,
 		width: width * 0.9,
 		borderRadius: 3,
-		margin: 5
+		margin: 5,
 	},
 	textCard: {
 		fontSize: 17,
@@ -247,12 +247,14 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		position: 'absolute',
-		bottom: 0
+		bottom: 0,
+		marginLeft: 10
 	},
 	loader: {
+		flex: 1,
 		alignItems: 'center',
 		alignSelf: 'center',
 		justifyContent: 'center',
-		alignContent: 'center',
+		alignContent: 'center'
 	}
 });
