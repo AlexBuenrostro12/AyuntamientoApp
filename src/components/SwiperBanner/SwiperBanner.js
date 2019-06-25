@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList }
 import CustomSpinner from '../CustomSpinner/CustomSpinner';
 import axios from '../../../axios-ayuntamiento';
 
-const SCROLLVIEW_REF = 'scrollview';
+const FLATLIST_REF = 'flatlist';
 
 export default class SwiperBanner extends Component {
 	state = {
@@ -132,7 +132,9 @@ export default class SwiperBanner extends Component {
 		<CustomSpinner color="blue" />
 	</View>;
 
+
 	render() {
+		console.log('index: ', this.state.childrenCount);
 		return (
 			<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 				<View style={{ flex: 1, alignItems: 'center' }}>
@@ -147,9 +149,11 @@ export default class SwiperBanner extends Component {
 						renderItem={this._renderItem}
 						ListFooterComponent={this._loading}
 						onEndReached={this._loadMoreHadler}
-						onEndReachedThreshold={0.001}
+						onEndReachedThreshold={0.0001}
 						refreshing={this.state.refreshing}
 						inverted={true}
+						initialScrollIndex={this.state.childrenCount - 1}
+
 					/>
 				</View>
 			</View>
