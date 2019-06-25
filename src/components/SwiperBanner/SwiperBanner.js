@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native';
-import { Card, CardItem, Thumbnail, Left, Body } from 'native-base';
-import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
-import { thisExpression } from '@babel/types';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import CustomSpinner from '../CustomSpinner/CustomSpinner';
+import axios from '../../../axios-ayuntamiento';
 
 const SCROLLVIEW_REF = 'scrollview';
 
@@ -18,17 +16,49 @@ export default class SwiperBanner extends Component {
 		childrenCount: 0,
 		width: 0,
 		preScrollX: null,
-		scrollInterval: 2500
-    };
-    
+		scrollInterval: 2500,
+		refreshing: false,
+		news: [],
+		useState: false,
+		dontLoad: false,
+	};
+
 	componentWillMount() {
 		this.getNewsHandler();
 	}
 	getNewsHandler = () => {
 		let bannerItems = [];
 		let childrenCount = 0;
-		if (this.props.news) {
+		if (this.props.news && !this.state.useState) {
 			this.props.news.map((nw, index) => {
+				let currentDate = new Date(nw.newData.fecha);
+				let expiryDate = new Date(currentDate);
+				expiryDate.setDate(expiryDate.getDate() + 3);
+				let today = new Date();
+				if (expiryDate > today) {
+					childrenCount = childrenCount + 1;
+					bannerItems.push({
+						logo: require('../../assets/images/Ayuntamiento/logo-naranja.png'),
+						noticia: nw.newData.noticia,
+						direccion: nw.newData.direccion,
+						fecha: nw.newData.fecha,
+						imagen: nw.newData.imagen
+					});
+				}
+			});
+			let { height, width } = Dimensions.get('window');
+			this.setState({
+				childrenCount: childrenCount,
+				bannerItems: bannerItems,
+				heightScreen: height,
+				widthScreen: width
+			});
+		}
+
+		if (this.state.news) {
+			this.setState({ bannerItems: null });
+			console.log('banner: ', this.state.bannerItems)
+			this.state.news.map((nw, index) => {
 				let currentDate = new Date(nw.newData.fecha);
 				let expiryDate = new Date(currentDate);
 				expiryDate.setDate(expiryDate.getDate() + 3);
@@ -56,7 +86,7 @@ export default class SwiperBanner extends Component {
 
 	_renderItem = ({ item }) => (
 		<View key={item.noticia} style={styles.card}>
-			{console.log('item: ', item)}
+			{/* {console.log('item: ', item)} */}
 			<TouchableOpacity style={{ flex: 1 }} onPress={() => this.props.open.navigation.navigate('Noticias')}>
 				<View style={{ flex: 1, alignItems: 'center' }}>
 					<Image resizeMode="cover" style={styles.imageBanner} source={{ uri: item.imagen }} />
@@ -69,14 +99,38 @@ export default class SwiperBanner extends Component {
 			</TouchableOpacity>
 		</View>
 	);
-    _keyExtractor = (item, index) => item.noticia;
-    _handleLoadMore = () => {
-        this.props.refresh();
-        this.getNewsHandler();
-    }
-    _loading = () => <View style={styles.loader}>
-        <ActivityIndicator size="large" />
-    </View>
+	_keyExtractor = (item, index) => item.noticia.toString() + index.toString();
+
+	_loadMoreHadler = () => {
+		console.log('load more!');
+		console.log('refreshEntro')
+		this.setState({ refreshing: true });
+		axios
+			.get('/news.json?auth=' + this.props.token)
+			.then((res) => {
+				const fetchedNews = [];
+				for (let key in res.data) {
+					fetchedNews.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				setTimeout(() => {
+					this.setState({ refreshing: false, news: fetchedNews, useState: true });
+					this.getNewsHandler()
+				}, 1500);
+			})
+			.catch((err) => {
+				console.log(err);
+				setTimeout(() => {
+					this.setState({ refreshing: false });
+				}, 1500);
+			});
+	}
+	
+	_loading = () => this.state.refreshing && <View style={styles.loader}>
+		<CustomSpinner color="blue" />
+	</View>;
 
 	render() {
 		return (
@@ -91,9 +145,11 @@ export default class SwiperBanner extends Component {
 						data={this.state.bannerItems}
 						keyExtractor={this._keyExtractor}
 						renderItem={this._renderItem}
-						onEndReached={this._handleLoadMore}
-                        onEndReachedThreshold={0.5}
-                        ListFooterComponent={this._loading}
+						ListFooterComponent={this._loading}
+						onEndReached={this._loadMoreHadler}
+						onEndReachedThreshold={0.001}
+						refreshing={this.state.refreshing}
+						inverted={true}
 					/>
 				</View>
 			</View>
@@ -188,9 +244,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		position: 'absolute',
 		bottom: 0
-    },
-    loader: {
-        marginTop: 10,
-        alignItems: 'center'
-    }
+	},
+	loader: {
+		alignItems: 'center',
+		alignSelf: 'center',
+		justifyContent: 'center',
+		alignContent: 'center',
+	}
 });

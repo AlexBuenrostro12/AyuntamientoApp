@@ -21,7 +21,8 @@ export default class Home extends Component {
 	state = {
 		news: null,
 		loading: false,
-		token: null
+		token: null,
+		refreshing: false,
 	};
 
 	//Obtiene el token y tiempo de expiracion almacenado globalmente en la app
@@ -77,7 +78,7 @@ export default class Home extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, news: fetchedNews.reverse() });
+				this.setState({ loading: false, news: fetchedNews });
 			})
 			.catch((err) => {
 				console.log(err);
@@ -88,7 +89,7 @@ export default class Home extends Component {
 	render() {
 		const spinner = <CustomSpinner color="blue" />;
 		console.log('state: ', this.state);
-		let swiperBanner = <SwiperBanner news={this.state.news} open={this.props} refresh={this.getNews} />;
+		let swiperBanner = <SwiperBanner news={this.state.news} open={this.props} token={this.state.token}/>;
 
 		return (
 			<SafeAreaView style={styles.container}>
