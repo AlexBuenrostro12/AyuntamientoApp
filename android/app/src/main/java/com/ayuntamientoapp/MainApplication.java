@@ -3,11 +3,11 @@ package com.ayuntamientoapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.vonovak.AddCalendarEventPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
 import com.airbnb.android.react.maps.MapsPackage;
-import com.calendarevents.CalendarEventsPackage;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import org.wonday.pdf.RCTPdfView;
@@ -33,11 +33,11 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
             new FIRMessagingPackage(),
             new MainReactPackage(),
+            new AddCalendarEventPackage(),
             new RNGestureHandlerPackage(),
             new RNFetchBlobPackage(),
             new ReactNativeDocumentPicker(),
             new MapsPackage(),
-            new CalendarEventsPackage(),
             new AsyncStoragePackage(),
             new RCTPdfView(),
             new ImagePickerPackage()

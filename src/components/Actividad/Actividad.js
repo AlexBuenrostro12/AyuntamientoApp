@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert, View } from 'react-native';
-import RNCalendarEvents from 'react-native-calendar-events';
 import axios from '../../../axios-ayuntamiento';
 import ListData from '../ListData/ListData';
+import * as AddCalendarEvent from 'react-native-add-calendar-event';
 
 export default class Noticia extends Component {
 	state = {
@@ -48,49 +48,33 @@ export default class Noticia extends Component {
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'Actividades',
 				barProps: { title: 'Actividades', status: '#f39028', bar: '#f8ae40' },
-				saveEvent: this.saveEventIntoCalendarHandler
+				saveEvent: this.saveEventHandler
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
 		}
 	};
 
-	showAlert = () => {
-		Alert.alert('Actividad', '¡Actividad agregada al calendario!', [ { text: 'Ok' } ], {
-			cancelable: false
-		});
-	};
+	saveEventHandler = async () => {
+		const startDate = new Date(this.state.fecha.toString());
 
-	saveEventIntoCalendarHandler = () => {
-		RNCalendarEvents.authorizeEventStore().then((status) => {
-			console.log('status: ', status);
-			if (status === 'authorized') {
-				RNCalendarEvents.authorizationStatus().then((status) => {
-					console.log('status: ', status);
-					if (status === 'authorized') {
-						const startDate = new Date(this.state.fecha.toString());
-						startDate.setDate(startDate.getDate() + 1);
-						const endDate = new Date(Date.parse(startDate) + 3600000);
-						console.log('startDate: ', startDate, endDate);
-						RNCalendarEvents.saveEvent(this.state.actividad.toString(), {
-							startDate: startDate,
-							endDate: endDate,
-							location: 'Tecalitlán, Jal.',
-							notes: this.state.descripcion.toString()
-						})
-							.then((status) => {
-								if(status) {
-									console.log('statusSend: ', status);
-									this.showAlert();
-								}
-							})
-							.catch((err) => {
-								console.log('status: ', status);
-							});
-					}
-				});
-			}
-		});
+		const sYear = startDate.getFullYear();
+		const sMonth = startDate.getMonth() + 1;
+		const sDay = String(startDate).slice(8, -29);
+
+		const eYear = startDate.getFullYear();
+		const eMonth = startDate.getMonth() + 1;
+		const eDay = String(startDate).slice(8, -29);
+
+		const eventConfig = {
+			title: this.state.actividad.toString(),
+			startDate: `${sYear}-${sMonth}-${(Number(sDay) + 1).toString()}T08:00:00.000Z`,
+			endDate: `${eYear}-${eMonth}-${(Number(eDay) + 2).toString()}T08:00:00.000Z`,
+			location: 'Tecalitlán, Jal.',
+			notes: this.state.descripcion.toString()
+		};
+
+		const eventInfo = await AddCalendarEvent.presentEventCreatingDialog(eventConfig);
 	};
 
 	alertCheckDeleteItem = () => {
