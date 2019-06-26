@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView, ImageBackground } from 'react-native';
+import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -19,7 +19,6 @@ import Noticia from '../../components/Noticia/Noticia';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import CustomButton from '../../components/CustomButton/CustomButton';
 import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
@@ -151,6 +150,7 @@ export default class Noticias extends Component {
 	};
 
 	async componentDidMount() {
+
 		let token = (expiresIn = null);
 		try {
 			console.log('Entro al try');

@@ -3,24 +3,16 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList }
 import CustomSpinner from '../CustomSpinner/CustomSpinner';
 import axios from '../../../axios-ayuntamiento';
 
-const FLATLIST_REF = 'flatlist';
 
 export default class SwiperBanner extends Component {
 	state = {
 		bannerItems: [],
 		heightScreen: 0,
 		widthScreen: 0,
-		startAutoPlay: true,
-		timerID: null,
-		currentIndex: 0,
 		childrenCount: 0,
-		width: 0,
-		preScrollX: null,
-		scrollInterval: 2500,
 		refreshing: false,
 		news: [],
 		useState: false,
-		dontLoad: false
 	};
 
 	componentWillMount() {
@@ -85,8 +77,6 @@ export default class SwiperBanner extends Component {
 	};
 
 	_loadMoreHadler = () => {
-		console.log('load more!');
-		console.log('refreshEntro');
 		this.setState({ refreshing: true });
 		axios
 			.get('/news.json?auth=' + this.props.token)
@@ -112,7 +102,6 @@ export default class SwiperBanner extends Component {
 	};
 	_renderItem = ({ item }) => (
 		<View key={item.noticia} style={styles.card}>
-			{/* {console.log('item: ', item)} */}
 			<TouchableOpacity style={{ flex: 1 }} onPress={() => this.props.open.navigation.navigate('Noticias')}>
 				<View style={{ flex: 1, alignItems: 'center' }}>
 					<Image resizeMode="cover" style={styles.imageBanner} source={{ uri: item.imagen }} />

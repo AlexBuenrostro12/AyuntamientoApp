@@ -4,11 +4,9 @@ import {
 	StyleSheet,
 	Alert,
 	SafeAreaView,
-	ScrollView,
-	Platform,
 	ImageBackground,
-	Image,
-	Dimensions
+	Dimensions,
+	BackHandler	
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
@@ -27,6 +25,8 @@ export default class Home extends Component {
 
 	//Obtiene el token y tiempo de expiracion almacenado globalmente en la app
 	async componentDidMount() {
+		//BackHandler
+		BackHandler.addEventListener('hardwareBackPress', this.goBackHandler);
 		//Get the token and time of expiration
 		let token = (expiresIn = email = null);
 		try {
@@ -64,6 +64,16 @@ export default class Home extends Component {
 			//Catch posible errors
 		}
 	}
+	componentWillUnmount() {
+		BackHandler.removeEventListener('hardwareBackPress', this.goBackHandler);
+	};
+	// Enable native button
+	goBackHandler = () => {
+		console.log('this.props: ', this.props);
+		const { closeDrawer } = this.props.navigation;
+		closeDrawer();
+		return true;
+	};
 
 	getNews = () => {
 		console.log('entro')

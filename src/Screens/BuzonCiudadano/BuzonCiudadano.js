@@ -143,8 +143,7 @@ export default class BuzonCiudadano extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-	}
-
+	};
 	cleanForm = () => {
 		const updatedSuggestionForm = {
 			...this.state.form
