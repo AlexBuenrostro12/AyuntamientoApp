@@ -9,25 +9,19 @@ import {
 	Alert,
 	ScrollView,
 	Image,
-	Platform
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker';
 import Pdf from 'react-native-pdf';
-import * as firebase from 'firebase';
 import axiosPDF from 'axios';
-import RNFetchBlob from 'rn-fetch-blob';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 import Manual from '../../components/Manual/Manual';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
-import firebaseConfig from '../../../firebase-config';
 import axios from '../../../axios-ayuntamiento';
-
-const firebaseapp = firebase.initializeApp(firebaseConfig);
 
 const { height, width } = Dimensions.get('window');
 
@@ -80,7 +74,7 @@ export default class Manuales extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-	}
+	};
 
 	changeDisplay = () => {
 		this.setState({ showLikeIcons: !this.state.showLikeIcons });

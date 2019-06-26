@@ -1,183 +1,249 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
-import { Card, CardItem, Thumbnail, Left, Body } from 'native-base';
-import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import CustomSpinner from '../CustomSpinner/CustomSpinner';
+import axios from '../../../axios-ayuntamiento';
 
-const SCROLLVIEW_REF = 'scrollview';
 
 export default class SwiperBanner extends Component {
-    state = {
-        bannerItems: [],
-        heightScreen: 0,
-        widthScreen: 0,
-        startAutoPlay: true,
-        timerID: null,
-        currentIndex: 0,
-        childrenCount: 0,
-        width: 0,
-        preScrollX: null,
-        scrollInterval: 2500,
-    }
+	state = {
+		bannerItems: [],
+		heightScreen: 0,
+		widthScreen: 0,
+		childrenCount: 0,
+		refreshing: false,
+		news: [],
+		useState: false,
+	};
 
-    componentDidMount() {
-        if (this.state.startAutoPlay) 
-            this.startAutoPlayHandler();
-        else
-            this.stopAutoPlayHandler();
-    }
+	componentWillMount() {
+		this.getNewsHandler();
+	}
+	getNewsHandler = () => {
+		let bannerItems = [];
+		let childrenCount = 0;
+		if (this.props.news && !this.state.useState) {
+			this.props.news.map((nw, index) => {
+				let currentDate = new Date(nw.newData.fecha);
+				let expiryDate = new Date(currentDate);
+				expiryDate.setDate(expiryDate.getDate() + 3);
+				let today = new Date();
+				if (expiryDate > today) {
+					childrenCount = childrenCount + 1;
+					bannerItems.push({
+						logo: require('../../assets/images/Ayuntamiento/logo-naranja.png'),
+						noticia: nw.newData.noticia,
+						direccion: nw.newData.direccion,
+						fecha: nw.newData.fecha,
+						imagen: nw.newData.imagen
+					});
+				}
+			});
+			let { height, width } = Dimensions.get('window');
+			this.setState({
+				childrenCount: childrenCount,
+				bannerItems: bannerItems,
+				heightScreen: height,
+				widthScreen: width
+			});
+		}
 
-    onScrollHandler = (e) => {
-        let { x } = e.nativeEvent.contentOffset, offset, position = Math.floor(x / this.state.width);
-        if (x === this.state.preScrollX) return;
-        this.setState({ preScrollX: x });
-        offset = x / this.state.width - position;
+		if (this.state.news) {
+			this.setState({ bannerItems: null });
+			console.log('banner: ', this.state.bannerItems);
+			this.state.news.map((nw, index) => {
+				let currentDate = new Date(nw.newData.fecha);
+				let expiryDate = new Date(currentDate);
+				expiryDate.setDate(expiryDate.getDate() + 3);
+				let today = new Date();
+				if (expiryDate > today) {
+					childrenCount = childrenCount + 1;
+					bannerItems.push({
+						logo: require('../../assets/images/Ayuntamiento/logo-naranja.png'),
+						noticia: nw.newData.noticia,
+						direccion: nw.newData.direccion,
+						fecha: nw.newData.fecha,
+						imagen: nw.newData.imagen
+					});
+				}
+			});
+			let { height, width } = Dimensions.get('window');
+			this.setState({
+				childrenCount: childrenCount,
+				bannerItems: bannerItems,
+				heightScreen: height,
+				widthScreen: width
+			});
+		}
+	};
 
-        if (offset === 0) {
-            let timerid = setInterval(this.goToNextPageHandler, this.state.scrollInterval);
-            this.setState({ currentIndex: position, timerID: timerid });
-        }
-    }
-    onScrollViewLayoutHandler = (e) => {
-        let { width } = e.nativeEvent.layout;             
-        this.setState({ width: width });
-    }
-    goToNextPageHandler = () => {
-        this.stopAutoPlayHandler();
-         let nextIndex = (this.state.currentIndex + 1) % this.state.childrenCount;
-         this.refs[SCROLLVIEW_REF].scrollTo({ x: this.state.width * nextIndex })
-    }
-    startAutoPlayHandler = () => {
-        let timerid = setInterval(this.goToNextPageHandler, this.state.scrollInterval);
-        this.setState({ timerID: timerid});
-     }
-    stopAutoPlayHandler = () => {
-         if (this.state.timerID) {
-             clearInterval(this.state.timerID);
-             this.setState({ timerID: null });
-         }
-     }
+	_loadMoreHadler = () => {
+		this.setState({ refreshing: true });
+		axios
+			.get('/news.json?auth=' + this.props.token)
+			.then((res) => {
+				const fetchedNews = [];
+				for (let key in res.data) {
+					fetchedNews.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				setTimeout(() => {
+					this.setState({ refreshing: false, news: fetchedNews, useState: true });
+					this.getNewsHandler();
+				}, 1500);
+			})
+			.catch((err) => {
+				console.log(err);
+				setTimeout(() => {
+					this.setState({ refreshing: false });
+				}, 1500);
+			});
+	};
+	_renderItem = ({ item }) => (
+		<View key={item.noticia} style={styles.card}>
+			<TouchableOpacity style={{ flex: 1 }} onPress={() => this.props.open.navigation.navigate('Noticias')}>
+				<View style={{ flex: 1, alignItems: 'center' }}>
+					<Image resizeMode="cover" style={styles.imageBanner} source={{ uri: item.imagen }} />
+				</View>
+				<View style={styles.textContainer}>
+					<Text style={styles.textCard}>{item.noticia}</Text>
+					<Text style={styles.textCardSub}>{item.direccion}</Text>
+					<Text style={styles.textCardSub}>{item.fecha.split('T', 1).toString()}</Text>
+				</View>
+			</TouchableOpacity>
+		</View>
+	);
+	_keyExtractor = (item, index) => item.noticia.toString() + index.toString();
 
-    componentWillMount() {
-        this.getNewsHandler();
-    }
-    getNewsHandler = () => {
-        let bannerItems = [];
-        let childrenCount = 0;
-        if (this.props.news) {
-            this.props.news.map((nw, index) => {
-                let currentDate = new Date(nw.newData.fecha);
-                let expiryDate = new Date(currentDate);
-                expiryDate.setDate(expiryDate.getDate() + 3);
-                let today = new Date();
-                if (expiryDate > today) {
-                    childrenCount = childrenCount + 1;
-                    bannerItems.push({
-                        logo: require('../../assets/images/Ayuntamiento/logo-naranja.png'),
-                        noticia: nw.newData.noticia,
-                        direccion: nw.newData.direccion,
-                        fecha: nw.newData.fecha,
-                        imagen: nw.newData.imagen
-                    });
-                }
-            });
-            let { height, width } = Dimensions.get('window');
-            this.setState({ childrenCount: childrenCount , bannerItems: bannerItems, heightScreen: height , widthScreen: width  });
-        }
-    }
+	_loading = () =>
+		this.state.refreshing && (
+			<View style={styles.loader}>
+				<CustomSpinner color="blue" />
+			</View>
+		);
 
-    render() {
-        const titleBanner = (
-            <View style={{ flex: 1, margin: 5 }}>
-                <Card>
-                    <CustomCardItemTitle
-                        title="Banner de noticias"
-                        description="Deslice y conozca
-                            las noticias mas relevantes dando clic en la imagen."
-                        image={require('../../assets/images/Home/home.png')} />
-                </Card>
-            </View>
-        );
-        const scrollBanner = (
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-                {this.state.bannerItems.map(item => (
-                    <Card key={item.noticia} style={{ elevation: 3, height: this.state.heightScreen / 1.6, width: this.state.widthScreen / 1.07 }}>
-                        <CardItem header>
-                            <Left>
-                                <Thumbnail resizeMode='contain' source={item.logo} />
-                                <Body>
-                                    <Text style={styles.text}>{item.direccion}</Text>
-                                </Body>
-                            </Left>
-                        </CardItem>
-                        <CardItem cardBody>
-                            <TouchableOpacity
-                                activeOpacity={0.75}
-                                style={styles.border}
-                                onPress={() => this.props.open.navigation.navigate('Noticias')} >
-                                <View style={{ alignItems: 'center' }}>
-                                    <Image resizeMode='contain' style={{ height: this.state.heightScreen / 3, width: this.state.widthScreen / .6 }} source={{ uri: item.imagen }} />
-                                </View>
-                            </TouchableOpacity>
-                        </CardItem>
-                        <CardItem footer>
-                            <Text style={styles.text}>{item.noticia}</Text>
-                        </CardItem>
-                    </Card>
-                ))}
-            </View>
-        );
-        return (
-            <View style={{ flex: 1, flexDirection: 'column', margin: 5 }}>
-                {titleBanner}
-                <ScrollView style={styles.scrollView} 
-                            horizontal={true} 
-                            showsHorizontalScrollIndicator={false}
-                            onLayout={this.onScrollViewLayoutHandler}
-                            onScroll={this.onScrollHandler}
-                            ref={SCROLLVIEW_REF}
-                            pagingEnabled={true}
-                            scrollEventThrottle={8}
-                            >
-                    {scrollBanner}
-                </ScrollView>
-            </View>
-        );
-    }
-
+	render() {
+		console.log('index: ', this.state.childrenCount);
+		return (
+			<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+				<View style={{ flex: 1, alignItems: 'center' }}>
+					<Text style={styles.title}>GOBIERNO DE TECALITLÁN</Text>
+				</View>
+				<View style={styles.bottomView}>
+					<FlatList
+						horizontal
+						ItemSeparatorComponent={() => <View style={{ width: 5 }} />}
+						data={this.state.bannerItems}
+						keyExtractor={this._keyExtractor}
+						renderItem={this._renderItem}
+						ListFooterComponent={this._loading}
+						onEndReached={this._loadMoreHadler}
+						onEndReachedThreshold={0.1}
+						refreshing={this.state.refreshing}
+						inverted={true}
+						initialScrollIndex={this.state.childrenCount - 1}
+					/>
+				</View>
+			</View>
+		);
+	}
 }
 
+const { height, width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
-    view: {
-        flex: 1,
-    },
-    scrollView: {
-        flex: 1, 
-        marginLeft: 5, 
-        marginRight: 5, 
-        marginBottom: 5,
-    },
-    text: {
-        fontSize: 15,
-        fontWeight: 'bold',
-    },
-    border: {
-        flex: 1,
-        overflow: 'hidden',
-        alignItems: 'center',
-        position: 'relative',
-        margin: 10
-    },
-    banner: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 5
-    },
-    bannerText: {
-        fontSize: 25,
-        color: 'orange'
-    },
+	view: {
+		flex: 1
+	},
+	scrollView: {
+		flex: 1,
+		marginLeft: 5,
+		marginRight: 5,
+		marginBottom: 5
+	},
+	text: {
+		fontSize: 15,
+		fontWeight: 'bold'
+	},
+	border: {
+		flex: 1,
+		overflow: 'hidden',
+		alignItems: 'center',
+		position: 'relative',
+		margin: 10
+	},
+	banner: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 5
+	},
+	bannerText: {
+		fontSize: 25,
+		color: 'orange'
+	},
+	card: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'flex-start',
+		height: width * 0.8,
+		width: width * 0.9,
+		borderRadius: 3,
+		margin: 5,
+	},
+	textCard: {
+		fontSize: 17,
+		fontWeight: 'normal',
+		fontStyle: 'normal',
+		color: 'black',
+		fontFamily: 'AvenirNextLTPro-Regular'
+	},
+	textCardSub: {
+		fontSize: 16,
+		fontWeight: 'normal',
+		fontStyle: 'italic',
+		color: 'grey',
+		fontFamily: 'AvenirNextLTPro-Regular'
+	},
+	title: {
+		alignSelf: 'center',
+		fontSize: 22,
+		fontWeight: 'bold',
+		fontStyle: 'normal',
+		color: 'white',
+		fontFamily: 'AvenirNextLTPro-Regular',
+		marginTop: 30
+	},
+	textContainer: {
+		flex: 1,
+		paddingLeft: 15,
+		paddingRight: 15,
+		backgroundColor: 'white',
+		alignItems: 'flex-start',
+		borderBottomLeftRadius: 3,
+		borderBottomRightRadius: 3
+	},
+	imageBanner: {
+		height: width * 0.4,
+		width: width * 0.9,
+		alignSelf: 'center',
+		borderTopLeftRadius: 3,
+		borderTopRightRadius: 3
+	},
+	bottomView: {
+		width: '100%',
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		bottom: 0,
+		marginLeft: 10
+	},
+	loader: {
+		flex: 1,
+		alignItems: 'center',
+		alignSelf: 'center',
+		justifyContent: 'center',
+		alignContent: 'center'
+	}
 });
-
-
-
