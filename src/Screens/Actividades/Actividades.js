@@ -137,7 +137,7 @@ export default class Actividades extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-	}
+	};
 
 	getActivities = () => {
 		this.setState({ loading: true, addAct: false, showButtons: true });
@@ -159,7 +159,7 @@ export default class Actividades extends Component {
 	};
 
 	// Get the dates to put into the calendar
-	getDatesOfAct = () => { 
+	getDatesOfAct = () => {
 		const dates = [];
 		this.state.activities.filter((act) => {
 			const filterDate = act.activityData['fecha'].split('T', 1);
@@ -170,9 +170,12 @@ export default class Actividades extends Component {
 	};
 	// make the format object to be able to put the marks in the calendar
 	makeFormatToDates = (dates) => {
-		var obj = dates.reduce((c, v) => Object.assign(c, {[v]: { selected: true, marked: true, selectedColor: '#676766' }}), {});
-		this.setState({ calendarDates : obj});
-	} 
+		var obj = dates.reduce(
+			(c, v) => Object.assign(c, { [v]: { selected: true, marked: true, selectedColor: '#676766' } }),
+			{}
+		);
+		this.setState({ calendarDates: obj });
+	};
 
 	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
@@ -424,8 +427,7 @@ export default class Actividades extends Component {
 	};
 	showCalendar = (refresh) => {
 		this.setState({ showCalendar: !this.state.showCalendar });
-		if(refresh === 'refresh')
-			this.getActivities();
+		if (refresh === 'refresh') this.getActivities();
 	};
 	render() {
 		const formElements = [];
@@ -447,6 +449,7 @@ export default class Actividades extends Component {
 				describe={this.props}
 				index={index + 1}
 				showLikeIcons={this.state.showLikeIcons}
+				authorizedEvent={this.state.authorizedEvent}
 			/>
 		));
 		const calendar = (
@@ -458,7 +461,10 @@ export default class Actividades extends Component {
 				firstDay={1}
 				markedDates={this.state.calendarDates}
 				hideArrows={false}
-				onDayPress={(day) => { this.showCalendar(); this.filterData(day.dateString); }}
+				onDayPress={(day) => {
+					this.showCalendar();
+					this.filterData(day.dateString);
+				}}
 			/>
 		);
 
@@ -621,7 +627,6 @@ const styles = StyleSheet.create({
 		paddingBottom: 5,
 		borderBottomWidth: 1,
 		borderColor: '#676766',
-		height: width / .80,
-	  },
+		height: width / 0.8
+	}
 });
-
