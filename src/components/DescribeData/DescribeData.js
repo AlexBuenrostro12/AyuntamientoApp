@@ -80,8 +80,12 @@ export default class DescribreData extends Component {
 	componentWillUpdate() {
 		if (!this.state.loaded) this.getDataHandler();
 	}
-	// Disable the native button of return
-	goBackHandler = () => true;
+	// Enable native button
+	goBackHandler = () => {
+		this.setState({ loaded: false });
+		this.state.navigate(this.state.data.type);
+		return true;
+	};
 	//Send email
 	emailHandler = (isToAdmin, type) => {
 		if (isToAdmin) {
