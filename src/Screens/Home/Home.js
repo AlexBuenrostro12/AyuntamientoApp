@@ -6,7 +6,8 @@ import {
 	SafeAreaView,
 	ImageBackground,
 	Dimensions,
-	BackHandler	
+	BackHandler,
+	Image,	
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
@@ -21,6 +22,16 @@ export default class Home extends Component {
 		loading: false,
 		token: null,
 		refreshing: false,
+	};
+
+	//Style of drawer navigation
+	static navigationOptions = {
+		drawerIcon: ({ tintColor }) => (
+			<Image 
+				source={require('../../assets/images/Home/home-icon.png')}
+				style={styles.drawerIcon}
+				resizeMode='contain' />
+		)
 	};
 
 	//Obtiene el token y tiempo de expiracion almacenado globalmente en la app
@@ -137,5 +148,9 @@ const styles = StyleSheet.create({
 	text: {
 		fontSize: 20,
 		fontWeight: 'bold'
+	},
+	drawerIcon: {
+		height: width * .07,
+		width: width * .07,
 	}
 });
