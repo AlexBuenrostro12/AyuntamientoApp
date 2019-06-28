@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import {
-	View,
-	Text,
+	View,Text,
 	StyleSheet,
 	SafeAreaView,
 	ScrollView,
 	Alert,
-	TimePickerAndroid
+	TimePickerAndroid,
+	Image, 
+	Dimensions
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
@@ -81,6 +82,16 @@ export default class BusEscolar extends Component {
 		showButtons: true,
 		showLikeIcons: true,
 		texToSearch: ''
+	};
+
+	//Style of drawer navigation
+	static navigationOptions = {
+		drawerIcon: ({ tintColor }) => (
+			<Image 
+				source={require('../../assets/images/Drawer/bus.png')}
+				style={styles.drawerIcon}
+				resizeMode='contain' />
+		)
 	};
 
 	async componentDidMount() {
@@ -415,6 +426,8 @@ export default class BusEscolar extends Component {
 	}
 }
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -463,5 +476,9 @@ const styles = StyleSheet.create({
 		flex: 2,
 		flexDirection: 'column', 
 		justifyContent: 'flex-start'
+	},
+	drawerIcon: {
+		height: width * .07,
+		width: width * .07,
 	}
 });

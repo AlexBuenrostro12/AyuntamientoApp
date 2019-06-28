@@ -28,7 +28,7 @@ export default class Home extends Component {
 	static navigationOptions = {
 		drawerIcon: ({ tintColor }) => (
 			<Image 
-				source={require('../../assets/images/Home/home-icon.png')}
+				source={require('../../assets/images/Drawer/home-icon.png')}
 				style={styles.drawerIcon}
 				resizeMode='contain' />
 		)

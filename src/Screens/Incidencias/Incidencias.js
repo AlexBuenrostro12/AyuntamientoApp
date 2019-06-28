@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Alert, Dimensions, PermissionsAndroid } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Alert, Dimensions, PermissionsAndroid, Image } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
 import axiosCloudinary from 'axios';
@@ -180,7 +180,17 @@ export default class Incidencias extends Component {
         showMap: false,
         latitude: null,
 		longitude: null,
-    }
+    };
+
+    //Style of drawer navigation
+	static navigationOptions = {
+		drawerIcon: ({ tintColor }) => (
+			<Image 
+				source={require('../../assets/images/Drawer/report.png')}
+				style={styles.drawerIcon}
+				resizeMode='contain' />
+		)
+	};
 
     getCurrentDate(){
         var today = new Date();
@@ -926,4 +936,8 @@ const styles = StyleSheet.create({
 		color: 'white',
 		fontFamily: 'AvenirNextLTPro-Regular'
     },
+    drawerIcon: {
+		height: width * .07,
+		width: width * .07,
+	}
 });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView } from 'react-native';
+import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView, Image } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -147,6 +147,16 @@ export default class Noticias extends Component {
 		notifications: true,
 		showLikeIcons: true,
 		texToSearch: ''
+	};
+
+	//Style of drawer navigation
+	static navigationOptions = {
+		drawerIcon: ({ tintColor }) => (
+			<Image 
+				source={require('../../assets/images/Drawer/news.png')}
+				style={styles.drawerIcon}
+				resizeMode='contain' />
+		)
 	};
 
 	async componentDidMount() {
@@ -677,5 +687,9 @@ const styles = StyleSheet.create({
 		flex: 2,
 		flexDirection: 'column', 
 		justifyContent: 'flex-start'
+	},
+	drawerIcon: {
+		height: width * .07,
+		width: width * .07,
 	}
 });
