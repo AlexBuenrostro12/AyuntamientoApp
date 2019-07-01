@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, SafeAreaView, ScrollView, Alert, TimePickerAndroid, Dimensions } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ScrollView, Alert, TimePickerAndroid, Dimensions, Image } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
@@ -92,6 +92,16 @@ export default class Actividades extends Component {
 		texToSearch: '',
 		showCalendar: false,
 		calendarDates: {},
+	};
+
+	 //Style of drawer navigation
+	 static navigationOptions = {
+		drawerIcon: ({ tintColor }) => (
+			<Image 
+				source={require('../../assets/images/Drawer/activities.png')}
+				style={styles.drawerIcon}
+				resizeMode='contain' />
+		)
 	};
 
 	async componentDidMount() {
@@ -628,5 +638,9 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderColor: '#676766',
 		height: width / 0.8
+	},
+	drawerIcon: {
+		height: width * .07,
+		width: width * .07,
 	}
 });

@@ -37,6 +37,16 @@ export default class Manuales extends Component {
 		isAdmin: null
 	};
 
+	//Style of drawer navigation
+	static navigationOptions = {
+		drawerIcon: ({ tintColor }) => (
+			<Image 
+				source={require('../../assets/images/Drawer/transparency.png')}
+				style={styles.drawerIcon}
+				resizeMode='contain' />
+		)
+	};
+
 	async componentDidMount() {
 		let token = (expiresIn = email = null);
 		try {
@@ -423,5 +433,9 @@ const styles = StyleSheet.create({
 	imageSelect: {
 		width: width * 0.1,
 		height: width * 0.1
+	},
+	drawerIcon: {
+		height: width * .07,
+		width: width * .07,
 	}
 });
