@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Image, ScrollView, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import { DrawerItems, createSwitchNavigator, createStackNavigator, createAppContainer, createDrawerNavigator } from 'react-navigation';
-import iconLogo from '../../../assets/images/Logo/prs-logo.png';
 import LoginScreen from '../../../Screens/Login/Login';
 import ManualesScreen from '../../../Screens/Manuales/Manuales';
 import BuzonCiudadanoScreen from '../../../Screens/BuzonCiudadano/BuzonCiudadano';
@@ -16,7 +15,7 @@ import DescribeDataScreen from '../../DescribeData/DescribeData';
 const CustomDrawerComponent = (props) => (
 	<SafeAreaView style={styles.sAV}>
 		<View style={styles.view}>
-			<Image style={styles.image} source={iconLogo} />
+			<Image resizeMode='contain' style={styles.image} source={require('../../../assets/images/Logo/prs-logo.png')} />
 		</View>
 		<ScrollView>
 			<DrawerItems {...props} />
@@ -35,7 +34,22 @@ const AppDrawer = createDrawerNavigator({
   'Describe' : DescribeDataScreen,
   'Salir': LogoutScreen,
 },{
-  contentComponent: CustomDrawerComponent
+  contentComponent: CustomDrawerComponent,
+  contentOptions: {
+	  activeTintColor: '#676766',
+	  labelStyle: {
+		fontSize: 17,
+		fontWeight: 'normal',
+		fontStyle: 'normal',
+		color: '#676766',
+		fontFamily: 'AvenirNextLTPro-Regular',
+	  },
+	  activeBackgroundColor: '#f8ae40',
+	  itemStyle: {
+		borderBottomWidth: 1 * .5,
+		borderColor: '#676766',
+	  },
+  }
 });
 
 const AuthStack = createStackNavigator({ Auth: LoginScreen });
@@ -52,6 +66,8 @@ export default createAppContainer(
   )
 );
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
 	sAV: {
 		flex: 1
@@ -60,10 +76,10 @@ const styles = StyleSheet.create({
 		height: 150,
 		backgroundColor: 'white',
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
 	image: {
-		height: 130,
-		width: 110
+		height: width * .4,
+		width: width * .4, 
 	}
 });

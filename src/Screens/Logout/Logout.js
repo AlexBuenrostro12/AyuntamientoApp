@@ -8,7 +8,17 @@ export default class Logout extends React.Component {
     state = {
         showAlert: true,
         alert: null
-    }
+    };
+
+     //Style of drawer navigation
+	 static navigationOptions = {
+		drawerIcon: ({ tintColor }) => (
+			<Image 
+				source={require('../../assets/images/Drawer/logout.png')}
+				style={styles.drawerIcon}
+				resizeMode='contain' />
+		)
+	};
 
     componentDidMount() {
         const alert = Alert.alert(
@@ -91,5 +101,9 @@ const styles = StyleSheet.create({
 		height: height / 2,
 		width: width / 2,
 		alignSelf: 'center',
-	},
+    },
+    drawerIcon: {
+		height: width * .07,
+		width: width * .07,
+	}
 });
