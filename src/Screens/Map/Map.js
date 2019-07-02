@@ -31,10 +31,6 @@ export default class Map extends Component {
 		return true;
 	};
 
-	componentWillUpdate() {
-		this.getPlaces();
-	}
-
 	render() {
 		const initialRegion = {
 			latitude: 19.47151,
