@@ -227,3 +227,40 @@ export const hotels = [
         phone: '01 371 418 2467',
     },
 ];
+//Sports
+export const sports = [
+    gymADN = {
+        latLong: {
+            latitude: 19.471828, 
+            longitude: -103.307296
+        },
+        name: "Adn Gym Tecalitlan",
+        address: 'Ponce de León 6 Tecalitlán, 49900 Tecalitlán, Jal.',
+        phone: '371 41 8 2865',
+    },
+    sportGym = {
+        latLong: {
+            latitude: 19.470761, 
+            longitude: -103.309463
+        },
+        name: "Sportgym",
+        address: 'Las Higueras 23A Tecalitlán, 49900 Tecalitlán, Jal.',
+        schedule: 'Abierto de 6:00 a 22:00'
+    },
+    unidadDeportiva = {
+        latLong: {
+            latitude: 19.465283, 
+            longitude: -103.307183
+        },
+        name: "Unidad Deportiva",
+        address: 'Nigromante 128 Naranjitos, 49870 Tecalitlán, Jal.',
+    },
+    polideportivo = {
+        latLong: {
+            latitude: 19.465215, 
+            longitude: -103.313859
+        },
+        name: "Polideportivo",
+        address: 'Avila Camacho Tecalitlán, 49900 Tecalitlán, Jal.',
+    }
+];

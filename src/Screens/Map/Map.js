@@ -3,7 +3,7 @@ import { View, StyleSheet, SafeAreaView, Dimensions, BackHandler, Image, Text } 
 import MapView, { Marker, Callout } from 'react-native-maps';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
-import { food, medicServices, pharmacys, hotels } from '../../components/AuxiliarFunctions/MarkersArray';
+import { food, medicServices, pharmacys, hotels, sports } from '../../components/AuxiliarFunctions/MarkersArray';
 
 export default class Map extends Component {
 	//Style of drawer navigation
@@ -94,6 +94,22 @@ export default class Map extends Component {
 					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
 						<View style={{ flex: 1 }}>
 							<Image style={styles.marker} source={require('../../assets/images/Map/hotels.png')} />
+						</View>
+						<Callout>
+							<View style={{ flex: 1, width: 250 }}>
+								{rst.name && <Text>{rst.name}</Text>}
+								{rst.address && <Text>{rst.address}</Text>}
+								{rst.schedule && <Text>{rst.schedule}</Text>}
+								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
+							</View>
+						</Callout>
+					</Marker>
+				))}
+				{/* Sports */}
+				{sports.map((rst, index) => (
+					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+						<View style={{ flex: 1 }}>
+							<Image style={styles.marker} source={require('../../assets/images/Map/sport.png')} />
 						</View>
 						<Callout>
 							<View style={{ flex: 1, width: 250 }}>
