@@ -264,3 +264,25 @@ export const sports = [
         address: 'Avila Camacho Tecalitlán, 49900 Tecalitlán, Jal.',
     }
 ];
+
+//Schools
+export const schools = [
+    colegioAmerica = {
+        latLong: {
+            latitude: 19.4723385, 
+            longitude: -103.3043384
+        },
+        name: "Colegio América",
+        address: 'Allende 81, Tecalitlán, Tecalitlán, 49900 Tecalitlán, Jal.',
+        phone: '01 371 418 0216',
+    },
+    mariaTrinidadGuevara = {
+        latLong: {
+            latitude: 19.471978, 
+            longitude: -103.306129
+        },
+        name: "Escuela María Trinidad Guevara Álvarez",
+        address: 'Calle Morelos 14, Tecalitlán Centro, 49900 Tecalitlán, Jal.',
+        phone: '01 371 418 0513',
+    },
+];
