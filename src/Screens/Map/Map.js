@@ -3,7 +3,7 @@ import { View, StyleSheet, SafeAreaView, Dimensions, BackHandler, Image, Text } 
 import MapView, { Marker, Callout } from 'react-native-maps';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
-import { food, medicServices, pharmacys, hotels, sports, schools } from '../../components/AuxiliarFunctions/MarkersArray';
+import { food, medicServices, pharmacys, hotels, sports, schools, servicios, iglesias } from '../../components/AuxiliarFunctions/MarkersArray';
 
 export default class Map extends Component {
 	//Style of drawer navigation
@@ -44,8 +44,8 @@ export default class Map extends Component {
 				{/* Food */}
 				{food.map((rst, index) => (
 					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={{ flex: 1 }}>
-							<Image style={styles.marker} source={require('../../assets/images/Drawer/maps.png')} />
+						<View style={styles.borderTourism}>
+							<Image style={styles.marker} source={require('../../assets/images/Map/food.png')} />
 						</View>
 						<Callout>
 							<View style={{ flex: 1, width: 250 }}>
@@ -60,7 +60,7 @@ export default class Map extends Component {
 				{/* Medic Services */}
 				{medicServices.map((rst, index) => (
 					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={{ flex: 1 }}>
+						<View style={styles.borderMedicalServices}>
 							<Image style={styles.marker} source={require('../../assets/images/Map/hospital.png')} />
 						</View>
 						<Callout>
@@ -76,7 +76,7 @@ export default class Map extends Component {
 				{/* Pharmacys */}
 				{pharmacys.map((rst, index) => (
 					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={{ flex: 1 }}>
+						<View style={styles.borderMedicalServices}>
 							<Image style={styles.marker} source={require('../../assets/images/Map/pharmacy.png')} />
 						</View>
 						<Callout>
@@ -92,8 +92,8 @@ export default class Map extends Component {
 				{/* hotels */}
 				{hotels.map((rst, index) => (
 					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={{ flex: 1 }}>
-							<Image style={styles.marker} source={require('../../assets/images/Map/hotels.png')} />
+						<View style={styles.borderTourism}>
+							<Image style={styles.marker} source={require('../../assets/images/Map/hotel.png')} />
 						</View>
 						<Callout>
 							<View style={{ flex: 1, width: 250 }}>
@@ -108,7 +108,7 @@ export default class Map extends Component {
 				{/* Sports */}
 				{sports.map((rst, index) => (
 					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={{ flex: 1 }}>
+						<View style={styles.borderTourism}>
 							<Image style={styles.marker} source={require('../../assets/images/Map/sport.png')} />
 						</View>
 						<Callout>
@@ -124,8 +124,40 @@ export default class Map extends Component {
 				{/* Schools */}
 				{schools.map((rst, index) => (
 					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={{ flex: 1 }}>
+						<View style={styles.borderSchool}>
 							<Image style={styles.marker} source={require('../../assets/images/Map/school.png')} />
+						</View>
+						<Callout>
+							<View style={{ flex: 1, width: 250 }}>
+								{rst.name && <Text>{rst.name}</Text>}
+								{rst.address && <Text>{rst.address}</Text>}
+								{rst.schedule && <Text>{rst.schedule}</Text>}
+								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
+							</View>
+						</Callout>
+					</Marker>
+				))}
+				{/* Servicios publicos */}
+				{servicios.map((rst, index) => (
+					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+						<View style={styles.borderPublicServices}>
+							<Image style={styles.marker} source={require('../../assets/images/Map/public-service.png')} />
+						</View>
+						<Callout>
+							<View style={{ flex: 1, width: 250 }}>
+								{rst.name && <Text>{rst.name}</Text>}
+								{rst.address && <Text>{rst.address}</Text>}
+								{rst.schedule && <Text>{rst.schedule}</Text>}
+								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
+							</View>
+						</Callout>
+					</Marker>
+				))}
+				{/* Iglesias */}
+				{iglesias.map((rst, index) => (
+					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+						<View style={styles.borderChurchs}>
+							<Image style={styles.marker} source={require('../../assets/images/Map/church.png')} />
 						</View>
 						<Callout>
 							<View style={{ flex: 1, width: 250 }}>
@@ -181,5 +213,59 @@ const styles = StyleSheet.create({
 	marker: {
 		height: width * 0.08,
 		width: width * 0.08
+	},
+	borderFood: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 1,
+		borderWidth: 2,
+		borderColor: '#e2487d',
+		borderRadius: 1.5,
+	},
+	borderSchool: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 1,
+		borderWidth: 2,
+		borderColor: '#00A3E4',
+		borderRadius: 1.5,
+	},
+	borderPublicServices: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 1,
+		borderWidth: 2,
+		borderColor: '#A4AE39',
+		borderRadius: 1.5,
+	},
+	borderTourism: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 1,
+		borderWidth: 2,
+		borderColor: '#E2487D',
+		borderRadius: 1.5,
+	},
+	borderChurchs: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 1,
+		borderWidth: 2,
+		borderColor: '#EF7819',
+		borderRadius: 1.5,
+	},
+	borderMedicalServices: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 1,
+		borderWidth: 2,
+		borderColor: '#00A19A',
+		borderRadius: 1.5,
 	}
 });

@@ -264,7 +264,6 @@ export const sports = [
         address: 'Avila Camacho Tecalitlán, 49900 Tecalitlán, Jal.',
     }
 ];
-
 //Schools
 export const schools = [
     colegioAmerica = {
@@ -347,5 +346,87 @@ export const schools = [
         address: 'KM 2, Puente Tecalitlan, Tecalitlán, La Purísima, Jal.',
         phone: '01 371 418 0220',
     },
-    
+];
+//Servicios publicos
+export const servicios = [
+    gasTeca = {
+        latLong: {
+            latitude: 19.478959, 
+            longitude: -103.302171
+        },
+        name: "PEMEX",
+        address: 'Colima - Jiquilpan 131, Ejidal, 49900 Tecalitlán, Jal.',
+        schedule: 'Abierto las 24 horas',
+        phone: '01 371 418 0860',
+    },
+    presidencia = {
+        latLong: {
+            latitude: 19.470702, 
+            longitude: -103.306622
+        },
+        name: "Presidencia Municipal",
+        address: 'Portal Victoria 9, Tecalitlán Centro, 49900 Tecalitlán, Jal.',
+        phone: '01 371 418 0169',
+    },
+    casaDeLaCultura = {
+        latLong: {
+            latitude: 19.471473, 
+            longitude: -103.306021
+        },
+        name: "Casa de la Cultura",
+        address: 'Cuauhtémoc 24, Tecalitlán, 49900 Tecalitlán, Jal.',
+        schedule: 'Abierto de 8:00 – 19:00',
+    },
+    museoSilvestreVargas = {
+        latLong: {
+            latitude: 19.469869, 
+            longitude: -103.307322
+        },
+        name: "Museo Silvestre Vargas",
+        address: 'Calle Guadalupe Victoria, Tecalitlán, 49900 Tecalitlán, Jal.',
+    },
+];
+//Iglesias
+export const iglesias = [
+    temploSagradoCorazon = {
+        latLong: {
+            latitude: 19.471129, 
+            longitude: -103.310846
+        },
+        name: "Templo Sagrado Corazon de Jesus",
+        address: 'Degollado, Sagrado Corazón de Jesús, 49904 Tecalitlán, Jal.',
+    },
+    temploTerceraOrden = {
+        latLong: {
+            latitude: 19.469098, 
+            longitude: -103.305089
+        },
+        name: "Templo de Tercera Orden",
+        address: 'Francisco I. Madero 123, Tercera Orden, 49900 Tecalitlán, Jal.',
+        phone: '01 371 418 0064'
+    },
+    temploSanIsidro = {
+        latLong: {
+            latitude: 19.476040, 
+            longitude: -103.304725
+        },
+        name: "Templo de San Isidro",
+        address: 'Calle Cristóbal Colón 163A, San Isidro, 49870 Tecalitlán, Jal.',
+    },
+    temploSanJoseObrero = {
+        latLong: {
+            latitude: 19.467315, 
+            longitude: -103.312886
+        },
+        name: "Templo de San Jose Obrero",
+        address: 'T. Garrido, Lázaro Cárdenas, 49870 Tecalitlán, Jal.',
+    },
+    notariaParroquial = {
+        latLong: {
+            latitude: 19.471796, 
+            longitude: -103.305634
+        },
+        name: "Notaria Parroquial",
+        address: 'Cuauhtémoc 40, Tecalitlán, 49900 Tecalitlán, Jal.',
+    },
 ];
