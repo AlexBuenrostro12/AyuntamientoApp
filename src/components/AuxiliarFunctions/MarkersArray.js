@@ -285,4 +285,67 @@ export const schools = [
         address: 'Calle Morelos 14, Tecalitlán Centro, 49900 Tecalitlán, Jal.',
         phone: '01 371 418 0513',
     },
+    estanciaInfantilSonrisas = {
+        latLong: {
+            latitude: 19.471560, 
+            longitude: -103.308398
+        },
+        name: "Estancia Infantil Sonrisas",
+        address: 'Niños Heroes 20, Tecalitlán, 49900 Tecalitlán, Jal.',
+    },
+    escuelaWenceslao = {
+        latLong: {
+            latitude: 19.465991, 
+            longitude: -103.310351
+        },
+        name: "Escuela Primaría Wenceslao de la Mora Torres",
+        address: 'Calle Guadalupe Victoria 151, Naranjitos, 49900 Tecalitlán, Jal.',
+        phone: '01 371 418 0521',
+    },
+    jnGregorioTorresQuintero = {
+        latLong: {
+            latitude: 19.471239, 
+            longitude: -103.303443
+        },
+        name: "Jardín de Niños Gregorio Torres",
+        address: 'José Díaz Carrillo 2, Eduardo Romero, 49900 Tecalitlán, Jal.',
+        phone: '01 371 418 2303',
+    },
+    primariaJavierMina = {
+        latLong: {
+            latitude: 19.463336, 
+            longitude: -103.303643
+        },
+        name: "Escuela primaria Javier Mina",
+        address: 'Aquiles Serdán 143, Los Olivos, 49900 Tecalitlán, Jal.',
+        phone: '01 371 418 1367',
+    },
+    conafeTeca = {
+        latLong: {
+            latitude: 19.471450, 
+            longitude: -103.311881
+        },
+        name: "CONAFE Tecalitlán",
+        address: 'Gonzalo Ochoa Montes de Oca, Revolución Mexicana, 49904 Tecalitlán, Jal.',
+        phone: '01 341 140 2509',
+    },
+    prepaTeca = {
+        latLong: {
+            latitude: 19.464243, 
+            longitude: -103.310543
+        },
+        name: "Preparatoria Regional de Tuxpan, módulo Tecalitlán",
+        address: 'Calle Guadalupe Victoria 200, Naranjitos, 49870 Tecalitlán, Jal.',
+        phone: '01 371 418 0880',
+    },
+    EST32 = {
+        latLong: {
+            latitude: 19.482508, 
+            longitude: -103.318994
+        },
+        name: "Escuela Secundaria Técnica 32",
+        address: 'KM 2, Puente Tecalitlan, Tecalitlán, La Purísima, Jal.',
+        phone: '01 371 418 0220',
+    },
+    
 ];
