@@ -272,6 +272,19 @@ export default class Incidencias extends Component {
 		})
 	};
 
+    componentWillUpdate() {
+        console.log('willUpdate')
+        this.findLocationHandler();
+        console.log(this.state.latitude, this.state.longitude)
+    }
+
+    componentDidUpdate() {
+        console.log('didUpdate')
+        // this.findLocationHandler();
+        this.requestLocationPermission();
+        console.log(this.state.latitude, this.state.longitude)
+    }
+
 	requestLocationPermission = async () => {
 		try {
 		  const granted = await PermissionsAndroid.request(
@@ -693,9 +706,9 @@ export default class Incidencias extends Component {
                             key="selectTypeUbication"
                             itemType="SelectDirection"
                             value={this.state.typeOfLocation}
-                            changed={(text) => this.typeOfLocation(text)} />
+                            changed={(text) => { this.state.latitude ? this.typeOfLocation(text) : alert('Active su ubicación GPS y reinicie la app para usar su ubicación actual'); }} />
                             
-                        {this.state.showMap ? currentLocation : specificLocation}
+                        {this.state.showMap ? (this.state.latitude && this.state.longitude && currentLocation) : specificLocation}
                     </View>
                 </CardItem>
             </View>

@@ -114,7 +114,7 @@ export default class Home extends Component {
 
 		return (
 			<SafeAreaView style={styles.container}>
-				<ImageBackground style={styles.view} source={require('../../assets/images/Gif/galaxy.gif')}>
+				<ImageBackground style={styles.view} source={require('../../assets/images/Gif/teca-centro.gif')}>
 					<View>
 						<HeaderToolbar open={this.props} title="Home" color="rgba(52, 52, 52, 0.8)" />
 					</View>
