@@ -3,7 +3,7 @@ import { View, StyleSheet, SafeAreaView, Dimensions, BackHandler, Image, Text } 
 import MapView, { Marker, Callout } from 'react-native-maps';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
-import { food, medicServices, pharmacys, hotels, sports, schools, servicios, iglesias } from '../../components/AuxiliarFunctions/MarkersArray';
+import { food, medicServices, pharmacys, hotels, sports, schools, servicios, entretenimiento, iglesias } from '../../components/AuxiliarFunctions/MarkersArray';
 
 export default class Map extends Component {
 	//Style of drawer navigation
@@ -141,7 +141,23 @@ export default class Map extends Component {
 				{servicios.map((rst, index) => (
 					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
 						<View style={styles.borderPublicServices}>
-							<Image style={styles.marker} source={require('../../assets/images/Map/public-service.png')} />
+							<Image style={styles.marker} source={rst.logo ? rst.logo : require('../../assets/images/Map/public-service.png')} />
+						</View>
+						<Callout>
+							<View style={{ flex: 1, width: 250 }}>
+								{rst.name && <Text>{rst.name}</Text>}
+								{rst.address && <Text>{rst.address}</Text>}
+								{rst.schedule && <Text>{rst.schedule}</Text>}
+								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
+							</View>
+						</Callout>
+					</Marker>
+				))}
+				{/* Entretenimiento recreativo */}
+				{entretenimiento.map((rst, index) => (
+					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+						<View style={styles.borderTourism}>
+							<Image style={styles.marker} source={rst.logo ? rst.logo : require('../../assets/images/Map/entertaiment.png')} />
 						</View>
 						<Callout>
 							<View style={{ flex: 1, width: 250 }}>
@@ -221,6 +237,7 @@ const styles = StyleSheet.create({
 		padding: 1,
 		borderWidth: 2,
 		borderColor: '#e2487d',
+		backgroundColor: 'white',
 		borderRadius: 1.5,
 	},
 	borderSchool: {
@@ -230,6 +247,7 @@ const styles = StyleSheet.create({
 		padding: 1,
 		borderWidth: 2,
 		borderColor: '#00A3E4',
+		backgroundColor: 'white',
 		borderRadius: 1.5,
 	},
 	borderPublicServices: {
@@ -239,6 +257,7 @@ const styles = StyleSheet.create({
 		padding: 1,
 		borderWidth: 2,
 		borderColor: '#A4AE39',
+		backgroundColor: 'white',
 		borderRadius: 1.5,
 	},
 	borderTourism: {
@@ -248,6 +267,7 @@ const styles = StyleSheet.create({
 		padding: 1,
 		borderWidth: 2,
 		borderColor: '#E2487D',
+		backgroundColor: 'white',
 		borderRadius: 1.5,
 	},
 	borderChurchs: {
@@ -257,6 +277,7 @@ const styles = StyleSheet.create({
 		padding: 1,
 		borderWidth: 2,
 		borderColor: '#EF7819',
+		backgroundColor: 'white',
 		borderRadius: 1.5,
 	},
 	borderMedicalServices: {
@@ -266,6 +287,7 @@ const styles = StyleSheet.create({
 		padding: 1,
 		borderWidth: 2,
 		borderColor: '#00A19A',
+		backgroundColor: 'white',
 		borderRadius: 1.5,
 	}
 });

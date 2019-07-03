@@ -358,6 +358,7 @@ export const servicios = [
         address: 'Colima - Jiquilpan 131, Ejidal, 49900 Tecalitlán, Jal.',
         schedule: 'Abierto las 24 horas',
         phone: '01 371 418 0860',
+        logo: require('../../assets/images/Map/gas.png')
     },
     presidencia = {
         latLong: {
@@ -368,6 +369,9 @@ export const servicios = [
         address: 'Portal Victoria 9, Tecalitlán Centro, 49900 Tecalitlán, Jal.',
         phone: '01 371 418 0169',
     },
+];
+//Entretenimiento recreativo
+export const entretenimiento = [
     casaDeLaCultura = {
         latLong: {
             latitude: 19.471473, 
@@ -380,7 +384,7 @@ export const servicios = [
     museoSilvestreVargas = {
         latLong: {
             latitude: 19.469869, 
-            longitude: -103.307322
+            longitude: -103.3073229
         },
         name: "Museo Silvestre Vargas",
         address: 'Calle Guadalupe Victoria, Tecalitlán, 49900 Tecalitlán, Jal.',
