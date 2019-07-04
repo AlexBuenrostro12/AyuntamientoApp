@@ -73,7 +73,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-        entryFile: "index.js"
+    entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -107,7 +107,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.ayuntamientoapp"
+        applicationId "com.tecaliapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -194,4 +194,3 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply plugin: 'com.google.gms.google-services'  // Google Play services Gradle plugin
-

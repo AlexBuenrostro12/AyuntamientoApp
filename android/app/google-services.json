@@ -34,6 +34,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87834081884:android:5ef9cccd8d5a6040",
+        "android_client_info": {
+          "package_name": "com.tecaliapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87834081884-eifo7jt670gf28inck7qu5edkq41uqq5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdY5ivrk_mldiM8OaSRS5tdVdiX73eVB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87834081884-eifo7jt670gf28inck7qu5edkq41uqq5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

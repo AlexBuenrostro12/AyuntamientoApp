@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AyuntamientoApp</string>
+    <string name="app_name">TecaliApp</string>
 
     <string name="new_message_notification_title_template">New message: %1$s</string>
 
