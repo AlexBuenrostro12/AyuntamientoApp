@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, SafeAreaView, Dimensions, BackHandler, Image, Text, ScrollView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Dimensions, BackHandler, Image, Text, ScrollView, Alert } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
@@ -21,6 +21,7 @@ import {
 	entretenimiento,
 	iglesias
 } from '../../components/AuxiliarFunctions/MarkersArray';
+import axios from '../../../axios-ayuntamiento';
 
 export default class Map extends Component {
 	state = {
@@ -87,9 +88,11 @@ export default class Map extends Component {
 			latitude: 19.47151,
 			longitude: -103.30706,
 			latitudeDelta: 0.0122,
-			longitudeDelta: width / height * 0.0122,
+			longitudeDelta: width / height * 0.0122
 		},
-		chosenLocation: false
+		chosenLocation: false,
+		category: 'Educación',
+		mapMarkers: []
 	};
 
 	//Style of drawer navigation
@@ -125,7 +128,7 @@ export default class Map extends Component {
 				if (email !== 'false') this.setState({ isAdmin: true });
 				else this.setState({ isAdmin: false });
 
-				// this.getActivities();
+				this.getMarkers();
 			} else {
 				//Restrict screens if there's no token
 				console.log(this.state);
@@ -214,6 +217,9 @@ export default class Map extends Component {
 		if (text === 'Datos especificos') this.setState({ specificData: true });
 		else this.setState({ specificData: false });
 	};
+	changePickCategoryHandler = (text) => {
+		this.setState({ category: text });
+	};
 
 	loadPhotoHandler = (show) => {
 		console.log('show: ', show);
@@ -274,24 +280,228 @@ export default class Map extends Component {
 
 	pickLocationHandler = (event) => {
 		const coordinates = event.nativeEvent.coordinate;
-		this.setState(prevState => {
+		this.setState((prevState) => {
 			return {
 				focusedLocation: {
 					...prevState.focusedLocation,
 					latitude: coordinates.latitude,
-					longitude: coordinates.longitude,
+					longitude: coordinates.longitude
 				},
-				chosenLocation: true,
+				chosenLocation: true
 			};
 		});
 	};
+
+	uploadPhotoHandler = () => {
+		//URL cloudinary
+		if (this.state.imageFormData && this.state.picker !== 'Datos especificos') {
+			const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
+			this.setState({ loading: true });
+			console.log('Form: ', this.state.form);
+			if (this.state.imageFormData) {
+				axiosCloudinary({
+					url: URL_CLOUDINARY,
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					data: this.state.imageFormData
+				})
+					.then((response) => {
+						console.log('ResponseCloudinary: ', response);
+						//Destructurin response
+						const { data } = response;
+						console.log('ResponseDataCloudinary: ', data);
+						//Destructuring data
+						const { url, eager } = data;
+						//Send to form image the value of url
+						//Call the method to upload new
+						this.sendNewMarkerHandler(url);
+					})
+					.catch((err) => {
+						this.setState({ loading: false });
+						Alert.alert('Mapa', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
+							cancelable: false
+						});
+						console.log('ErrorCloudinary: ', err);
+					});
+			} else {
+				this.setState({ loading: false });
+				Alert.alert('Mapa', '¡Complete el formulario correctamente!', [ { text: 'Ok' } ], {
+					cancelable: false
+				});
+			}
+		} else {
+			this.sendNewMarkerHandler('');
+		}
+	};
+
+	sendNewMarkerHandler = (url) => {
+		//check if the form is valid
+		this.setState({ loading: true });
+		if (this.state.formIsValid && url === '' && this.state.chosenLocation) {
+			const formData = {};
+			for (let formElementIdentifier in this.state.formAddress) {
+				formData[formElementIdentifier] = this.state.formAddress[formElementIdentifier].value;
+			}
+			formData['latitude'] = this.state.focusedLocation.latitude;
+			formData['longitude'] = this.state.focusedLocation.longitude;
+			formData['categoria'] = this.state.category;
+			const mapMarker = {
+				mapMarkerData: formData
+			};
+
+			axios
+				.post('/mapmarkers.json?auth=' + this.state.token, mapMarker)
+				.then((response) => {
+					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
+					Alert.alert(
+						'Mapa',
+						'Nuevo marcador enviado con exito!',
+						// getMarkers
+						[ { text: 'Ok', onPress: () => this.getMarkers() } ],
+						{
+							cancelable: false
+						}
+					);
+				})
+				.catch((error) => {
+					this.setState({ loading: false });
+					Alert.alert('Mapa', 'Marcador fallido al enviar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+				});
+		} else {
+			if (!this.state.formIsValid) {
+				this.setState({ loading: false });
+				Alert.alert('Mapa', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
+					cancelable: false
+				});
+			}
+		}
+
+		if (url !== '' && this.state.chosenLocation) {
+			const formData = {};
+			formData['tarjeta'] = url;
+			formData['latitude'] = this.state.focusedLocation.latitude;
+			formData['longitude'] = this.state.focusedLocation.longitude;
+			formData['categoria'] = this.state.category;
+			const mapMarker = {
+				mapMarkerData: formData
+			};
+
+			axios
+				.post('/mapmarkers.json?auth=' + this.state.token, mapMarker)
+				.then((response) => {
+					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
+					Alert.alert(
+						'Mapa',
+						'Nuevo marcador enviado con exito!',
+						// getMarkers
+						[ { text: 'Ok', onPress: () => this.getMarkers() } ],
+						{
+							cancelable: false
+						}
+					);
+				})
+				.catch((error) => {
+					this.setState({ loading: false });
+					Alert.alert('Mapa', 'Marcador fallido al enviar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+				});
+		} else {
+			if (!this.state.chosenLocation) {
+				this.setState({ loading: false });
+				Alert.alert('Mapa', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
+					cancelable: false
+				});
+			}
+		}
+	};
+
+	getMarkers = () => {
+		this.setState({ loading: true, addAct: false, showButtons: true });
+		axios
+			.get('/mapmarkers.json?auth=' + this.state.token)
+			.then((res) => {
+				const fetchedMapMarkers = [];
+				for (let key in res.data) {
+					fetchedMapMarkers.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				this.setState({ loading: false, mapMarkers: fetchedMapMarkers });
+				console.log('mapMarker: ', this.state.mapMarkers);
+			})
+			.catch((err) => {
+				this.setState({ loading: false });
+			});
+	};
+
+	getLogoHandler = (category, name) => {
+		switch (category) {
+			case 'Educación':
+				return require('../../assets/images/Map/school.png');
+			case 'Servicios publicos':
+				return require('../../assets/images/Map/public-service.png');
+			case 'Gasolinera':
+				return require('../../assets/images/Map/gas.png');
+			case 'Hotel':
+				return require('../../assets/images/Map/hotel.png');
+			case 'Restaurante':
+				return require('../../assets/images/Map/food.png');
+			case 'Deporte':
+				return require('../../assets/images/Map/sport.png');
+			case 'Cultura':
+				return require('../../assets/images/Map/entertaiment.png');
+			case 'Templo':
+				return require('../../assets/images/Map/church.png');
+			case 'Consultorio medico':
+				return require('../../assets/images/Map/hospital.png');
+			case 'Farmacia':
+				return require('../../assets/images/Map/pharmacy.png');
+
+			default:
+				break;
+		}
+	};
+
+	getStyleLogoHandler = (category) => {
+		switch (category) {
+			case 'Educación':
+				return styles.borderSchool;
+			case 'Servicios publicos':
+				return styles.borderPublicServices;
+			case 'Gasolinera':
+				return styles.borderPublicServices;
+			case 'Hotel':
+				return styles.borderTourism;
+			case 'Restaurante':
+				return styles.borderTourism;
+			case 'Deporte':
+				return styles.borderTourism;
+			case 'Cultura':
+				return styles.borderTourism;
+			case 'Templo':
+				return styles.borderChurchs;
+			case 'Consultorio medico':
+				return styles.borderMedicalServices;
+			case 'Farmacia':
+				return styles.borderMedicalServices;
+
+			default:
+				break;
+		}
+	};
+
 
 	render() {
 		const spinner = <CustomSpinner color="blue" />;
 
 		let chosenMarker = null;
-		if (this.state.chosenLocation)
-			chosenMarker = <Marker coordinate={this.state.focusedLocation} />;
+		if (this.state.chosenLocation) chosenMarker = <Marker coordinate={this.state.focusedLocation} />;
 
 		const initialRegion = {
 			latitude: 19.47151,
@@ -309,7 +519,7 @@ export default class Map extends Component {
 		}
 
 		const selectMarkerMap = (
-			<MapView 
+			<MapView
 				style={styles.mapMarkerPicker}
 				initialRegion={initialRegion}
 				region={this.state.focusedLocation}
@@ -474,6 +684,34 @@ export default class Map extends Component {
 			</MapView>
 		);
 
+		const mapMarkers = (
+			<MapView style={styles.map} initialRegion={initialRegion}>
+				{/* Food */}
+				{this.state.mapMarkers.map((mmr) => (
+					<Marker
+						key={mmr.id}
+						coordinate={{ latitude: mmr.mapMarkerData.latitude, longitude: mmr.mapMarkerData.longitude }}
+						title={mmr.mapMarkerData.name}
+					>
+						<View style={this.getStyleLogoHandler(mmr.mapMarkerData.categoria)}>
+							<Image style={styles.marker} source={this.getLogoHandler(mmr.mapMarkerData.categoria)} />
+						</View>
+						<Callout style={{ flex: 1 }}>
+							{mmr.mapMarkerData.name && <View style={{ flex: 1, width: 250 }}>
+								{mmr.mapMarkerData.name && <Text>{mmr.mapMarkerData.name}</Text>}
+								{mmr.mapMarkerData.address && <Text>{mmr.mapMarkerData.address}</Text>}
+								{mmr.mapMarkerData.schedule && <Text>{mmr.mapMarkerData.schedule}</Text>}
+								{mmr.mapMarkerData.phone && <Text>Telefono: {mmr.mapMarkerData.phone}</Text>}
+							</View>}
+							{mmr.mapMarkerData.tarjeta && <View style={{ flex: 1, justifyContent: 'center' }}>
+								<Image source={{ uri: mmr.mapMarkerData.tarjeta }} style={{ height: 150, width: 150 }} resizeMode="contain" />
+							</View>}
+						</Callout>
+					</Marker>
+				))}
+			</MapView>
+		);
+
 		const addMarkerTitle = (
 			<View style={{ flex: 1, marginBottom: 10 }}>
 				<CustomAddBanner
@@ -513,6 +751,12 @@ export default class Map extends Component {
 								/>
 							)}
 							{selectMarkerMap}
+							<CustomInput
+								key={'PickCategory'}
+								itemType="PickCategory"
+								value={this.state.category}
+								changed={(text) => this.changePickCategoryHandler(text)}
+							/>
 						</View>
 					</CardItem>
 				</ScrollView>
@@ -535,16 +779,16 @@ export default class Map extends Component {
 						color="#e2487d"
 						showContentRight={true}
 						titleOfAdd="Nuevo marcador"
-						get={true}
+						get={this.getMarkers}
 						add={() => this.setState({ addMarker: true })}
 						goBack={() => this.setState({ addMarker: false })}
 						isAdd={this.state.addMarker}
-						save={true}
+						save={this.uploadPhotoHandler}
 						isAdmin={true}
 					/>
 				</View>
 				<StatusBar color="#c7175b" />
-				<View style={styles.mapContainer}>{!this.state.addMarker ? map : addMarker}</View>
+				<View style={styles.mapContainer}>{!this.state.addMarker ? mapMarkers : addMarker}</View>
 			</SafeAreaView>
 		);
 	}

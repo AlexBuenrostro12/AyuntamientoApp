@@ -139,6 +139,34 @@ const customInput = (props) => {
 				</Picker>
 			);
 			break;
+			case 'PickCategory':
+			input = (
+				<Picker
+					mode="dropdown"
+					iosHeader={props.value}
+					iosIcon={
+						<Image
+							style={{ width: 25, height: 25 }}
+							source={require('../../assets/images/ArrowDown/arrow-down.png')}
+						/>
+					}
+					style={{ width: undefined }}
+					selectedValue={props.value}
+					onValueChange={props.changed}
+				>
+					<Picker.Item label="Educación" value="Educación" />
+					<Picker.Item label="Servicios publicos" value="Servicios publicos" />
+					<Picker.Item label="Gasolinera" value="Gasolinera" />
+					<Picker.Item label="Hotel" value="Hotel" />
+					<Picker.Item label="Restaurante" value="Restaurante" />
+					<Picker.Item label="Deporte" value="Deporte" />
+					<Picker.Item label="Cultura" value="Cultura" />
+					<Picker.Item label="Templo" value="Templo" />
+					<Picker.Item label="Consultorio medico" value="Consultorio medico" />
+					<Picker.Item label="Farmacia" value="Farmacia" />
+				</Picker>
+			);
+			break;
 		case 'LoadImage':
 			input = (
 				<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
