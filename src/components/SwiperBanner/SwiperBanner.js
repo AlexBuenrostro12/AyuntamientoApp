@@ -49,7 +49,7 @@ export default class SwiperBanner extends Component {
 
 		if (this.state.news) {
 			this.setState({ bannerItems: null });
-			console.log('banner: ', this.state.bannerItems);
+
 			this.state.news.map((nw, index) => {
 				let currentDate = new Date(nw.newData.fecha);
 				let expiryDate = new Date(currentDate);
@@ -124,7 +124,6 @@ export default class SwiperBanner extends Component {
 		);
 
 	render() {
-		console.log('index: ', this.state.childrenCount);
 		return (
 			<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
 				<View style={{ flex: 1, alignItems: 'center' }}>
