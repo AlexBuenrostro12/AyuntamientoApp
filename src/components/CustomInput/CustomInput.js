@@ -158,7 +158,7 @@ const customInput = (props) => {
 					<Picker.Item label="Servicios publicos" value="Servicios publicos" />
 					<Picker.Item label="Gasolinera" value="Gasolinera" />
 					<Picker.Item label="Hotel" value="Hotel" />
-					<Picker.Item label="Restaurante" value="Restaurante" />
+					<Picker.Item label="Alimentos" value="Alimentos" />
 					<Picker.Item label="Deporte" value="Deporte" />
 					<Picker.Item label="Cultura" value="Cultura" />
 					<Picker.Item label="Templo" value="Templo" />

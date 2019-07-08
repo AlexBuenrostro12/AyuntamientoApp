@@ -434,7 +434,7 @@ export default class Map extends Component {
 	};
 
 	getMarkers = () => {
-		this.setState({ loading: true, addAct: false, showButtons: true });
+		this.setState({ loading: true, addAct: false });
 		axios
 			.get('/mapmarkers.json?auth=' + this.state.token)
 			.then((res) => {
@@ -463,7 +463,7 @@ export default class Map extends Component {
 				return require('../../assets/images/Map/gas.png');
 			case 'Hotel':
 				return require('../../assets/images/Map/hotel.png');
-			case 'Restaurante':
+			case 'Alimentos':
 				return require('../../assets/images/Map/food.png');
 			case 'Deporte':
 				return require('../../assets/images/Map/sport.png');
@@ -491,7 +491,7 @@ export default class Map extends Component {
 				return styles.borderPublicServices;
 			case 'Hotel':
 				return styles.borderTourism;
-			case 'Restaurante':
+			case 'Alimentos':
 				return styles.borderTourism;
 			case 'Deporte':
 				return styles.borderTourism;
@@ -507,6 +507,27 @@ export default class Map extends Component {
 			default:
 				break;
 		}
+	};
+
+	filterMarkersHandler = (caterory) => {
+		this.setState({ loading: true, addAct: false });
+		axios
+			.get('/mapmarkers.json?auth=' + this.state.token)
+			.then((res) => {
+				const fetchedMapMarkers = [];
+				for (let key in res.data) {
+					fetchedMapMarkers.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				const filterMarkers = fetchedMapMarkers.filter((mmr) => mmr.mapMarkerData.categoria === caterory);
+				if (filterMarkers) this.setState({ loading: false, mapMarkers: filterMarkers });
+				console.log('filterMarker: ', this.state.mapMarkers);
+			})
+			.catch((err) => {
+				this.setState({ loading: false });
+			});
 	};
 
 	setModalVisible = (visible) => {
@@ -648,7 +669,13 @@ export default class Map extends Component {
 				>
 					<View style={styles.modal}>
 						{/* Alimentos */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Alimentos');
+							}}
+						>
 							<Text style={styles.modalBodyText}>Alimentos</Text>
 							<Image
 								source={require('../../assets/images/Map/food.png')}
@@ -656,17 +683,89 @@ export default class Map extends Component {
 								resizeMode="contain"
 							/>
 						</TouchableOpacity>
-						{/* Servicios publicos */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
-							<Text style={styles.modalBodyText}>Servicios públicos</Text>
+						{/* Consultorios medicos */}
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Consultorio medico');
+							}}
+						>
+							<Text style={styles.modalBodyText}>Consultorios medicos</Text>
 							<Image
-								source={require('../../assets/images/Map/public-service.png')}
+								source={require('../../assets/images/Map/hospital.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Cultura */}
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Cultura');
+							}}
+						>
+							<Text style={styles.modalBodyText}>Cultura</Text>
+							<Image
+								source={require('../../assets/images/Map/entertaiment.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Deporte */}
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Deporte');
+							}}
+						>
+							<Text style={styles.modalBodyText}>Deporte</Text>
+							<Image
+								source={require('../../assets/images/Map/sport.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Educación */}
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Educación');
+							}}
+						>
+							<Text style={styles.modalBodyText}>Educación</Text>
+							<Image
+								source={require('../../assets/images/Map/school.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Farmacias */}
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Farmacia');
+							}}
+						>
+							<Text style={styles.modalBodyText}>Farmacias</Text>
+							<Image
+								source={require('../../assets/images/Map/pharmacy.png')}
 								style={{ height: width * 0.08, width: width * 0.08 }}
 								resizeMode="contain"
 							/>
 						</TouchableOpacity>
 						{/* Gasolineras */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Gasolinera');
+							}}
+						>
 							<Text style={styles.modalBodyText}>Gasolineras</Text>
 							<Image
 								source={require('../../assets/images/Map/gas.png')}
@@ -675,7 +774,13 @@ export default class Map extends Component {
 							/>
 						</TouchableOpacity>
 						{/* Hoteles */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Hotel');
+							}}
+						>
 							<Text style={styles.modalBodyText}>Hoteles</Text>
 							<Image
 								source={require('../../assets/images/Map/hotel.png')}
@@ -683,53 +788,44 @@ export default class Map extends Component {
 								resizeMode="contain"
 							/>
 						</TouchableOpacity>
-						{/* Deporte */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
-							<Text style={styles.modalBodyText}>Deporte</Text>
+						{/* Servicios publicos */}
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Servicios publicos');
+							}}
+						>
+							<Text style={styles.modalBodyText}>Servicios públicos</Text>
 							<Image
-								source={require('../../assets/images/Map/sport.png')}
+								source={require('../../assets/images/Map/public-service.png')}
 								style={{ height: width * 0.08, width: width * 0.08 }}
 								resizeMode="contain"
 							/>
 						</TouchableOpacity>
-						{/* Cultura */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
-							<Text style={styles.modalBodyText}>Cultura</Text>
-							<Image
-								source={require('../../assets/images/Map/entertaiment.png')}
-								style={{ height: width * 0.08, width: width * 0.08 }}
-								resizeMode="contain"
-							/>
-						</TouchableOpacity>
-						{/* Servicios Templos */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
-							<Text style={styles.modalBodyText}>Servicios Templos</Text>
+						{/*Templos */}
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Templo');
+							}}
+						>
+							<Text style={styles.modalBodyText}>Templos</Text>
 							<Image
 								source={require('../../assets/images/Map/church.png')}
 								style={{ height: width * 0.08, width: width * 0.08 }}
 								resizeMode="contain"
 							/>
 						</TouchableOpacity>
-						{/* Consultorios medicos */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
-							<Text style={styles.modalBodyText}>Consultorios medicos</Text>
-							<Image
-								source={require('../../assets/images/Map/hospital.png')}
-								style={{ height: width * 0.08, width: width * 0.08 }}
-								resizeMode="contain"
-							/>
-						</TouchableOpacity>
-						{/* Farmacias */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
-							<Text style={styles.modalBodyText}>Farmacias</Text>
-							<Image
-								source={require('../../assets/images/Map/pharmacy.png')}
-								style={{ height: width * 0.08, width: width * 0.08 }}
-								resizeMode="contain"
-							/>
-						</TouchableOpacity>
 						{/* Cerrar */}
-						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.getMarkers();
+							}}
+						>
 							<Text style={styles.modalBodyText}>Cerrar</Text>
 							<Image
 								source={require('../../assets/images/Map/close.png')}
@@ -761,7 +857,7 @@ export default class Map extends Component {
 				</View>
 				<StatusBar color="#c7175b" />
 				<View style={styles.mapContainer}>
-					{!this.state.addMarker ? !this.state.modalVisible ? mapMarkers : modal : addMarker}
+					{!this.state.addMarker ? (!this.state.modalVisible ? (!this.state.loading ? mapMarkers : spinner) : modal) : addMarker}
 				</View>
 				{!this.state.addMarker && (
 					<View>
@@ -930,5 +1026,12 @@ const styles = StyleSheet.create({
 		color: '#676766',
 		fontFamily: 'AvenirNextLTPro-Regular',
 		marginRight: 10
+	},
+	modalSubBodyText: {
+		fontSize: 18,
+		fontWeight: 'normal',
+		fontStyle: 'normal',
+		color: '#676766',
+		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });

@@ -1,4 +1,4 @@
-// Food
+// Alimentos
 export const food = [
     polloSJ = {
         latLong: {
