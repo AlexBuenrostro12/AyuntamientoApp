@@ -434,3 +434,159 @@ export const iglesias = [
         address: 'Cuauhtémoc 40, Tecalitlán, 49900 Tecalitlán, Jal.',
     },
 ];
+
+// Map arrays
+// const map = (
+//     <MapView style={styles.map} initialRegion={initialRegion}>
+//         {/* Food */}
+//         {food.map((rst, index) => (
+//             <Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+//                 <View style={styles.borderTourism}>
+//                     <Image style={styles.marker} source={require('../../assets/images/Map/food.png')} />
+//                 </View>
+//                 <Callout>
+//                     <View style={{ flex: 1, width: 250 }}>
+//                         {rst.name && <Text>{rst.name}</Text>}
+//                         {rst.address && <Text>{rst.address}</Text>}
+//                         {rst.schedule && <Text>{rst.schedule}</Text>}
+//                         {rst.phone && <Text>Telefono: {rst.phone}</Text>}
+//                     </View>
+//                 </Callout>
+//             </Marker>
+//         ))}
+//         {/* Medic Services */}
+//         {medicServices.map((rst, index) => (
+//             <Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+//                 <View style={styles.borderMedicalServices}>
+//                     <Image style={styles.marker} source={require('../../assets/images/Map/hospital.png')} />
+//                 </View>
+//                 <Callout>
+//                     <View style={{ flex: 1, width: 250 }}>
+//                         {rst.name && <Text>{rst.name}</Text>}
+//                         {rst.address && <Text>{rst.address}</Text>}
+//                         {rst.schedule && <Text>{rst.schedule}</Text>}
+//                         {rst.phone && <Text>Telefono: {rst.phone}</Text>}
+//                     </View>
+//                 </Callout>
+//             </Marker>
+//         ))}
+//         {/* Pharmacys */}
+//         {pharmacys.map((rst, index) => (
+//             <Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+//                 <View style={styles.borderMedicalServices}>
+//                     <Image style={styles.marker} source={require('../../assets/images/Map/pharmacy.png')} />
+//                 </View>
+//                 <Callout>
+//                     <View style={{ flex: 1, width: 250 }}>
+//                         {rst.name && <Text>{rst.name}</Text>}
+//                         {rst.address && <Text>{rst.address}</Text>}
+//                         {rst.schedule && <Text>{rst.schedule}</Text>}
+//                         {rst.phone && <Text>Telefono: {rst.phone}</Text>}
+//                     </View>
+//                 </Callout>
+//             </Marker>
+//         ))}
+//         {/* hotels */}
+//         {hotels.map((rst, index) => (
+//             <Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+//                 <View style={styles.borderTourism}>
+//                     <Image style={styles.marker} source={require('../../assets/images/Map/hotel.png')} />
+//                 </View>
+//                 <Callout>
+//                     <View style={{ flex: 1, width: 250 }}>
+//                         {rst.name && <Text>{rst.name}</Text>}
+//                         {rst.address && <Text>{rst.address}</Text>}
+//                         {rst.schedule && <Text>{rst.schedule}</Text>}
+//                         {rst.phone && <Text>Telefono: {rst.phone}</Text>}
+//                     </View>
+//                 </Callout>
+//             </Marker>
+//         ))}
+//         {/* Sports */}
+//         {sports.map((rst, index) => (
+//             <Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+//                 <View style={styles.borderTourism}>
+//                     <Image style={styles.marker} source={require('../../assets/images/Map/sport.png')} />
+//                 </View>
+//                 <Callout>
+//                     <View style={{ flex: 1, width: 250 }}>
+//                         {rst.name && <Text>{rst.name}</Text>}
+//                         {rst.address && <Text>{rst.address}</Text>}
+//                         {rst.schedule && <Text>{rst.schedule}</Text>}
+//                         {rst.phone && <Text>Telefono: {rst.phone}</Text>}
+//                     </View>
+//                 </Callout>
+//             </Marker>
+//         ))}
+//         {/* Schools */}
+//         {schools.map((rst, index) => (
+//             <Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+//                 <View style={styles.borderSchool}>
+//                     <Image style={styles.marker} source={require('../../assets/images/Map/school.png')} />
+//                 </View>
+//                 <Callout>
+//                     <View style={{ flex: 1, width: 250 }}>
+//                         {rst.name && <Text>{rst.name}</Text>}
+//                         {rst.address && <Text>{rst.address}</Text>}
+//                         {rst.schedule && <Text>{rst.schedule}</Text>}
+//                         {rst.phone && <Text>Telefono: {rst.phone}</Text>}
+//                     </View>
+//                 </Callout>
+//             </Marker>
+//         ))}
+//         {/* Servicios publicos */}
+//         {servicios.map((rst, index) => (
+//             <Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+//                 <View style={styles.borderPublicServices}>
+//                     <Image
+//                         style={styles.marker}
+//                         source={rst.logo ? rst.logo : require('../../assets/images/Map/public-service.png')}
+//                     />
+//                 </View>
+//                 <Callout>
+//                     <View style={{ flex: 1, width: 250 }}>
+//                         {rst.name && <Text>{rst.name}</Text>}
+//                         {rst.address && <Text>{rst.address}</Text>}
+//                         {rst.schedule && <Text>{rst.schedule}</Text>}
+//                         {rst.phone && <Text>Telefono: {rst.phone}</Text>}
+//                     </View>
+//                 </Callout>
+//             </Marker>
+//         ))}
+//         {/* Entretenimiento recreativo */}
+//         {entretenimiento.map((rst, index) => (
+//             <Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+//                 <View style={styles.borderTourism}>
+//                     <Image
+//                         style={styles.marker}
+//                         source={rst.logo ? rst.logo : require('../../assets/images/Map/entertaiment.png')}
+//                     />
+//                 </View>
+//                 <Callout>
+//                     <View style={{ flex: 1, width: 250 }}>
+//                         {rst.name && <Text>{rst.name}</Text>}
+//                         {rst.address && <Text>{rst.address}</Text>}
+//                         {rst.schedule && <Text>{rst.schedule}</Text>}
+//                         {rst.phone && <Text>Telefono: {rst.phone}</Text>}
+//                     </View>
+//                 </Callout>
+//             </Marker>
+//         ))}
+//         {/* Iglesias */}
+//         {iglesias.map((rst, index) => (
+//             <Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
+//                 <View style={styles.borderChurchs}>
+//                     <Image style={styles.marker} source={require('../../assets/images/Map/church.png')} />
+//                 </View>
+//                 <Callout>
+//                     <View style={{ flex: 1, width: 250 }}>
+//                         {rst.name && <Text>{rst.name}</Text>}
+//                         {rst.address && <Text>{rst.address}</Text>}
+//                         {rst.schedule && <Text>{rst.schedule}</Text>}
+//                         {rst.phone && <Text>Telefono: {rst.phone}</Text>}
+//                     </View>
+//                 </Callout>
+//             </Marker>
+//         ))}
+//     </MapView>
+// );

@@ -1,5 +1,17 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, SafeAreaView, Dimensions, BackHandler, Image, Text, ScrollView, Alert } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	SafeAreaView,
+	Dimensions,
+	BackHandler,
+	Image,
+	Text,
+	ScrollView,
+	Alert,
+	Modal,
+	TouchableOpacity
+} from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
@@ -92,7 +104,8 @@ export default class Map extends Component {
 		},
 		chosenLocation: false,
 		category: 'Educación',
-		mapMarkers: []
+		mapMarkers: [],
+		modalVisible: false
 	};
 
 	//Style of drawer navigation
@@ -496,6 +509,9 @@ export default class Map extends Component {
 		}
 	};
 
+	setModalVisible = (visible) => {
+		this.setState({ modalVisible: visible });
+	};
 
 	render() {
 		const spinner = <CustomSpinner color="blue" />;
@@ -529,161 +545,6 @@ export default class Map extends Component {
 			</MapView>
 		);
 
-		const map = (
-			<MapView style={styles.map} initialRegion={initialRegion}>
-				{/* Food */}
-				{food.map((rst, index) => (
-					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={styles.borderTourism}>
-							<Image style={styles.marker} source={require('../../assets/images/Map/food.png')} />
-						</View>
-						<Callout>
-							<View style={{ flex: 1, width: 250 }}>
-								{rst.name && <Text>{rst.name}</Text>}
-								{rst.address && <Text>{rst.address}</Text>}
-								{rst.schedule && <Text>{rst.schedule}</Text>}
-								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
-							</View>
-						</Callout>
-					</Marker>
-				))}
-				{/* Medic Services */}
-				{medicServices.map((rst, index) => (
-					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={styles.borderMedicalServices}>
-							<Image style={styles.marker} source={require('../../assets/images/Map/hospital.png')} />
-						</View>
-						<Callout>
-							<View style={{ flex: 1, width: 250 }}>
-								{rst.name && <Text>{rst.name}</Text>}
-								{rst.address && <Text>{rst.address}</Text>}
-								{rst.schedule && <Text>{rst.schedule}</Text>}
-								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
-							</View>
-						</Callout>
-					</Marker>
-				))}
-				{/* Pharmacys */}
-				{pharmacys.map((rst, index) => (
-					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={styles.borderMedicalServices}>
-							<Image style={styles.marker} source={require('../../assets/images/Map/pharmacy.png')} />
-						</View>
-						<Callout>
-							<View style={{ flex: 1, width: 250 }}>
-								{rst.name && <Text>{rst.name}</Text>}
-								{rst.address && <Text>{rst.address}</Text>}
-								{rst.schedule && <Text>{rst.schedule}</Text>}
-								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
-							</View>
-						</Callout>
-					</Marker>
-				))}
-				{/* hotels */}
-				{hotels.map((rst, index) => (
-					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={styles.borderTourism}>
-							<Image style={styles.marker} source={require('../../assets/images/Map/hotel.png')} />
-						</View>
-						<Callout>
-							<View style={{ flex: 1, width: 250 }}>
-								{rst.name && <Text>{rst.name}</Text>}
-								{rst.address && <Text>{rst.address}</Text>}
-								{rst.schedule && <Text>{rst.schedule}</Text>}
-								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
-							</View>
-						</Callout>
-					</Marker>
-				))}
-				{/* Sports */}
-				{sports.map((rst, index) => (
-					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={styles.borderTourism}>
-							<Image style={styles.marker} source={require('../../assets/images/Map/sport.png')} />
-						</View>
-						<Callout>
-							<View style={{ flex: 1, width: 250 }}>
-								{rst.name && <Text>{rst.name}</Text>}
-								{rst.address && <Text>{rst.address}</Text>}
-								{rst.schedule && <Text>{rst.schedule}</Text>}
-								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
-							</View>
-						</Callout>
-					</Marker>
-				))}
-				{/* Schools */}
-				{schools.map((rst, index) => (
-					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={styles.borderSchool}>
-							<Image style={styles.marker} source={require('../../assets/images/Map/school.png')} />
-						</View>
-						<Callout>
-							<View style={{ flex: 1, width: 250 }}>
-								{rst.name && <Text>{rst.name}</Text>}
-								{rst.address && <Text>{rst.address}</Text>}
-								{rst.schedule && <Text>{rst.schedule}</Text>}
-								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
-							</View>
-						</Callout>
-					</Marker>
-				))}
-				{/* Servicios publicos */}
-				{servicios.map((rst, index) => (
-					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={styles.borderPublicServices}>
-							<Image
-								style={styles.marker}
-								source={rst.logo ? rst.logo : require('../../assets/images/Map/public-service.png')}
-							/>
-						</View>
-						<Callout>
-							<View style={{ flex: 1, width: 250 }}>
-								{rst.name && <Text>{rst.name}</Text>}
-								{rst.address && <Text>{rst.address}</Text>}
-								{rst.schedule && <Text>{rst.schedule}</Text>}
-								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
-							</View>
-						</Callout>
-					</Marker>
-				))}
-				{/* Entretenimiento recreativo */}
-				{entretenimiento.map((rst, index) => (
-					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={styles.borderTourism}>
-							<Image
-								style={styles.marker}
-								source={rst.logo ? rst.logo : require('../../assets/images/Map/entertaiment.png')}
-							/>
-						</View>
-						<Callout>
-							<View style={{ flex: 1, width: 250 }}>
-								{rst.name && <Text>{rst.name}</Text>}
-								{rst.address && <Text>{rst.address}</Text>}
-								{rst.schedule && <Text>{rst.schedule}</Text>}
-								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
-							</View>
-						</Callout>
-					</Marker>
-				))}
-				{/* Iglesias */}
-				{iglesias.map((rst, index) => (
-					<Marker key={index + rst.latLong} coordinate={rst.latLong} title={rst.name}>
-						<View style={styles.borderChurchs}>
-							<Image style={styles.marker} source={require('../../assets/images/Map/church.png')} />
-						</View>
-						<Callout>
-							<View style={{ flex: 1, width: 250 }}>
-								{rst.name && <Text>{rst.name}</Text>}
-								{rst.address && <Text>{rst.address}</Text>}
-								{rst.schedule && <Text>{rst.schedule}</Text>}
-								{rst.phone && <Text>Telefono: {rst.phone}</Text>}
-							</View>
-						</Callout>
-					</Marker>
-				))}
-			</MapView>
-		);
-
 		const mapMarkers = (
 			<MapView style={styles.map} initialRegion={initialRegion}>
 				{/* Food */}
@@ -696,16 +557,19 @@ export default class Map extends Component {
 						<View style={this.getStyleLogoHandler(mmr.mapMarkerData.categoria)}>
 							<Image style={styles.marker} source={this.getLogoHandler(mmr.mapMarkerData.categoria)} />
 						</View>
-						<Callout style={{ flex: 1 }}>
-							{mmr.mapMarkerData.name && <View style={{ flex: 1, width: 250 }}>
-								{mmr.mapMarkerData.name && <Text>{mmr.mapMarkerData.name}</Text>}
-								{mmr.mapMarkerData.address && <Text>{mmr.mapMarkerData.address}</Text>}
-								{mmr.mapMarkerData.schedule && <Text>{mmr.mapMarkerData.schedule}</Text>}
-								{mmr.mapMarkerData.phone && <Text>Telefono: {mmr.mapMarkerData.phone}</Text>}
-							</View>}
-							{mmr.mapMarkerData.tarjeta && <View style={{ flex: 1, justifyContent: 'center' }}>
-								<Image source={{ uri: mmr.mapMarkerData.tarjeta }} style={{ height: 150, width: 150 }} resizeMode="contain" />
-							</View>}
+						<Callout>
+							{mmr.mapMarkerData.name && (
+								<View style={{ flex: 1, width: 250 }}>
+									{mmr.mapMarkerData.name && <Text>{mmr.mapMarkerData.name}</Text>}
+									{mmr.mapMarkerData.address && <Text>{mmr.mapMarkerData.address}</Text>}
+									{mmr.mapMarkerData.schedule && <Text>{mmr.mapMarkerData.schedule}</Text>}
+									{mmr.mapMarkerData.phone && <Text>Telefono: {mmr.mapMarkerData.phone}</Text>}
+								</View>
+							)}
+							{/* Bug for android */}
+							{/* {mmr.mapMarkerData.tarjeta && <View style={{ flex: 1, justifyContent: 'center', height: height * .24 }}>
+								<Image source={{ uri: mmr.mapMarkerData.tarjeta }} style={{ height: height * .24, width: height * .40, flex: 1 }} resizeMode="cover" />
+							</View>} */}
 						</Callout>
 					</Marker>
 				))}
@@ -725,12 +589,13 @@ export default class Map extends Component {
 				<ScrollView style={{ flex: 1 }}>
 					<CardItem bordered>
 						<View style={styles.cardBody}>
-							<CustomInput
+							{/* Select to upload image */}
+							{/* <CustomInput
 								key="select"
 								itemType="PickAddress"
 								value={this.state.picker}
 								changed={(text) => this.changePickerHandler(text)}
-							/>
+							/> */}
 							{this.state.specificData ? (
 								formElements.map((e) => (
 									<CustomInput
@@ -770,6 +635,113 @@ export default class Map extends Component {
 			</View>
 		);
 
+		const modal = (
+			<View style={{ flex: 1 }}>
+				<Modal
+					animationType="slide"
+					presentationStyle="formSheet"
+					transparent={false}
+					visible={this.state.modalVisible}
+					onRequestClose={() => {
+						Alert.alert('Modal has been closed.');
+					}}
+				>
+					<View style={styles.modal}>
+						{/* Alimentos */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Alimentos</Text>
+							<Image
+								source={require('../../assets/images/Map/food.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Servicios publicos */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Servicios públicos</Text>
+							<Image
+								source={require('../../assets/images/Map/public-service.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Gasolineras */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Gasolineras</Text>
+							<Image
+								source={require('../../assets/images/Map/gas.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Hoteles */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Hoteles</Text>
+							<Image
+								source={require('../../assets/images/Map/hotel.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Deporte */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Deporte</Text>
+							<Image
+								source={require('../../assets/images/Map/sport.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Cultura */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Cultura</Text>
+							<Image
+								source={require('../../assets/images/Map/entertaiment.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Servicios Templos */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Servicios Templos</Text>
+							<Image
+								source={require('../../assets/images/Map/church.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Consultorios medicos */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Consultorios medicos</Text>
+							<Image
+								source={require('../../assets/images/Map/hospital.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Farmacias */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Farmacias</Text>
+							<Image
+								source={require('../../assets/images/Map/pharmacy.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+						{/* Cerrar */}
+						<TouchableOpacity style={styles.modalBody} onPress={() => this.setModalVisible(false)}>
+							<Text style={styles.modalBodyText}>Cerrar</Text>
+							<Image
+								source={require('../../assets/images/Map/close.png')}
+								style={{ height: width * 0.05, width: width * 0.05 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
+					</View>
+				</Modal>
+			</View>
+		);
+
 		return (
 			<SafeAreaView style={styles.container}>
 				<View>
@@ -788,7 +760,23 @@ export default class Map extends Component {
 					/>
 				</View>
 				<StatusBar color="#c7175b" />
-				<View style={styles.mapContainer}>{!this.state.addMarker ? mapMarkers : addMarker}</View>
+				<View style={styles.mapContainer}>
+					{!this.state.addMarker ? !this.state.modalVisible ? mapMarkers : modal : addMarker}
+				</View>
+				{!this.state.addMarker && (
+					<View>
+						<View style={styles.footerBar}>
+							<Text style={styles.interestPoints}>Puntos de interes</Text>
+							<TouchableOpacity onPress={() => this.setModalVisible(true)}>
+								<Image
+									source={require('../../assets/images/ArrowDown/arrow-down-white.png')}
+									style={{ height: width * 0.05, width: width * 0.05 }}
+									resizeMode="contain"
+								/>
+							</TouchableOpacity>
+						</View>
+					</View>
+				)}
 			</SafeAreaView>
 		);
 	}
@@ -804,7 +792,7 @@ const styles = StyleSheet.create({
 	},
 	map: {
 		width: '100%',
-		height: height * 0.88,
+		height: height * 0.78,
 		left: 0,
 		top: 0,
 		right: 0,
@@ -901,5 +889,46 @@ const styles = StyleSheet.create({
 		top: 0,
 		right: 0,
 		bottom: 0
+	},
+	footerBar: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignContent: 'center',
+		alignItems: 'center',
+		height: height / 11,
+		width: width,
+		backgroundColor: '#e2487d',
+		paddingLeft: 15,
+		paddingRight: 15
+	},
+	interestPoints: {
+		fontSize: 20,
+		fontWeight: 'normal',
+		fontStyle: 'normal',
+		color: 'white',
+		fontFamily: 'AvenirNextLTPro-Regular'
+	},
+	modal: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'column',
+		alignContent: 'center',
+		padding: 15
+	},
+	modalBody: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignContent: 'flex-start',
+		alignItems: 'center'
+	},
+	modalBodyText: {
+		fontSize: 20,
+		fontWeight: 'normal',
+		fontStyle: 'normal',
+		color: '#676766',
+		fontFamily: 'AvenirNextLTPro-Regular',
+		marginRight: 10
 	}
 });
