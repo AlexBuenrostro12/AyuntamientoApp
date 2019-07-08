@@ -170,9 +170,6 @@ export default class Map extends Component {
 	}
 	// Enable native button
 	goBackHandler = () => {
-		console.log('this.props: ', this.props);
-		const { closeDrawer } = this.props.navigation;
-		closeDrawer();
 		return true;
 	};
 
@@ -471,7 +468,7 @@ export default class Map extends Component {
 				return require('../../assets/images/Map/entertaiment.png');
 			case 'Templo':
 				return require('../../assets/images/Map/church.png');
-			case 'Consultorio medico':
+			case 'Servicios medicos':
 				return require('../../assets/images/Map/hospital.png');
 			case 'Farmacia':
 				return require('../../assets/images/Map/pharmacy.png');
@@ -499,7 +496,7 @@ export default class Map extends Component {
 				return styles.borderTourism;
 			case 'Templo':
 				return styles.borderChurchs;
-			case 'Consultorio medico':
+			case 'Servicios medicos':
 				return styles.borderMedicalServices;
 			case 'Farmacia':
 				return styles.borderMedicalServices;
@@ -683,21 +680,6 @@ export default class Map extends Component {
 								resizeMode="contain"
 							/>
 						</TouchableOpacity>
-						{/* Consultorios medicos */}
-						<TouchableOpacity
-							style={styles.modalBody}
-							onPress={() => {
-								this.setModalVisible(false);
-								this.filterMarkersHandler('Consultorio medico');
-							}}
-						>
-							<Text style={styles.modalBodyText}>Consultorios medicos</Text>
-							<Image
-								source={require('../../assets/images/Map/hospital.png')}
-								style={{ height: width * 0.08, width: width * 0.08 }}
-								resizeMode="contain"
-							/>
-						</TouchableOpacity>
 						{/* Cultura */}
 						<TouchableOpacity
 							style={styles.modalBody}
@@ -788,6 +770,21 @@ export default class Map extends Component {
 								resizeMode="contain"
 							/>
 						</TouchableOpacity>
+						{/* Servicios medicos */}
+						<TouchableOpacity
+							style={styles.modalBody}
+							onPress={() => {
+								this.setModalVisible(false);
+								this.filterMarkersHandler('Servicios medicos');
+							}}
+						>
+							<Text style={styles.modalBodyText}>Servicios medicos</Text>
+							<Image
+								source={require('../../assets/images/Map/hospital.png')}
+								style={{ height: width * 0.08, width: width * 0.08 }}
+								resizeMode="contain"
+							/>
+						</TouchableOpacity>
 						{/* Servicios publicos */}
 						<TouchableOpacity
 							style={styles.modalBody}
@@ -852,7 +849,7 @@ export default class Map extends Component {
 						goBack={() => this.setState({ addMarker: false })}
 						isAdd={this.state.addMarker}
 						save={this.uploadPhotoHandler}
-						isAdmin={true}
+						isAdmin={this.state.isAdmin}
 					/>
 				</View>
 				<StatusBar color="#c7175b" />

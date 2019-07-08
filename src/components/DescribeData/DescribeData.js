@@ -35,7 +35,7 @@ export default class DescribreData extends Component {
 	};
 	static navigationOptions = {
 		header: null,
-		drawerLabel: () => null
+		drawerLabel: () => null,
 	};
 
 	getFullImageSize = (imagen) => {
@@ -82,8 +82,6 @@ export default class DescribreData extends Component {
 	}
 	// Enable native button
 	goBackHandler = () => {
-		this.setState({ loaded: false });
-		this.state.navigate(this.state.data.type);
 		return true;
 	};
 	//Send email
