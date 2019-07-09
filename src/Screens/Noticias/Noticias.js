@@ -5,13 +5,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import axiosCloudinary from 'axios';
-import FCM, {
-	NotificationActionType,
-	RemoteNotificationResult,
-	WillPresentNotificationResult,
-	NotificationType,
-	FCMEvent
-} from 'react-native-fcm';
+import FCM from 'react-native-fcm';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
@@ -21,41 +15,6 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import CustomInput from '../../components/CustomInput/CustomInput';
 import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
-
-FCM.on(FCMEvent.Notification, async (notif) => {
-	console.log('FCMEvent: ', FCMEvent);
-	console.log('notif: ', notif);
-	if (notif.local_notification) {
-		//This is a local notification
-	}
-	if (notif.opened_from_tray) {
-		//IOS: app is open/resumed because user clicked banner
-		//Android: app is open/resumed because user clicked banner o tapped app icon
-		console.log('Clicked in the notification!');
-	}
-	// await someAsyncCall();
-	if (Platform.OS === 'ios') {
-		//Optionial
-		//IOS requires developers to call completionHandler to end notification process.
-		//This library handles it for you automatically with default behavior
-		//notif._notificationType is acailable for iOS platfrom
-		switch (notif._notificationType) {
-			case NotificationType.Remote:
-				notif.finish(RemoteNotificationResult.NewData);
-				break;
-			case NotificationType.NotificationResponse:
-				notif.finish();
-				break;
-			case NotificationType.WillPresent:
-				notif.finish(WillPresentNotificationResult.All);
-				break;
-		}
-	}
-});
-FCM.on(FCMEvent.RefreshToken, (token) => {
-	console.log(token);
-	//fcm token may not available on first load, catch it here
-});
 
 const theme = {
 	commonFlex: '1',
@@ -196,7 +155,7 @@ export default class Noticias extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-		//Create notification channel
+		// Create notification channel
 		FCM.createNotificationChannel({
 			id: 'null',
 			name: 'Default',
@@ -204,7 +163,7 @@ export default class Noticias extends Component {
 			priority: 'high'
 		});
 
-		//get the notification
+		// get the notification
 		try {
 			const requestPermissions = await FCM.requestPermissions({ badge: false, sound: true, alert: true });
 			console.log('requestPermissions: ', requestPermissions);
@@ -270,7 +229,6 @@ export default class Noticias extends Component {
 	};
 	//Get fcmTokens
 	getFCMTokens = () => {
-		//Get fcm tokens
 		const fetchedfcmTokens = [];
 		axios
 			.get('/fcmtokens.json?auth=' + this.state.token)
@@ -319,7 +277,7 @@ export default class Noticias extends Component {
 				});
 		}
 		if (exist) this.setState({ allReadyToNotification: true });
-	}; //end
+	}; //verifyFCMTokens
 	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
 			...this.state.form
