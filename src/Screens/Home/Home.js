@@ -8,13 +8,58 @@ import {
 	Dimensions,
 	BackHandler,
 	Image,	
+	Platform
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import FCM, {
+	NotificationActionType,
+	RemoteNotificationResult,
+	WillPresentNotificationResult,
+	NotificationType,
+	FCMEvent
+} from 'react-native-fcm';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import SwiperBanner from '../../components/SwiperBanner/SwiperBanner';
+
+// FCM 
+FCM.on(FCMEvent.Notification, async (notif) => {
+	console.log('FCMEvent: ', FCMEvent);
+	console.log('notif: ', notif);
+	if (notif.local_notification) {
+		//This is a local notification
+	}
+	if (notif.opened_from_tray) {
+		//IOS: app is open/resumed because user clicked banner
+		//Android: app is open/resumed because user clicked banner o tapped app icon
+		console.log('Clicked in the notification!');
+	}
+	// await someAsyncCall();
+	if (Platform.OS === 'ios') {
+		//Optionial
+		//IOS requires developers to call completionHandler to end notification process.
+		//This library handles it for you automatically with default behavior
+		//notif._notificationType is acailable for iOS platfrom
+		switch (notif._notificationType) {
+			case NotificationType.Remote:
+				notif.finish(RemoteNotificationResult.NewData);
+				break;
+			case NotificationType.NotificationResponse:
+				notif.finish();
+				break;
+			case NotificationType.WillPresent:
+				notif.finish(WillPresentNotificationResult.All);
+				break;
+		}
+	}
+});
+FCM.on(FCMEvent.RefreshToken, (token) => {
+	console.log(token);
+	//fcm token may not available on first load, catch it here
+});
+// FCM
 
 export default class Home extends Component {
 	state = {
@@ -22,6 +67,10 @@ export default class Home extends Component {
 		loading: false,
 		token: null,
 		refreshing: false,
+		notificationToken: null,
+		fcmTokens: [],
+		allReadyToNotification: false
+
 	};
 
 	//Style of drawer navigation
@@ -74,7 +123,27 @@ export default class Home extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-	}
+
+		//Create notification channel
+		FCM.createNotificationChannel({
+			id: 'null',
+			name: 'Default',
+			description: 'used for example',
+			priority: 'high'
+		});
+
+		//get the notification
+		try {
+			const requestPermissions = await FCM.requestPermissions({ badge: false, sound: true, alert: true });
+			console.log('requestPermissions: ', requestPermissions);
+			const FCMToken = await FCM.getFCMToken();
+			console.log('getFCMToken, ', FCMToken);
+			const getInitialNotification = await FCM.getInitialNotification();
+			console.log('getInitialNotification, ', getInitialNotification);
+			this.setState({ notificationToken: FCMToken }, () => this.getFCMTokens());
+		} catch (error) {}
+	};
+
 	componentWillUnmount() {
 		BackHandler.removeEventListener('hardwareBackPress', this.goBackHandler);
 	};
@@ -82,6 +151,58 @@ export default class Home extends Component {
 	goBackHandler = () => {
 		return true;
 	};
+
+	//Get fcmTokens
+	getFCMTokens = () => {
+		const fetchedfcmTokens = [];
+		axios
+			.get('/fcmtokens.json?auth=' + this.state.token)
+			.then((res) => {
+				for (let key in res.data) {
+					fetchedfcmTokens.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				const fcmtkns = [];
+				for (let i = 0; i < fetchedfcmTokens.length; i++) {
+					const element = fetchedfcmTokens[i];
+					let fcmToken = element.tokenData[Object.keys(element.tokenData)];
+					fcmtkns[i] = fcmToken;
+				}
+				this.setState({ fcmTokens: fcmtkns }, () => this.verifyfcmTokens());
+			})
+			.catch((err) => {});
+	};
+	//Verify tokens
+	verifyfcmTokens = () => {
+		let exist = false;
+		//Check if this token already exist in db
+		for (let i = 0; i < this.state.fcmTokens.length; i++) {
+			const element = this.state.fcmTokens[i];
+			if (element === this.state.notificationToken) exist = true;
+		}
+
+		if (!exist) {
+			const formData = {};
+			formData['token' + Math.floor(Math.random() * 1000 + 1) + 'fcm'] = this.state.notificationToken;
+			const fcmtoken = {
+				tokenData: formData
+			};
+			axios
+				.post('/fcmtokens.json?auth=' + this.state.token, fcmtoken)
+				.then((response) => {
+					this.getFCMTokens();
+				})
+				.catch((error) => {
+					this.setState({ loading: false });
+					Alert.alert('Noticias', 'Noticia fallida al enviar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+				});
+		}
+		if (exist) this.setState({ allReadyToNotification: true });
+	}; //end
 
 	getNews = () => {
 		console.log('entro')

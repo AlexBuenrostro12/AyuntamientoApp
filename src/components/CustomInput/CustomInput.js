@@ -119,6 +119,7 @@ const customInput = (props) => {
 					<Picker.Item label="Direction 4" value="Direction 4" />
 				</Picker>
 			);
+			break;
 			case 'PickAddress':
 			input = (
 				<Picker
