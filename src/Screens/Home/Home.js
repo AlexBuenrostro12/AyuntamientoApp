@@ -80,9 +80,6 @@ export default class Home extends Component {
 	};
 	// Enable native button
 	goBackHandler = () => {
-		console.log('this.props: ', this.props);
-		const { closeDrawer } = this.props.navigation;
-		closeDrawer();
 		return true;
 	};
 
