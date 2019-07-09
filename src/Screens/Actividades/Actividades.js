@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, SafeAreaView, ScrollView, Alert, TimePickerAndroid, Dimensions, Image } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	SafeAreaView,
+	ScrollView,
+	Alert,
+	TimePickerAndroid,
+	Dimensions,
+	Image,
+	Platform
+} from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import ImagePicker from 'react-native-image-picker';
 import axiosCloudinary from 'axios';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
+import FCM from 'react-native-fcm';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
@@ -13,6 +24,7 @@ import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
 import Actividad from '../../components/Actividad/Actividad';
+import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 
 const { height, width } = Dimensions.get('window');
 
@@ -92,15 +104,19 @@ export default class Actividades extends Component {
 		texToSearch: '',
 		showCalendar: false,
 		calendarDates: {},
+		notificationToken: null,
+		fcmTokens: [],
+		allReadyToNotification: false,
 	};
 
-	 //Style of drawer navigation
-	 static navigationOptions = {
+	//Style of drawer navigation
+	static navigationOptions = {
 		drawerIcon: ({ tintColor }) => (
-			<Image 
+			<Image
 				source={require('../../assets/images/Drawer/activities.png')}
 				style={styles.drawerIcon}
-				resizeMode='contain' />
+				resizeMode="contain"
+			/>
 		)
 	};
 
@@ -147,7 +163,26 @@ export default class Actividades extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-	};
+
+		//Create notification channel
+		FCM.createNotificationChannel({
+			id: 'null',
+			name: 'Default',
+			description: 'used for example',
+			priority: 'high'
+		});
+
+		// get the notification
+		try {
+			const requestPermissions = await FCM.requestPermissions({ badge: false, sound: true, alert: true });
+			console.log('requestPermissions: ', requestPermissions);
+			const FCMToken = await FCM.getFCMToken();
+			console.log('getFCMToken, ', FCMToken);
+			const getInitialNotification = await FCM.getInitialNotification();
+			console.log('getInitialNotification, ', getInitialNotification);
+			this.setState({ notificationToken: FCMToken }, () => this.getFCMTokens());
+		} catch (error) {}
+	}
 
 	getActivities = () => {
 		this.setState({ loading: true, addAct: false, showButtons: true });
@@ -236,6 +271,98 @@ export default class Actividades extends Component {
 		return isValid;
 	}
 
+	//Get fcmTokens
+	getFCMTokens = () => {
+		const fetchedfcmTokens = [];
+		axios
+			.get('/fcmtokens.json?auth=' + this.state.token)
+			.then((res) => {
+				for (let key in res.data) {
+					fetchedfcmTokens.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				const fcmtkns = [];
+				for (let i = 0; i < fetchedfcmTokens.length; i++) {
+					const element = fetchedfcmTokens[i];
+					let fcmToken = element.tokenData[Object.keys(element.tokenData)];
+					fcmtkns[i] = fcmToken;
+				}
+				this.setState({ fcmTokens: fcmtkns }, () => this.verifyfcmTokens());
+			})
+			.catch((err) => {});
+	};
+	//Verify tokens
+	verifyfcmTokens = () => {
+		let exist = false;
+		//Check if this token already exist in db
+		for (let i = 0; i < this.state.fcmTokens.length; i++) {
+			const element = this.state.fcmTokens[i];
+			if (element === this.state.notificationToken) exist = true;
+		}
+
+		if (!exist) {
+			const formData = {};
+			formData['token' + Math.floor(Math.random() * 1000 + 1) + 'fcm'] = this.state.notificationToken;
+			const fcmtoken = {
+				tokenData: formData
+			};
+			axios
+				.post('/fcmtokens.json?auth=' + this.state.token, fcmtoken)
+				.then((response) => {
+					this.getFCMTokens();
+				})
+				.catch((error) => {
+					this.setState({ loading: false });
+					Alert.alert('Noticias', 'Noticia fallida al enviar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+				});
+		}
+		if (exist) this.setState({ allReadyToNotification: true });
+	}; //verifyFCMTokens
+
+	//SendRemoteNotification
+	sendRemoteNotification = () => {
+		this.getFCMTokens();
+		if (this.state.allReadyToNotification) {
+			console.log(
+				'state: ',
+				this.state.allReadyToNotification,
+				this.state.fcmTokens,
+				this.state.notificationToken
+			);
+			let body;
+			console.log('sendRemoteNotification:, ', this.state.notificationToken);
+			if (Platform.OS === 'android') {
+				body = {
+					registration_ids: this.state.fcmTokens,
+					notification: {
+						title: 'Nueva actividad',
+						body: '!' + this.state.form['actividad'].value + '¡',
+						sound: null,
+						tag: this.state.form['actividad'].value,
+						priority: 'high'
+					}
+				};
+			} else {
+				body = {
+					to: this.state.notificationToken,
+					notification: {
+						title: 'Simple FCM Client',
+						body: 'Click me to go to detail',
+						sound: 'default'
+					},
+					data: {},
+					priority: 10
+				};
+			}
+
+			firebaseClient.send(JSON.stringify(body), 'notification');
+		}
+	};
+
 	sendNewActivityHandler = () => {
 		//check if the form is valid
 		this.setState({ loading: true });
@@ -251,6 +378,7 @@ export default class Actividades extends Component {
 			axios
 				.post('/activities.json?auth=' + this.state.token, activity)
 				.then((response) => {
+					this.sendRemoteNotification();
 					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
 					Alert.alert(
 						'Actividades',
@@ -640,7 +768,7 @@ const styles = StyleSheet.create({
 		height: width / 0.8
 	},
 	drawerIcon: {
-		height: width * .07,
-		width: width * .07,
+		height: width * 0.07,
+		width: width * 0.07
 	}
 });
