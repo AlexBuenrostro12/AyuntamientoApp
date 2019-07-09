@@ -119,6 +119,53 @@ const customInput = (props) => {
 					<Picker.Item label="Direction 4" value="Direction 4" />
 				</Picker>
 			);
+			case 'PickAddress':
+			input = (
+				<Picker
+					mode="dropdown"
+					iosHeader={props.value}
+					iosIcon={
+						<Image
+							style={{ width: 25, height: 25 }}
+							source={require('../../assets/images/ArrowDown/arrow-down.png')}
+						/>
+					}
+					style={{ width: undefined }}
+					selectedValue={props.value}
+					onValueChange={props.changed}
+				>
+					<Picker.Item label="Datos especificos" value="Datos especificos" />
+					<Picker.Item label="Tarjeta del negocio" value="Tarjeta del negocio" />
+				</Picker>
+			);
+			break;
+			case 'PickCategory':
+			input = (
+				<Picker
+					mode="dropdown"
+					iosHeader={props.value}
+					iosIcon={
+						<Image
+							style={{ width: 25, height: 25 }}
+							source={require('../../assets/images/ArrowDown/arrow-down.png')}
+						/>
+					}
+					style={{ width: undefined }}
+					selectedValue={props.value}
+					onValueChange={props.changed}
+				>
+					<Picker.Item label="Educación" value="Educación" />
+					<Picker.Item label="Servicios publicos" value="Servicios publicos" />
+					<Picker.Item label="Gasolinera" value="Gasolinera" />
+					<Picker.Item label="Hotel" value="Hotel" />
+					<Picker.Item label="Alimentos" value="Alimentos" />
+					<Picker.Item label="Deporte" value="Deporte" />
+					<Picker.Item label="Cultura" value="Cultura" />
+					<Picker.Item label="Templo" value="Templo" />
+					<Picker.Item label="Servicios medicos" value="Servicios medicos" />
+					<Picker.Item label="Farmacia" value="Farmacia" />
+				</Picker>
+			);
 			break;
 		case 'LoadImage':
 			input = (
