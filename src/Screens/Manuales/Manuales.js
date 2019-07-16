@@ -284,7 +284,7 @@ export default class Manuales extends Component {
 		));
 
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<ScrollView style={{ flex: 1, flexGrow: 1 }}>
 				<CustomCardItemTitle
 					title="Transparencia"
 					description="Visualice los manuales de transparencia"
@@ -295,7 +295,7 @@ export default class Manuales extends Component {
 		);
 
 		const body = (
-			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
+			<Card style={{ flex: 2, flexGrow: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
 				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
 					<View style={styles.cardBody}>
 						{this.state.loading ? (
