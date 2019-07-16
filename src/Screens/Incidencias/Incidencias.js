@@ -8,7 +8,8 @@ import {
 	Alert,
 	Dimensions,
 	PermissionsAndroid,
-	Image
+	Image,
+	BackHandler
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
@@ -29,6 +30,9 @@ import Incidencia from '../../components/Incidencias/Incidencia';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
 export default class Incidencias extends Component {
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		formDescripcion: {
 			asunto: {
@@ -192,6 +196,13 @@ export default class Incidencias extends Component {
         locationPermission: false
 	};
 
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
+	};
+
 	//Style of drawer navigation
 	static navigationOptions = {
 		drawerIcon: ({ tintColor }) => (
@@ -222,6 +233,10 @@ export default class Incidencias extends Component {
 	}
 
 	async componentDidMount() {
+		//BackHandler
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 		//Get the token and time of expiration
 		this.getCurrentDate();
 		this.requestLocationPermission();
@@ -265,7 +280,23 @@ export default class Incidencias extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-	}
+	};
+
+	onBackButtonPressAndroid = () => {
+		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
+		const parent = dangerouslyGetParent();
+		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
+
+		if (isDrawerOpen) closeDrawer();
+		else openDrawer();
+				
+		return true;
+	};
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
+	};
 
 	findLocationHandler = () => {
 		this.watchId = navigator.geolocation.watchPosition(
@@ -287,17 +318,6 @@ export default class Incidencias extends Component {
 		);
     };
     
-    // componentWillUpdate() {
-    //     console.log('willUpdate')
-    //     if (this.state.locationPermission) this.findLocationHandler();
-    //     console.log(this.state.latitude, this.state.longitude)
-    // }
-
-    // componentDidUpdate() {
-    //     console.log('didUpdate')
-    //     this.requestLocationPermission();
-    //     console.log(this.state.latitude, this.state.longitude)
-    // }
 
 	requestLocationPermission = async () => {
 		try {

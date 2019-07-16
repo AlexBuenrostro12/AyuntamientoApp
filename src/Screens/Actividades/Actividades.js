@@ -8,7 +8,8 @@ import {
 	TimePickerAndroid,
 	Dimensions,
 	Image,
-	Platform
+	Platform,
+	BackHandler
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -29,6 +30,9 @@ import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 const { height, width } = Dimensions.get('window');
 
 export default class Actividades extends Component {
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		token: null,
 		loading: true,
@@ -109,6 +113,13 @@ export default class Actividades extends Component {
 		allReadyToNotification: false,
 	};
 
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
+	};
+
 	//Style of drawer navigation
 	static navigationOptions = {
 		drawerIcon: ({ tintColor }) => (
@@ -121,6 +132,10 @@ export default class Actividades extends Component {
 	};
 
 	async componentDidMount() {
+		//BackHandler
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 		let token = (expiresIn = email = null);
 		try {
 			console.log('Entro al try');
@@ -182,7 +197,26 @@ export default class Actividades extends Component {
 			console.log('getInitialNotification, ', getInitialNotification);
 			this.setState({ notificationToken: FCMToken }, () => this.getFCMTokens());
 		} catch (error) {}
-	}
+	};
+
+	onBackButtonPressAndroid = () => {
+		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
+		const parent = dangerouslyGetParent();
+		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
+
+		if (!this.state.showCalendar) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else 
+			this.showCalendar('refresh');
+				
+		return true;
+	};
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
+	};
 
 	getActivities = () => {
 		this.setState({ loading: true, addAct: false, showButtons: true });

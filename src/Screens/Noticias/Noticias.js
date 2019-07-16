@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView, Image, BackHandler } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -40,6 +40,9 @@ const StyledCardBody = styled.View`
 `;
 
 export default class Noticias extends Component {
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		news: [],
 		loading: false,
@@ -108,6 +111,13 @@ export default class Noticias extends Component {
 		texToSearch: ''
 	};
 
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
+	};
+
 	//Style of drawer navigation
 	static navigationOptions = {
 		drawerIcon: ({ tintColor }) => (
@@ -119,6 +129,10 @@ export default class Noticias extends Component {
 	};
 
 	async componentDidMount() {
+		//BackHandler
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 
 		let token = (expiresIn = null);
 		try {
@@ -173,7 +187,24 @@ export default class Noticias extends Component {
 			console.log('getInitialNotification, ', getInitialNotification);
 			this.setState({ notificationToken: FCMToken }, () => this.getFCMTokens());
 		} catch (error) {}
-	}
+	};
+	//Native backbutton
+	onBackButtonPressAndroid = () => {
+		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
+		const parent = dangerouslyGetParent();
+		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
+
+		if (isDrawerOpen) closeDrawer();
+		else openDrawer();
+				
+		return true;
+	};
+	//Remove subscription from native button
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
+	};
+
 	//SendRemoteNotification
 	sendRemoteNotification = () => {
 		this.getFCMTokens();
