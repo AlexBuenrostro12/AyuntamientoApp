@@ -362,14 +362,14 @@ export default class BusEscolar extends Component {
 		const spinner = <CustommSpinner color="blue" />;
 
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.40 }}>
 				<CustomCardItemTitle
 					title="BUS ESCOLAR"
 					description="Consulta los horarios y destinos de tus camiones"
 					info="Delice hacia abajo, para los horarios más antiguos."
 					image={require('../../assets/images/Ubicacion/search.png')}
 				/>
-			</ScrollView>
+			</View>
 		);
 
 		const body = (

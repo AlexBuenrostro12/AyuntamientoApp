@@ -412,14 +412,14 @@ export default class BuzonCiudadano extends Component {
 			/>
 		));
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.40 }}>
 				<CustomCardItemTitle
 					title="BUZÓN CIUDADANO"
 					description="Visualice y realice sugerencias de una manera sencilla."
 					info="Delice hacia abajo, para las sugerencias más antiguas."
 					image={require('../../assets/images/Buzon/buzon.png')}
 				/>
-			</ScrollView>
+			</View>
 		);
 
 		const body = (

@@ -649,14 +649,14 @@ export default class Actividades extends Component {
 		);
 
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.42 }}>
 				<CustomCardItemTitle
 					title="ACTIVIDADES"
 					description="Consulte las actividades y efemerides que celebramos en nuestro gobierno ciudadano."
 					info="Delice hacia abajo, para leer las actividades a futuro."
 					image={require('../../assets/images/Descripcion/descripcion.png')}
 				/>
-			</ScrollView>
+			</View>
 		);
 
 		const body = (

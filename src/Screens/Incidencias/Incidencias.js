@@ -911,14 +911,14 @@ export default class Incidencias extends Component {
 			/>
 		));
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.45 }}>
 				<CustomCardItemTitle
 					title="REPORTE CIUDADANO"
 					description="Realice reportes de fallas en servicios y otras emergencias en su localidad."
 					info="Escriba todos los campos que se presenta."
 					image={require('../../assets/images/Preferences/incidents.png')}
 				/>
-			</ScrollView>
+			</View>
 		);
 
 		const body = (

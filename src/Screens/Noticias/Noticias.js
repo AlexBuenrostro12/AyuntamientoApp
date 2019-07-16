@@ -549,7 +549,7 @@ export default class Noticias extends Component {
 			});
 		}
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.40 }}>
 				<CustomCardItemTitle
 					title="NOTICIAS"
 					description="Las Noticias más 
@@ -557,7 +557,7 @@ export default class Noticias extends Component {
 					info="Delice hacia abajo, para las noticias mas antiguas."
 					image={require('../../assets/images/Noticia/speaker.png')}
 				/>
-			</ScrollView>
+			</View>
 		);
 		const body = (
 			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
