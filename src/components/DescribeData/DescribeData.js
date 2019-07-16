@@ -20,7 +20,9 @@ import CustomButton from '.././CustomButton/CustomButton';
 import HeaderToolbar from '../HeaderToolbar/HeaderToolbar';
 
 export default class DescribreData extends Component {
-	_isMounted = false;
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		zoomImage: false,
 		fullHeight: null,
@@ -33,6 +35,14 @@ export default class DescribreData extends Component {
 		approved: false,
 		noApproved: true
 	};
+
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
+	};
+
 	static navigationOptions = {
 		header: null,
 		drawerLabel: () => null,
@@ -50,8 +60,23 @@ export default class DescribreData extends Component {
 	componentDidMount() {
 		// Geocoder.init('AIzaSyCnH6V7DIofwmPbRqYN4ToY15kC-Jx7LbI'); only works fine if pay for this api
 		this.getDataHandler();
-		BackHandler.addEventListener('hardwareBackPress', this.goBackHandler);
-	}
+		//BackHandler
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
+	};
+
+	onBackButtonPressAndroid = () => {
+		this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type));
+				
+		return true;
+	};
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
+	};
+	
 	getAddressHandler = (latitude, longitude) => {
 		Geocoder.from({
 			latitude: latitude,
@@ -64,9 +89,7 @@ export default class DescribreData extends Component {
 			})
 			.catch((error) => console.warn(error));
 	};
-	componentWillUnmount() {
-		BackHandler.removeEventListener('hardwareBackPress', this.goBackHandler);
-	}
+
 	getDataHandler = () => {
 		const { getParam, navigate } = this.props.navigation;
 		const data = getParam('data', null);
