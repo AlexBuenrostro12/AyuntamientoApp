@@ -726,7 +726,7 @@ export default class Actividades extends Component {
 						<HeaderToolbar
 							open={this.props}
 							title={'Actividades'}
-							color="#f8ae40"
+							color="#00a19a"
 							showContentRight={true}
 							titleOfAdd="Nueva Actividad"
 							get={this.getActivities}
@@ -748,7 +748,7 @@ export default class Actividades extends Component {
 							isSearch={this.state.search}
 						/>
 					</View>
-					<StatusBar color="#f39028" />
+					<StatusBar color="#00847b" />
 					<View style={{ flex: 1, margin: 10 }}>{!this.state.addAct ? activiades : addAct}</View>
 				</View>
 			</SafeAreaView>

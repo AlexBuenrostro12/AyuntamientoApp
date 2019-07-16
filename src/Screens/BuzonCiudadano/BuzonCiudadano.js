@@ -481,7 +481,7 @@ export default class BuzonCiudadano extends Component {
 						<HeaderToolbar 
 							open={this.props}
 							title="Sugerencias"
-							color="#00a19a"
+							color="#f8ae40"
 							showContentRight={true}
 							titleOfAdd="Nueva sugerencia"
 							get={this.getSuggestions}
@@ -499,7 +499,7 @@ export default class BuzonCiudadano extends Component {
 							isSearch={this.state.search}
 						/>
 					</StyledHeader>
-					<StatusBar color="#FEA621" />
+					<StatusBar color="#f39028" />
 					<View style={{ flex: 1, margin: 10 }}>
 						{this.state.addSuggestion ? addSugerencia : sugerencia}
 					</View>

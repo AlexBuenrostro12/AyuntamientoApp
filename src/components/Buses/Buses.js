@@ -40,7 +40,7 @@ export default class Buses extends Component {
 		obj.isAdmin = this.props.isAdmin;
 		obj.deleteItem = this.alertCheckDeleteItem;
 		obj.type = 'Bus Escolar';
-		obj.barProps = { title: 'Bus Escolar', status: '#00847b', bar: '#00a19a' };
+		obj.barProps = { title: 'Bus Escolar', status: '#bac95f', bar: '#d4e283' };
 		this.setState({ showItemCard: true, itemKey: key }, () => this.goToDescribeData(obj));
 	};
 

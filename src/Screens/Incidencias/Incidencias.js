@@ -950,7 +950,7 @@ export default class Incidencias extends Component {
 						<HeaderToolbar
 							open={this.props}
 							title="Reporte"
-							color="#e2487d"
+							color="#1dd2fc"
 							showContentRight={true}
 							titleOfAdd="Nuevo reporte"
 							get={this.getIncidents}
@@ -967,7 +967,7 @@ export default class Incidencias extends Component {
 							isSearch={this.state.search}
 						/>
 					</View>
-					<StatusBar color="#c7175b" />
+					<StatusBar color="#00a3e4" />
 					<View style={{ flex: 1, margin: 10 }}>{!this.state.addIncident ? incidencias : addIncident}</View>
 				</View>
 			</SafeAreaView>

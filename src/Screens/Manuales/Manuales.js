@@ -268,7 +268,12 @@ export default class Manuales extends Component {
 		this.setState({ date: today });
 	}
 
+	// shouldComponentUpdate() {
+	// 	console.log('should update the component?')
+	// };
+
 	render() {
+	
 		const spinner = <CustomSpinner color="blue" />;
 
 		const list = this.state.manuals.map((m, index) => (
@@ -289,7 +294,7 @@ export default class Manuales extends Component {
 		const title = (
 			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.40 }}>
 				<CustomCardItemTitle
-					title="Transparencia"
+					title="TRANSPARENCIA"
 					description="Visualice los manuales de transparencia"
 					info="Delice hacia abajo, para los manuales más antiguas."
 					image={require('../../assets/images/Buzon/buzon.png')}
@@ -404,7 +409,7 @@ export default class Manuales extends Component {
 							showLikeIcons={this.state.showLikeIcons}
 						/>
 					</View>
-					<StatusBar color="#FEA621" />
+					<StatusBar color="#00847b" />
 					<View style={{ flex: 1, margin: 10 }}>{!this.state.show ? manuales : addManual}</View>
 				</View>
 			</SafeAreaView>

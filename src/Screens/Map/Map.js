@@ -851,7 +851,7 @@ export default class Map extends Component {
 					<HeaderToolbar
 						open={this.props}
 						title="Mapa"
-						color="#e2487d"
+						color="#f8ae40"
 						showContentRight={true}
 						titleOfAdd="Nuevo marcador"
 						get={this.getMarkers}
@@ -862,7 +862,7 @@ export default class Map extends Component {
 						isAdmin={this.state.isAdmin}
 					/>
 				</View>
-				<StatusBar color="#c7175b" />
+				<StatusBar color="#f39028" />
 				<View style={styles.mapContainer}>
 					{!this.state.addMarker ? (!this.state.modalVisible ? (!this.state.loading ? mapMarkers : spinner) : modal) : addMarker}
 				</View>
@@ -1001,7 +1001,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		height: height / 11,
 		width: width,
-		backgroundColor: '#e2487d',
+		backgroundColor: '#f8ae40',
 		paddingLeft: 15,
 		paddingRight: 15
 	},

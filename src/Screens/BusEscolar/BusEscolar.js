@@ -436,7 +436,7 @@ export default class BusEscolar extends Component {
 						<HeaderToolbar 
 							open={this.props} 
 							title="Buses"
-							color="#00a19a"
+							color="#d4e283"
 							showContentRight={true}
 							titleOfAdd="Nuevo bus"
 							get={this.getBuses}
@@ -454,7 +454,7 @@ export default class BusEscolar extends Component {
 							isSearch={this.state.search}
 						/>	
 					</View>
-					<StatusBar color="#FEA621" />
+					<StatusBar color="#bac95f" />
 					<View style={{ flex: 1, margin: 10 }}>
 						{!this.state.addBus ? bus : addBus}
 					</View>

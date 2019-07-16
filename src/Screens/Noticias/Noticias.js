@@ -622,7 +622,7 @@ export default class Noticias extends Component {
 						<HeaderToolbar
 							open={this.props}
 							title="Noticias"
-							color="#00a19a"
+							color="#e2487d"
 							showContentRight={true}
 							titleOfAdd="Nueva noticia"
 							get={this.getNews}
@@ -642,7 +642,7 @@ export default class Noticias extends Component {
 							isSearch={this.state.search}
 						/>
 					</StyledHeader>
-					<StatusBar color="#00847b" />
+					<StatusBar color="#c7175b" />
 					<View style={{ flex: 1, margin: 10 }}>
 						<ThemeProvider theme={theme}>{!this.state.addNew ? noticias : addNew}</ThemeProvider>
 					</View>

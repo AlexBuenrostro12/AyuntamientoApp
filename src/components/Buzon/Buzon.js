@@ -50,7 +50,7 @@ export default class Buzon extends Component {
 				approvedItem: this.approveItemListHandler,
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'Buzón Ciudadano',
-				barProps: { title: 'Sugerencias', status: '#00847b', bar: '#00a19a' }
+				barProps: { title: 'Sugerencias', status: '#f39028', bar: '#f8ae40' }
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
