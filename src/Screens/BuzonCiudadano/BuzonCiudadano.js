@@ -103,7 +103,8 @@ export default class BuzonCiudadano extends Component {
 		showButtons: true,
 		notifications: true,
 		showLikeIcons: true,
-		texToSearch: ''
+		texToSearch: '',
+		search: false
 	};
 
 	constructor(props) {
@@ -175,8 +176,10 @@ export default class BuzonCiudadano extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (isDrawerOpen) closeDrawer();
-		else openDrawer();
+		if (!this.state.search) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else this.startSearch()
 				
 		return true;
 	};
@@ -363,6 +366,9 @@ export default class BuzonCiudadano extends Component {
 	searchTextHandler = (text) => {
 		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
 	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
 	filterData = (text) => {
 		if (text !== '') {
 			let ban = false;
@@ -489,6 +495,8 @@ export default class BuzonCiudadano extends Component {
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
 							search={this.filterData}
+							startSearch={this.startSearch}
+							isSearch={this.state.search}
 						/>
 					</StyledHeader>
 					<StatusBar color="#FEA621" />

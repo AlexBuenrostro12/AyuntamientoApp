@@ -7,13 +7,6 @@ import CustomInput from '../CustomInput/CustomInput';
 const { height, width } = Dimensions.get('window');
 
 export default class HeaderToolbar extends React.Component {
-	state = {
-		search: false,
-		texToSearch: ''
-	};
-	startSearch = () => {
-		this.setState({ search: !this.state.search });
-	};
 
 	render() {
 		//Main menu
@@ -173,7 +166,7 @@ export default class HeaderToolbar extends React.Component {
 		);
 
 		const search = (
-			<TouchableOpacity onPress={() => this.startSearch()}>
+			<TouchableOpacity onPress={() => this.props.startSearch()}>
 				<Image style={styles.settings} source={require('../../assets/images/Search/search.png')} />
 			</TouchableOpacity>
 		);
@@ -239,7 +232,7 @@ export default class HeaderToolbar extends React.Component {
 					width: width * .93,
 				}}
 			>
-				<TouchableOpacity onPress={() => this.startSearch()}>
+				<TouchableOpacity onPress={() => this.props.startSearch()}>
 					<Image style={styles.settings} source={require('../../assets/images/Preferences/back.png')} />
 				</TouchableOpacity>
 				<View style={{ alignSelf: 'center' }}>
@@ -264,7 +257,7 @@ export default class HeaderToolbar extends React.Component {
 					paddingLeft: 5
 				}}
 			>
-				{!this.state.search ? contentBar : <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding' enabled>{searBar}</KeyboardAvoidingView>}
+				{!this.props.isSearch ? contentBar : <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding' enabled>{searBar}</KeyboardAvoidingView>}
 			</View>
 		);
 	}

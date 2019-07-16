@@ -19,7 +19,6 @@ import CustommSpinner from '../../components/CustomSpinner/CustomSpinner';
 import axios from '../../../axios-ayuntamiento';
 import Buses from '../../components/Buses/Buses';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
 export default class BusEscolar extends Component {
@@ -85,7 +84,8 @@ export default class BusEscolar extends Component {
 		formIsValid: false,
 		showButtons: true,
 		showLikeIcons: true,
-		texToSearch: ''
+		texToSearch: '',
+		search: false,
 	};
 
 	constructor(props) {
@@ -154,8 +154,10 @@ export default class BusEscolar extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (isDrawerOpen) closeDrawer();
-		else openDrawer();
+		if (!this.state.search) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else this.startSearch()
 				
 		return true;
 	};
@@ -330,6 +332,9 @@ export default class BusEscolar extends Component {
 			}
 		} else this.getBuses();
 	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
 
 	render() {
 		console.log(this.state);
@@ -445,6 +450,8 @@ export default class BusEscolar extends Component {
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
 							search={this.filterData} 
+							startSearch={this.startSearch}
+							isSearch={this.state.search}
 						/>	
 					</View>
 					<StatusBar color="#FEA621" />

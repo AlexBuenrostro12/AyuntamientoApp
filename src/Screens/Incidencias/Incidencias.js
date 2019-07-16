@@ -193,7 +193,8 @@ export default class Incidencias extends Component {
 		showMap: false,
 		latitude: null,
         longitude: null,
-        locationPermission: false
+		locationPermission: false,
+		search: false,
 	};
 
 	constructor(props) {
@@ -287,8 +288,10 @@ export default class Incidencias extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (isDrawerOpen) closeDrawer();
-		else openDrawer();
+		if (!this.state.search) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else this.startSearch()
 				
 		return true;
 	};
@@ -707,6 +710,9 @@ export default class Incidencias extends Component {
 			}
 		} else this.getIncidents();
 	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
 
 	render() {
 		// console.log('type: ', this.state.typeOfLocation, 'showMap: ', this.state.showMap, 'ubicationForm: ', this.state.formUbicacion, 'ubicacionisValid: ', this.state.formUbicacionIsValid)
@@ -957,6 +963,8 @@ export default class Incidencias extends Component {
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
 							search={this.filterData}
+							startSearch={this.startSearch}
+							isSearch={this.state.search}
 						/>
 					</View>
 					<StatusBar color="#c7175b" />

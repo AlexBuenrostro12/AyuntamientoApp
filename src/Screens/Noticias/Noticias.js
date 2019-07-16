@@ -108,7 +108,8 @@ export default class Noticias extends Component {
 		allReadyToNotification: false,
 		notifications: true,
 		showLikeIcons: true,
-		texToSearch: ''
+		texToSearch: '',
+		search: false,
 	};
 
 	constructor(props) {
@@ -194,8 +195,10 @@ export default class Noticias extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (isDrawerOpen) closeDrawer();
-		else openDrawer();
+		if (!this.state.search) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else this.startSearch();
 				
 		return true;
 	};
@@ -518,6 +521,10 @@ export default class Noticias extends Component {
 			}
 		} else this.getNews();
 	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
+
 	render() {
 		const list = this.state.news.map((nw, index) => (
 			<Noticia
@@ -631,6 +638,8 @@ export default class Noticias extends Component {
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
 							search={this.filterData}
+							startSearch={this.startSearch}
+							isSearch={this.state.search}
 						/>
 					</StyledHeader>
 					<StatusBar color="#00847b" />

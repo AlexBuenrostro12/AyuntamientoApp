@@ -111,6 +111,7 @@ export default class Actividades extends Component {
 		notificationToken: null,
 		fcmTokens: [],
 		allReadyToNotification: false,
+		search: false,
 	};
 
 	constructor(props) {
@@ -204,11 +205,15 @@ export default class Actividades extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.showCalendar) {
+		if (!this.state.showCalendar && !this.state.search) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
-		} else 
-			this.showCalendar('refresh');
+		} else {
+			if (this.state.showCalendar)
+				this.showCalendar('refresh');
+			if (this.state.search)
+				this.startSearch();
+		}
 				
 		return true;
 	};
@@ -597,6 +602,9 @@ export default class Actividades extends Component {
 			}
 		} else this.getActivities();
 	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
 	showCalendar = (refresh) => {
 		this.setState({ showCalendar: !this.state.showCalendar });
 		if (refresh === 'refresh') this.getActivities();
@@ -736,6 +744,8 @@ export default class Actividades extends Component {
 							search={this.filterData}
 							calendar={this.showCalendar}
 							showCalendar={this.state.showCalendar}
+							startSearch={this.startSearch}
+							isSearch={this.state.search}
 						/>
 					</View>
 					<StatusBar color="#f39028" />
