@@ -9,6 +9,7 @@ const { height, width } = Dimensions.get('window');
 export default class HeaderToolbar extends React.Component {
 
 	render() {
+		console.log('this.props.color:headerToolbar: ', this.props.color);
 		//Main menu
 		const preferenceMenu = (
 			<TouchableOpacity style={{ marginLeft: 15 }}>

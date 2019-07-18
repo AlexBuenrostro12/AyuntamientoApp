@@ -9,7 +9,7 @@ import {
 	Alert,
 	ScrollView,
 	Image,
-	BackHandler
+	BackHandler,
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -273,7 +273,7 @@ export default class Manuales extends Component {
 	// };
 
 	render() {
-	
+		
 		const spinner = <CustomSpinner color="blue" />;
 
 		const list = this.state.manuals.map((m, index) => (
@@ -296,7 +296,7 @@ export default class Manuales extends Component {
 				<CustomCardItemTitle
 					title="TRANSPARENCIA"
 					description="Visualice los manuales de transparencia"
-					info="Delice hacia abajo, para los manuales más antiguas."
+					info="Delice hacia abajo, para los manuales más antiguos."
 					image={require('../../assets/images/Buzon/buzon.png')}
 				/>
 			</View>
@@ -388,7 +388,7 @@ export default class Manuales extends Component {
 				{this.state.loading && spinner}
 			</View>
 		);
-
+		
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={styles.container}>
