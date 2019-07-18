@@ -38,7 +38,7 @@ export default class Manuales extends Component {
 		loading: false,
 		manuals: [],
 		date: null,
-		isAdmin: null
+		isAdmin: null,
 	};
 
 	constructor(props) {
@@ -266,11 +266,7 @@ export default class Manuales extends Component {
 
 		today = mm + '/' + dd + '/' + yyyy;
 		this.setState({ date: today });
-	}
-
-	// shouldComponentUpdate() {
-	// 	console.log('should update the component?')
-	// };
+	};
 
 	render() {
 		
@@ -388,7 +384,7 @@ export default class Manuales extends Component {
 				{this.state.loading && spinner}
 			</View>
 		);
-		
+
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={styles.container}>
