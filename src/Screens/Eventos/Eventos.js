@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView, Image, BackHandler } from 'react-native';
+import { View, TimePickerAndroid, StyleSheet, Platform, Alert, Dimensions, ScrollView, Image, BackHandler } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -9,12 +9,13 @@ import FCM from 'react-native-fcm';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import axios from '../../../axios-ayuntamiento';
-import Noticia from '../../components/Noticia/Noticia';
+import Evento from '../../components/Evento/Evento';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
+import FormEvent from '../../components/Evento/FormEvent';
 
 const theme = {
 	commonFlex: '1',
@@ -39,19 +40,19 @@ const StyledCardBody = styled.View`
 	justify-content: center;
 `;
 
-export default class Noticias extends Component {
+export default class Eventos extends Component {
 	_didFocusSubscription;
 	_willBlurSubscription;
 
 	state = {
-		news: [],
+		events: [],
 		loading: false,
-		addNew: false,
+		addEvent: false,
 		isAdmin: null,
 		token: null,
 		formIsValid: false,
 		form: {
-			noticia: {
+			evento: {
 				itemType: 'FloatingLabel',
 				holder: 'Nombre',
 				value: '',
@@ -61,12 +62,6 @@ export default class Noticias extends Component {
 				},
 				valid: false
 			},
-			direccion: {
-				itemType: 'PickerDirection',
-				holder: 'Dirección',
-				value: 'Direccion 1',
-				valid: true
-			},
 			fecha: {
 				itemType: 'Date',
 				holder: 'Seleccione fecha',
@@ -75,7 +70,22 @@ export default class Noticias extends Component {
 					haveValue: true
 				},
 				valid: false
+            },
+            hora: {
+				itemType: 'Hour',
+				holder: 'Seleccione la hora',
+				value: '',
+				validation: {
+					haveValue: true
+				},
+				valid: false
 			},
+            imagen: {
+                itemType: 'LoadImage',
+                holder: 'IMAGEN',
+                value: '',
+                valid: true
+            },
 			descripcion: {
 				itemType: 'Textarea',
 				holder: 'Descripción',
@@ -86,12 +96,6 @@ export default class Noticias extends Component {
 				},
 				valid: false
 			},
-			imagen: {
-				itemType: 'LoadImage',
-				holder: 'IMAGEN',
-				value: '',
-				valid: true
-			}
 		},
 		options: {
 			title: 'Elige una opción',
@@ -123,7 +127,7 @@ export default class Noticias extends Component {
 	static navigationOptions = {
 		drawerIcon: ({ tintColor }) => (
 			<Image 
-				source={require('../../assets/images/Drawer/news.png')}
+				source={require('../../assets/images/Drawer/events.png')}
 				style={styles.drawerIcon}
 				resizeMode='contain' />
 		)
@@ -143,13 +147,13 @@ export default class Noticias extends Component {
 			//Use the expires in
 			const parseExpiresIn = new Date(parseInt(expiresIn));
 			const now = new Date();
-			console.log('Noticias.js: ', token);
-			console.log('Noticias.js: ', parseExpiresIn, now);
+			console.log('Eventos.js: ', token);
+			console.log('Eventos.js: ', parseExpiresIn, now);
 			if (token && parseExpiresIn > now) {
 				this.setState({ token: token, tokenIsValid: true });
 				if (email !== 'false') this.setState({ isAdmin: true });
 				else this.setState({ isAdmin: false });
-				this.getNews();
+				this.getEvents();
 			} else {
 				//Restrict screens if there's no token
 				try {
@@ -161,7 +165,7 @@ export default class Noticias extends Component {
 					//Catch posible errors
 				}
 				Alert.alert(
-					'Noticias',
+					'Eventos',
 					'¡Tiempo de espera agotado, inicie sesion de nuevo!',
 					[ { text: 'Ok', onPress: () => this.props.navigation.navigate('Auth') } ],
 					{ cancelable: false }
@@ -187,19 +191,28 @@ export default class Noticias extends Component {
 			const getInitialNotification = await FCM.getInitialNotification();
 			console.log('getInitialNotification, ', getInitialNotification);
 			this.setState({ notificationToken: FCMToken }, () => this.getFCMTokens());
-		} catch (error) {}
-	};
+        } catch (error) {}
+        this.getForms();
+    };
+    //Test Object form
+    getForms = () => {
+        const newEvent = new FormEvent('Evento 1 prueba');
+        console.log('evento: ', newEvent.event);
+    };
 	//Native backbutton
 	onBackButtonPressAndroid = () => {
 		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.search) {
+		if (!this.state.search && !this.state.addEvent) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
-		} else this.startSearch();
-				
+		} 
+        if (this.state.search)
+            this.startSearch();		
+        if(this.state.addEvent) 
+            this.setState({ addEvent: false });
 		return true;
 	};
 	//Remove subscription from native button
@@ -218,10 +231,10 @@ export default class Noticias extends Component {
 				body = {
 					registration_ids: this.state.fcmTokens,
 					notification: {
-						title: 'Nueva noticia',
-						body: '!' + this.state.form['noticia'].value + '¡',
+						title: 'Nuevo evento',
+						body: '!' + this.state.form['evento'].value + '¡',
 						sound: null,
-						tag: this.state.form['noticia'].value,
+						tag: this.state.form['evento'].value,
 						priority: 'high'
 					}
 				};
@@ -241,21 +254,21 @@ export default class Noticias extends Component {
 			firebaseClient.send(JSON.stringify(body), 'notification');
 		}
 	};
-	//Get news
-	getNews = () => {
+	//Get events
+	getEvents = () => {
 		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null });
 		axios
-			.get('/news.json?auth=' + this.state.token,)
+			.get('/events.json?auth=' + this.state.token,)
 			.then((res) => {
-				const fetchedNews = [];
-				console.log('Noticias, res: ', res);
+				const fetchedEvents = [];
+				console.log('Eventos, res: ', res);
 				for (let key in res.data) {
-					fetchedNews.push({
+					fetchedEvents.push({
 						...res.data[key],
 						id: key
 					});
 				}
-				this.setState({ loading: false, news: fetchedNews.reverse() });
+				this.setState({ loading: false, events: fetchedEvents.reverse() });
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
@@ -305,7 +318,7 @@ export default class Noticias extends Component {
 				})
 				.catch((error) => {
 					this.setState({ loading: false });
-					Alert.alert('Noticias', 'Noticia fallida al enviar!', [ { text: 'Ok' } ], {
+					Alert.alert('Eventos', 'Evento fallido al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});
 				});
@@ -442,14 +455,14 @@ export default class Noticias extends Component {
 					this.sendNewHandler();
 				})
 				.catch((err) => {
-					Alert.alert('Noticias', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
+					Alert.alert('Eventos', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});
 					console.log('ErrorCloudinary: ', err);
 				});
 		} else {
 			this.setState({ loading: false });
-			Alert.alert('Noticias', '¡Complete el formulario correctamente!', [ { text: 'Ok' } ], {
+			Alert.alert('Eventos', '¡Complete el formulario correctamente!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});
 		}
@@ -462,19 +475,19 @@ export default class Noticias extends Component {
 			for (let formElementIdentifier in this.state.form) {
 				formData[formElementIdentifier] = this.state.form[formElementIdentifier].value;
 			}
-			const news = {
-				newData: formData
+			const events = {
+				eventData: formData
 			};
 			//Upload new
 			axios
-				.post('/news.json?auth=' + this.state.token, news)
+				.post('/events.json?auth=' + this.state.token, events)
 				.then((response) => {
 					this.sendRemoteNotification();
 					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
 					Alert.alert(
-						'Noticias',
-						'Noticia enviada con exito!',
-						[ { text: 'Ok', onPress: () => this.getNews() } ],
+						'Eventos',
+						'¡Evento enviado con exito!',
+						[ { text: 'Ok', onPress: () => this.getEvents() } ],
 						{
 							cancelable: false
 						}
@@ -482,13 +495,13 @@ export default class Noticias extends Component {
 				})
 				.catch((error) => {
 					this.setState({ loading: false });
-					Alert.alert('Noticias', 'Noticia fallida al enviar!', [ { text: 'Ok' } ], {
+					Alert.alert('Eventos', 'Evento fallido al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});
 				});
 		} else {
 			this.setState({ loading: false });
-			Alert.alert('Noticias', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
+			Alert.alert('Eventos', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});
 		}
@@ -506,7 +519,7 @@ export default class Noticias extends Component {
 	filterData = (text) => {
 		if (text !== '') {
 			let ban = false;
-			const filteredNews = this.state.news.filter((nw) => {
+			const filteredEvents = this.state.events.filter((nw) => {
 				const filterNew = nw.newData['noticia'];
 				const filterDate = nw.newData['fecha'].split('T', 1);
 				console.log('filterNew: ', filterNew);
@@ -517,26 +530,60 @@ export default class Noticias extends Component {
 				}
 			});
 			if (ban) {
-				this.setState({ news: filteredNews });
+				this.setState({ events: filteredEvents });
 			}
-		} else this.getNews();
+		} else this.getEvents();
 	};
 	startSearch = () => {
 		this.setState({ search: !this.state.search });
+    };
+    getTime = async (inputIdentifier) => {
+		try {
+			const { action, hour, minute } = await TimePickerAndroid.open({
+				hour: 14,
+				minute: 0,
+				is24Hour: false // Will display '2 PM'
+			});
+			if (action !== TimePickerAndroid.dismissedAction) {
+				// Selected hour (0-23), minute (0-59)
+				console.log(action, hour, minute);
+				const hourSelected = hour + ':' + minute;
+				const updatedForm = {
+					...this.state.form
+				};
+				const updatedFormElement = {
+					...updatedForm[inputIdentifier]
+				};
+				updatedFormElement.value = hourSelected;
+				updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+
+				updatedForm[inputIdentifier] = updatedFormElement;
+
+				let formIsValid = true;
+
+				for (let inputIdentifier in updatedForm) {
+					formIsValid = updatedForm[inputIdentifier].valid && formIsValid;
+				}
+
+				this.setState({ form: updatedForm, formIsValid: formIsValid });
+			}
+		} catch ({ code, message }) {
+			console.warn('Cannot open time picker', message);
+		}
 	};
 
 	render() {
-		const list = this.state.news.map((nw, index) => (
-			<Noticia
-				key={nw.id}
-				id={nw.id}
+		const list = this.state.events.map((evt, index) => (
+			<Evento
+				key={evt.id}
+				id={evt.id}
 				token={this.state.token}
 				isAdmin={this.state.isAdmin}
-				refresh={this.getNews}
-				data={nw.newData}
+				refresh={this.getEvents}
+				data={evt.eventData}
 				describe={this.props}
 				index={index + 1}
-				showLikeIcons={this.state.showLikeIcons}
+				showLikeIcons={true}
 			/>
 		));
 
@@ -574,18 +621,18 @@ export default class Noticias extends Component {
 				</ScrollView>
 			</Card>
 		);
-		const noticias = (
+		const eventos = (
 			<View style={{ flex: 1 }}>
 				{title}
 				{body}
 			</View>
 		);
-		const addNewTitle = (
+		const addEventTitle = (
 			<View style={{ flex: 1, marginBottom: 10 }}>
-				<CustomAddBanner title="AGREGAR NOTA" image={require('../../assets/images/Preferences/add-orange.png')} />
+				<CustomAddBanner title="AGREGAR EVENTO" image={require('../../assets/images/Preferences/add-orange.png')} />
 			</View>
 		);
-		const addNewBody = (
+		const addEventBody = (
 			<Card style={styles.addNew}>
 				<ScrollView style={{ flex: 1 }}>
 					<CardItem bordered>
@@ -596,7 +643,8 @@ export default class Noticias extends Component {
 									itemType={e.config.itemType}
 									holder={e.config.holder}
 									value={e.config.value}
-									changed={(text) => this.inputChangeHandler(text, e.id)}
+                                    changed={(text) => this.inputChangeHandler(text, e.id)}
+                                    changed1={() => this.getTime(e.id)}
 									loadPhoto={this.loadPhotoHandler}
 									image={this.state.image}
 									name={this.state.fileNameImage}
@@ -607,30 +655,30 @@ export default class Noticias extends Component {
 				</ScrollView>
 			</Card>
 		);
-		const addNew = (
+		const addEvent = (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
-				{addNewTitle}
+				{addEventTitle}
 				{this.state.loading && spinner}
-				{addNewBody}
+				{addEventBody}
 			</View>
-		);
-
+        );
+        
 		return (
 			<StyledSafeArea>
 				<StyledContainer>
 					<StyledHeader>
 						<HeaderToolbar
 							open={this.props}
-							title="Noticias"
+							title="Eventos"
 							color="#e2487d"
 							showContentRight={true}
-							titleOfAdd="Nueva noticia"
-							get={this.getNews}
-							add={() => this.setState({ addNew: true })}
-							goBack={() => this.setState({ addNew: false })}
-							isAdd={this.state.addNew}
+							titleOfAdd="Nuevo evento"
+							get={this.getEvents}
+							add={() => this.setState({ addEvent: true })}
+							goBack={() => this.setState({ addEvent: false })}
+							isAdd={this.state.addEvent}
 							save={this.uploadPhotoHandler}
-							isAdmin={this.state.isAdmin}
+							isAdmin={true ? true : this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
 							changeDisplay={this.changeDisplay}
@@ -644,7 +692,7 @@ export default class Noticias extends Component {
 					</StyledHeader>
 					<StatusBar color="#c7175b" />
 					<View style={{ flex: 1, margin: 10 }}>
-						<ThemeProvider theme={theme}>{!this.state.addNew ? noticias : addNew}</ThemeProvider>
+						<ThemeProvider theme={theme}>{!this.state.addEvent ? eventos : addEvent}</ThemeProvider>
 					</View>
 				</StyledContainer>
 			</StyledSafeArea>

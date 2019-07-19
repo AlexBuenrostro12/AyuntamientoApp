@@ -568,6 +568,52 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
+					case 'Eventos':
+						card = (
+							<View>
+								<Card>
+									<CardItem header>
+										<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+											<View style={styles.titleContainer}>
+												<Text style={styles.title}>{data.evento}</Text>
+												{data.isAdmin && (
+													<View style={styles.btnsAdm}>
+														<TouchableOpacity onPress={() => data.deleteItem()}>
+															<Image
+																style={styles.btnsAdmImg}
+																source={require('../../assets/images/Delete/delete.png')}
+															/>
+														</TouchableOpacity>
+													</View>
+												)}
+											</View>
+										</View>
+									</CardItem>
+									<CardItem>
+										<Body>
+											<Text style={styles.fecha}>
+												Fecha: {data.fecha} / Hora: {data.hora}
+											</Text>
+											<Text style={styles.descripcion}>{data.descripcion}</Text>
+											<TouchableOpacity
+												style={{ alignSelf: 'center' }}
+												onPress={() => this.setState({ zoomImage: true })}
+											>
+												<Image style={styles.image} source={{ uri: data.imagen }} />
+											</TouchableOpacity>
+										</Body>
+									</CardItem>
+									<View style={styles.button}>
+										<CustomButton
+											style="SaveActivity"
+											date={data.fecha}
+											clicked={() => data.saveEvent()}
+										/>
+									</View>
+								</Card>
+							</View>
+						);
+				break;
 				case 'Transparencia':
 					const source = { uri: data.url };
 					console.log('source: ', source);

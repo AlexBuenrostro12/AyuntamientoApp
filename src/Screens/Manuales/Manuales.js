@@ -9,7 +9,7 @@ import {
 	Alert,
 	ScrollView,
 	Image,
-	BackHandler,
+	BackHandler
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -38,7 +38,7 @@ export default class Manuales extends Component {
 		loading: false,
 		manuals: [],
 		date: null,
-		isAdmin: null,
+		isAdmin: null
 	};
 
 	constructor(props) {
@@ -266,10 +266,9 @@ export default class Manuales extends Component {
 
 		today = mm + '/' + dd + '/' + yyyy;
 		this.setState({ date: today });
-	};
+	}
 
 	render() {
-		
 		const spinner = <CustomSpinner color="blue" />;
 
 		const list = this.state.manuals.map((m, index) => (
@@ -288,7 +287,7 @@ export default class Manuales extends Component {
 		));
 
 		const title = (
-			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.40 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.4 }}>
 				<CustomCardItemTitle
 					title="TRANSPARENCIA"
 					description="Visualice los manuales de transparencia"
@@ -384,7 +383,6 @@ export default class Manuales extends Component {
 				{this.state.loading && spinner}
 			</View>
 		);
-
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={styles.container}>
