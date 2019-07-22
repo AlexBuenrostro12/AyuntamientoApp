@@ -75,6 +75,18 @@ export default class HeaderToolbar extends React.Component {
 								</View>
 							</MenuOption>
 						)}
+						{/*Cambiar banner*/}
+						{this.props.changeBanner && (
+							<MenuOption onSelect={() => this.props.changeBanner()}>
+								<View style={styles.menuOption}>
+									<Image
+										style={styles.menuOptionImage}
+										source={require('../../assets/images/Preferences/add.png')}
+									/>
+									<Text style={styles.menuOptionText}>Cambiar banner</Text>
+								</View>
+							</MenuOption>
+						)}
 					</MenuOptions>
 				</Menu>
 			</TouchableOpacity>
@@ -208,7 +220,7 @@ export default class HeaderToolbar extends React.Component {
 					{/* check if can show the search bar */}
 					{!this.props.describeGoBack && !this.props.isAdd && !this.props.showCalendar && this.props.search && search}
 					{/* check if it's not describeScreen and then check if show menu or menuAdd */}
-					{!this.props.describeGoBack && (!this.props.isAdd ? preferenceMenu : preferenceMenuAdd)}
+					{!this.props.describeGoBack && ((!this.props.isAdd && !this.props.isChangeBanner) ? preferenceMenu : preferenceMenuAdd)}
 					{/* check if show goBack icon of describeData */}
 					{this.props.describeGoBack && goBack}
 					{/* check if show menu of describeData */}

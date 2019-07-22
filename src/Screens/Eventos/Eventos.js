@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { View, TimePickerAndroid, StyleSheet, Platform, Alert, Dimensions, ScrollView, Image, BackHandler } from 'react-native';
+import {
+	View,
+	TimePickerAndroid,
+	StyleSheet,
+	Platform,
+	Alert,
+	Dimensions,
+	ScrollView,
+	Image,
+	BackHandler,
+	Text
+} from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -15,7 +26,6 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import CustomInput from '../../components/CustomInput/CustomInput';
 import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
-import FormEvent from '../../components/Evento/FormEvent';
 
 const theme = {
 	commonFlex: '1',
@@ -70,8 +80,8 @@ export default class Eventos extends Component {
 					haveValue: true
 				},
 				valid: false
-            },
-            hora: {
+			},
+			hora: {
 				itemType: 'Hour',
 				holder: 'Seleccione la hora',
 				value: '',
@@ -80,12 +90,12 @@ export default class Eventos extends Component {
 				},
 				valid: false
 			},
-            imagen: {
-                itemType: 'LoadImage',
-                holder: 'IMAGEN',
-                value: '',
-                valid: true
-            },
+			imagen: {
+				itemType: 'LoadImage',
+				holder: 'IMAGEN',
+				value: '',
+				valid: true
+			},
 			descripcion: {
 				itemType: 'Textarea',
 				holder: 'Descripción',
@@ -95,7 +105,7 @@ export default class Eventos extends Component {
 					maxLength: 150
 				},
 				valid: false
-			},
+			}
 		},
 		options: {
 			title: 'Elige una opción',
@@ -114,6 +124,9 @@ export default class Eventos extends Component {
 		showLikeIcons: true,
 		texToSearch: '',
 		search: false,
+		changeBanner: false,
+		banner: [],
+		separatorDate: 'date'
 	};
 
 	constructor(props) {
@@ -121,15 +134,16 @@ export default class Eventos extends Component {
 		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
 			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
 		);
-	};
+	}
 
 	//Style of drawer navigation
 	static navigationOptions = {
 		drawerIcon: ({ tintColor }) => (
-			<Image 
+			<Image
 				source={require('../../assets/images/Drawer/events.png')}
 				style={styles.drawerIcon}
-				resizeMode='contain' />
+				resizeMode="contain"
+			/>
 		)
 	};
 
@@ -154,6 +168,7 @@ export default class Eventos extends Component {
 				if (email !== 'false') this.setState({ isAdmin: true });
 				else this.setState({ isAdmin: false });
 				this.getEvents();
+				this.getBanner();
 			} else {
 				//Restrict screens if there's no token
 				try {
@@ -191,14 +206,13 @@ export default class Eventos extends Component {
 			const getInitialNotification = await FCM.getInitialNotification();
 			console.log('getInitialNotification, ', getInitialNotification);
 			this.setState({ notificationToken: FCMToken }, () => this.getFCMTokens());
-        } catch (error) {}
-        this.getForms();
-    };
-    //Test Object form
-    getForms = () => {
-        const newEvent = new FormEvent('Evento 1 prueba');
-        console.log('evento: ', newEvent.event);
-    };
+		} catch (error) {}
+	}
+	//Test Object form
+	getForms = () => {
+		const newEvent = new FormEvent('Evento 1 prueba');
+		console.log('evento: ', newEvent.event);
+	};
 	//Native backbutton
 	onBackButtonPressAndroid = () => {
 		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
@@ -208,18 +222,16 @@ export default class Eventos extends Component {
 		if (!this.state.search && !this.state.addEvent) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
-		} 
-        if (this.state.search)
-            this.startSearch();		
-        if(this.state.addEvent) 
-            this.setState({ addEvent: false });
+		}
+		if (this.state.search) this.startSearch();
+		if (this.state.addEvent) this.setState({ addEvent: false });
 		return true;
 	};
 	//Remove subscription from native button
 	componentWillUnmount() {
 		this._didFocusSubscription && this._didFocusSubscription.remove();
 		this._willBlurSubscription && this._willBlurSubscription.remove();
-	};
+	}
 
 	//SendRemoteNotification
 	sendRemoteNotification = () => {
@@ -258,7 +270,7 @@ export default class Eventos extends Component {
 	getEvents = () => {
 		this.setState({ loading: true, addNew: false, image: null, fileNameImage: null, imageFormData: null });
 		axios
-			.get('/events.json?auth=' + this.state.token,)
+			.get('/events.json?auth=' + this.state.token)
 			.then((res) => {
 				const fetchedEvents = [];
 				console.log('Eventos, res: ', res);
@@ -269,6 +281,34 @@ export default class Eventos extends Component {
 					});
 				}
 				this.setState({ loading: false, events: fetchedEvents.reverse() });
+				this.getBanner();
+			})
+			.catch((err) => {
+				this.setState({ loading: false });
+			});
+	};
+	//Get image banner
+	getBanner = () => {
+		this.setState({
+			loading: true,
+			changeBanner: false,
+			addNew: false,
+			image: null,
+			fileNameImage: null,
+			imageFormData: null
+		});
+		axios
+			.get('/banner.json?auth=' + this.state.token)
+			.then((res) => {
+				const fetchedBanner = [];
+				console.log('banner, res: ', res);
+				for (let key in res.data) {
+					fetchedBanner.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				this.setState({ loading: false, banner: fetchedBanner });
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
@@ -376,7 +416,7 @@ export default class Eventos extends Component {
 	}
 
 	loadPhotoHandler = (show) => {
-		if (show === 'library'){
+		if (show === 'library') {
 			ImagePicker.launchImageLibrary(this.state.options, (response) => {
 				if (response.didCancel) {
 					console.log('User cancelled image picker');
@@ -432,7 +472,7 @@ export default class Eventos extends Component {
 		const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
 		this.setState({ loading: true });
 		console.log('Form: ', this.state.form);
-		if (this.state.imageFormData && this.state.formIsValid) {
+		if (this.state.imageFormData || this.state.formIsValid) {
 			axiosCloudinary({
 				url: URL_CLOUDINARY,
 				method: 'POST',
@@ -452,7 +492,7 @@ export default class Eventos extends Component {
 					this.inputChangeHandler(url, 'imagen');
 					console.log('stateofForm: ', this.state.form);
 					//Call the method to upload new
-					this.sendNewHandler();
+					this.state.addEvent ? this.sendNewHandler() : this.changeBannerHandler(url);
 				})
 				.catch((err) => {
 					Alert.alert('Eventos', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
@@ -482,7 +522,7 @@ export default class Eventos extends Component {
 			axios
 				.post('/events.json?auth=' + this.state.token, events)
 				.then((response) => {
-					this.sendRemoteNotification();
+					this.state.notifications && this.sendRemoteNotification();
 					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
 					Alert.alert(
 						'Eventos',
@@ -495,7 +535,7 @@ export default class Eventos extends Component {
 				})
 				.catch((error) => {
 					this.setState({ loading: false });
-					Alert.alert('Eventos', 'Evento fallido al enviar!', [ { text: 'Ok' } ], {
+					Alert.alert('Eventos', '¡Evento fallido al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});
 				});
@@ -520,8 +560,8 @@ export default class Eventos extends Component {
 		if (text !== '') {
 			let ban = false;
 			const filteredEvents = this.state.events.filter((nw) => {
-				const filterNew = nw.newData['noticia'];
-				const filterDate = nw.newData['fecha'].split('T', 1);
+				const filterNew = nw.eventData['evento'];
+				const filterDate = nw.eventData['fecha'].split('T', 1);
 				console.log('filterNew: ', filterNew);
 				console.log('filterDate: ', filterDate[0]);
 				if (filterNew.includes(text) || filterDate[0].includes(text)) {
@@ -536,8 +576,8 @@ export default class Eventos extends Component {
 	};
 	startSearch = () => {
 		this.setState({ search: !this.state.search });
-    };
-    getTime = async (inputIdentifier) => {
+	};
+	getTime = async (inputIdentifier) => {
 		try {
 			const { action, hour, minute } = await TimePickerAndroid.open({
 				hour: 14,
@@ -571,6 +611,45 @@ export default class Eventos extends Component {
 			console.warn('Cannot open time picker', message);
 		}
 	};
+	changeBannerHandler = (url) => {
+		//check if the form is valid
+		if (url) {
+			const formData = {};
+
+			formData['imagen'] = url;
+
+			const banner = {
+				eventData: formData
+			};
+			const bannerKey = this.state.banner.map(bn => bn.id);
+			//Upload banner
+			axios
+				.patch('/banner' + '/' + bannerKey + '.json?auth=' + this.state.token, banner)
+				.then((response) => {
+					this.setState({ loading: false })
+					console.log('changeBanner:res: ', response);
+					Alert.alert(
+						'¡Eventos!',
+						'¡Banner cambiado con exito!',
+						[ { text: 'Ok', onPress: () => this.getBanner() } ],
+						{
+							cancelable: false
+						}
+					);
+				})
+				.catch((error) => {
+					console.log('approveItemListHandler:res: ', error);
+					Alert.alert('¡Eventos!', '¡Banner fallido al cambiar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+				});
+		} else {
+			this.setState({ loading: false });
+			Alert.alert('Eventos', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
+				cancelable: false
+			});
+		}
+	};
 
 	render() {
 		const list = this.state.events.map((evt, index) => (
@@ -595,20 +674,24 @@ export default class Eventos extends Component {
 				config: this.state.form[key]
 			});
 		}
+		const uri = this.state.banner.map(bn => bn.eventData.imagen);
+		const objUri = { uri: uri[0] };
 		const title = (
-			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.40 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.4 }}>
 				<CustomCardItemTitle
-					title="NOTICIAS"
-					description="Las Noticias más 
-					relevantes de tu gobierno ciudadano."
-					info="Delice hacia abajo, para las noticias mas antiguas."
-					image={require('../../assets/images/Noticia/speaker.png')}
+					title="EVENTOS"
+					description="Los eventos más importantes dentro de Tecalitlán"
+					info="Delice hacia abajo, para leer las actividades a futuro."
+					image={objUri}
 				/>
 			</View>
 		);
 		const body = (
 			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
-				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+				<View style={{ flexDirection: 'row', backgroundColor: 'grey', width: width * .30  }}>
+					<Text style={styles.separator}>SEPARADOR {this.state.separatorDate}</Text>
+				</View>
+				<ScrollView onScroll={this.handleScroll} style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
 					<StyledCardBody>
 						{this.state.loading ? (
 							spinner
@@ -629,7 +712,10 @@ export default class Eventos extends Component {
 		);
 		const addEventTitle = (
 			<View style={{ flex: 1, marginBottom: 10 }}>
-				<CustomAddBanner title="AGREGAR EVENTO" image={require('../../assets/images/Preferences/add-orange.png')} />
+				<CustomAddBanner
+					title="AGREGAR EVENTO"
+					image={require('../../assets/images/Preferences/add-orange.png')}
+				/>
 			</View>
 		);
 		const addEventBody = (
@@ -643,8 +729,8 @@ export default class Eventos extends Component {
 									itemType={e.config.itemType}
 									holder={e.config.holder}
 									value={e.config.value}
-                                    changed={(text) => this.inputChangeHandler(text, e.id)}
-                                    changed1={() => this.getTime(e.id)}
+									changed={(text) => this.inputChangeHandler(text, e.id)}
+									changed1={() => this.getTime(e.id)}
 									loadPhoto={this.loadPhotoHandler}
 									image={this.state.image}
 									name={this.state.fileNameImage}
@@ -661,8 +747,29 @@ export default class Eventos extends Component {
 				{this.state.loading && spinner}
 				{addEventBody}
 			</View>
-        );
-        
+		);
+
+		const changeBanner = (
+			<View style={{ flex: 1, flexDirection: 'column' }}>
+				<Card style={styles.addNew}>
+					<ScrollView style={{ flex: 1 }}>
+						<CardItem bordered>
+							<View style={styles.cardBody}>
+								<CustomInput
+									key="changeBanner"
+									itemType="LoadImage"
+									loadPhoto={this.loadPhotoHandler}
+									image={this.state.image}
+									name={this.state.fileNameImage}
+								/>
+								{this.state.loading && spinner}
+							</View>
+						</CardItem>
+					</ScrollView>
+				</Card>
+			</View>
+		);
+
 		return (
 			<StyledSafeArea>
 				<StyledContainer>
@@ -674,15 +781,23 @@ export default class Eventos extends Component {
 							showContentRight={true}
 							titleOfAdd="Nuevo evento"
 							get={this.getEvents}
+							changeBanner={() => this.setState({ changeBanner: true })}
+							isChangeBanner={this.state.changeBanner}
 							add={() => this.setState({ addEvent: true })}
-							goBack={() => this.setState({ addEvent: false })}
+							goBack={() =>
+								this.setState({
+									addEvent: false,
+									changeBanner: false,
+									addTypeEvent: false,
+									image: null,
+									fileNameImage: null,
+									imageFormData: null
+								})}
 							isAdd={this.state.addEvent}
 							save={this.uploadPhotoHandler}
 							isAdmin={true ? true : this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
-							changeDisplay={this.changeDisplay}
-							showLikeIcons={this.state.showLikeIcons}
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
 							search={this.filterData}
@@ -692,7 +807,15 @@ export default class Eventos extends Component {
 					</StyledHeader>
 					<StatusBar color="#c7175b" />
 					<View style={{ flex: 1, margin: 10 }}>
-						<ThemeProvider theme={theme}>{!this.state.addEvent ? eventos : addEvent}</ThemeProvider>
+						<ThemeProvider theme={theme}>
+							{!this.state.addEvent && !this.state.changeBanner ? (
+								eventos
+							) : this.state.addEvent && !this.state.changeBanner ? (
+								addEvent
+							) : (
+								changeBanner
+							)}
+						</ThemeProvider>
 					</View>
 				</StyledContainer>
 			</StyledSafeArea>
@@ -731,11 +854,18 @@ const styles = StyleSheet.create({
 	},
 	addNew: {
 		flex: 2,
-		flexDirection: 'column', 
+		flexDirection: 'column',
 		justifyContent: 'flex-start'
 	},
 	drawerIcon: {
-		height: width * .07,
-		width: width * .07,
+		height: width * 0.07,
+		width: width * 0.07
+	},
+	separator: {
+		fontSize: 15,
+		fontWeight: 'bold',
+		fontStyle: 'normal',
+		color: 'white',
+		fontFamily: 'AvenirNextLTPro-Regular',
 	}
 });
