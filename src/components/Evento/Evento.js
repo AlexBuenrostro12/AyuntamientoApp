@@ -125,6 +125,9 @@ export default class Evento extends Component {
 				const fecha = this.props.data[dataName].split('T', 1);
 				obj.fecha = fecha;
 			}
+			if (dataName === 'dia') {
+				obj.dia = this.props.data[dataName];
+			}
 		}
 		const oddORnot = (this.props.index % 2);
 		let odd = null;

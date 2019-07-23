@@ -44,12 +44,6 @@ const StyledContainer = styled.View`
 
 const StyledHeader = styled.View``;
 
-const StyledCardBody = styled.View`
-	flex: ${theme.commonFlex};
-	flex-direction: column;
-	justify-content: center;
-`;
-
 export default class Eventos extends Component {
 	_didFocusSubscription;
 	_willBlurSubscription;
@@ -71,6 +65,12 @@ export default class Eventos extends Component {
 					maxLength: 55
 				},
 				valid: false
+			},
+			dia: {
+				itemType: 'PickDay',
+				holder: 'Día de evento',
+				value: '1',
+				valid: true
 			},
 			fecha: {
 				itemType: 'Date',
@@ -126,7 +126,8 @@ export default class Eventos extends Component {
 		search: false,
 		changeBanner: false,
 		banner: [],
-		separatorDate: 'date'
+		separatorDate: 'date',
+		days: []
 	};
 
 	constructor(props) {
@@ -280,8 +281,9 @@ export default class Eventos extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, events: fetchedEvents.reverse() });
+				this.setState({ loading: false, events: fetchedEvents.sort((a,b) => (a.eventData.dia > b.eventData.dia) ? 1 : -1) });
 				this.getBanner();
+				this.getDays();
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
@@ -621,12 +623,12 @@ export default class Eventos extends Component {
 			const banner = {
 				eventData: formData
 			};
-			const bannerKey = this.state.banner.map(bn => bn.id);
+			const bannerKey = this.state.banner.map((bn) => bn.id);
 			//Upload banner
 			axios
 				.patch('/banner' + '/' + bannerKey + '.json?auth=' + this.state.token, banner)
 				.then((response) => {
-					this.setState({ loading: false })
+					this.setState({ loading: false });
 					console.log('changeBanner:res: ', response);
 					Alert.alert(
 						'¡Eventos!',
@@ -649,6 +651,16 @@ export default class Eventos extends Component {
 				cancelable: false
 			});
 		}
+	};
+
+	getDays = () => {
+		const days = this.state.events.map(e => {
+			return e.eventData.dia;
+		});
+		const daysFiltered = [...new Set(days)];
+		
+		this.setState({ days: daysFiltered.sort() });
+		console.log('days: ', this.state.days)
 	};
 
 	render() {
@@ -674,7 +686,7 @@ export default class Eventos extends Component {
 				config: this.state.form[key]
 			});
 		}
-		const uri = this.state.banner.map(bn => bn.eventData.imagen);
+		const uri = this.state.banner.map((bn) => bn.eventData.imagen);
 		const objUri = { uri: uri[0] };
 		const title = (
 			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.4 }}>
@@ -688,11 +700,13 @@ export default class Eventos extends Component {
 		);
 		const body = (
 			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
-				<View style={{ flexDirection: 'row', backgroundColor: 'grey', width: width * .30  }}>
-					<Text style={styles.separator}>SEPARADOR {this.state.separatorDate}</Text>
-				</View>
-				<ScrollView onScroll={this.handleScroll} style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
-					<StyledCardBody>
+				{/* {this.state.days.map(d => (
+					<View key={Math.random() * 1000} style={{ flexDirection: 'row', backgroundColor: 'grey', width: width * .35  }}>
+						<Text style={styles.separator}>Dia {d}</Text>
+					</View>
+				))} */}
+				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
 						{this.state.loading ? (
 							spinner
 						) : (
@@ -700,7 +714,7 @@ export default class Eventos extends Component {
 								{list}
 							</View>
 						)}
-					</StyledCardBody>
+					</View>
 				</ScrollView>
 			</Card>
 		);
@@ -866,6 +880,6 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontStyle: 'normal',
 		color: 'white',
-		fontFamily: 'AvenirNextLTPro-Regular',
+		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });
