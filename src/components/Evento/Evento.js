@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Alert } from 'react-native';
 import axios from '../../../axios-ayuntamiento';
-import ListData from '../../components/ListData/ListData';
+import ListDataEvent from '../../components/ListData/ListDataEvent';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 
 export default class Evento extends Component {
@@ -150,7 +150,7 @@ export default class Evento extends Component {
 	}
 
 	render() {
-		const listData = <ListData 
+		const listData = <ListDataEvent 
 							showLikeIcons={this.props.showLikeIcons} 
 							data={this.state.data}
 							id={this.props.id} 

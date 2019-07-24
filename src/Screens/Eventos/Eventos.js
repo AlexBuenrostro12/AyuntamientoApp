@@ -339,7 +339,20 @@ export default class Eventos extends Component {
 			const array = this.state.events.filter(type => type.eventData.tipo === element);
 			arrayOfArrays.push(array);
 		}
-		console.log('arrayOfArrays: ', arrayOfArrays);
+		let daysFiltered = null;
+		const arrayOfArraysOfDays = [];
+		for (let e = 0; e < arrayOfArrays.length; e++) {
+			const array = arrayOfArrays[e];
+
+			const days = array.map((e) => {
+				return e.eventData.dia;
+			});
+			daysFiltered = [ ...new Set(days) ];	
+			arrayOfArraysOfDays.push(daysFiltered);	
+		}
+		console.log('days: ', arrayOfArraysOfDays);
+
+		console.log('arrayOfArraysOrderByEvent: ', arrayOfArrays);
 		this.setState({ events: arrayOfArrays.flat() });
 	};
 	//Get image banner
@@ -651,11 +664,12 @@ export default class Eventos extends Component {
 		if (text !== '') {
 			let ban = false;
 			const filteredEvents = this.state.events.filter((nw) => {
-				const filterNew = nw.eventData['evento'];
+				const filterEvent = nw.eventData['evento'];
 				const filterDate = nw.eventData['fecha'].split('T', 1);
-				console.log('filterNew: ', filterNew);
+				const filterType = nw.eventData['tipo'];
+				console.log('filterNew: ', filterEvent);
 				console.log('filterDate: ', filterDate[0]);
-				if (filterNew.includes(text) || filterDate[0].includes(text)) {
+				if (filterEvent.includes(text) || filterDate[0].includes(text) || filterType.includes(text)) {
 					ban = true;
 					return nw;
 				}
@@ -742,15 +756,15 @@ export default class Eventos extends Component {
 		}
 	};
 
-	// getDays = () => {
-	// 	const days = this.state.events.map((e) => {
-	// 		return e.eventData.dia;
-	// 	});
-	// 	const daysFiltered = [ ...new Set(days) ];
+	getDays = () => {
+		const days = this.state.events.map((e) => {
+			return e.eventData.dia;
+		});
+		const daysFiltered = [ ...new Set(days) ];
 
-	// 	this.setState({ days: daysFiltered.sort() });
-	// 	console.log('days: ', this.state.days);
-	// };
+		this.setState({ days: daysFiltered.sort() });
+		console.log('days: ', this.state.days);
+	};
 
 	render() {
 		const list = this.state.events.map((evt, index) => (
@@ -766,7 +780,6 @@ export default class Eventos extends Component {
 				showLikeIcons={true}
 			/>
 		));
-
 		const spinner = <CustomSpinner color="blue" />;
 		const formElements = [];
 		for (let key in this.state.form) {
