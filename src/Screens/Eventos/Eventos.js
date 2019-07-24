@@ -66,6 +66,12 @@ export default class Eventos extends Component {
 				},
 				valid: false
 			},
+			tipo: {
+				itemType: 'PickTypeEvent',
+				holder: 'Seleccione tipo de evento',
+				value: '',
+				valid: true
+			},
 			dia: {
 				itemType: 'PickDay',
 				holder: 'Día de evento',
@@ -125,9 +131,12 @@ export default class Eventos extends Component {
 		texToSearch: '',
 		search: false,
 		changeBanner: false,
+		addTypeEvent: false,
+		typeEvent: '',
 		banner: [],
 		separatorDate: 'date',
-		days: []
+		days: [],
+		typeEvents: [],
 	};
 
 	constructor(props) {
@@ -170,6 +179,7 @@ export default class Eventos extends Component {
 				else this.setState({ isAdmin: false });
 				this.getEvents();
 				this.getBanner();
+				this.getTypeEvents();
 			} else {
 				//Restrict screens if there's no token
 				try {
@@ -220,12 +230,12 @@ export default class Eventos extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.search && !this.state.addEvent) {
+		if (!this.state.search && !this.state.addEvent && !this.state.addTypeEvent && !this.state.changeBanner) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
 		}
 		if (this.state.search) this.startSearch();
-		if (this.state.addEvent) this.setState({ addEvent: false });
+		if (this.state.addEvent || this.state.addTypeEvent || this.state.changeBanner) this.setState({ addEvent: false, addTypeEvent: false, changeBanner: false });
 		return true;
 	};
 	//Remove subscription from native button
@@ -281,13 +291,56 @@ export default class Eventos extends Component {
 						id: key
 					});
 				}
-				this.setState({ loading: false, events: fetchedEvents.sort((a,b) => (a.eventData.dia > b.eventData.dia) ? 1 : -1) });
+				this.setState({
+					loading: false,
+					events: fetchedEvents.sort((a, b) => (a.eventData.dia > b.eventData.dia ? 1 : -1))
+				});
 				this.getBanner();
-				this.getDays();
+				this.getTypeEvents();
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
 			});
+	};
+	//Get type of events
+	getTypeEvents = () => {
+		this.setState({ loading: true });
+		axios
+			.get('/typeevents.json?auth=' + this.state.token)
+			.then((res) => {
+				const fetchedTypeEvents = [];
+				console.log('Eventos, res: ', res);
+				for (let key in res.data) {
+					fetchedTypeEvents.push({
+						...res.data[key],
+						id: key
+					});
+				}
+				this.setState({
+					loading: false,
+					typeEvents: fetchedTypeEvents.reverse()
+				});
+				this.splitEventsHandler();
+			})
+			.catch((err) => {
+				this.setState({ loading: false });
+			});
+	};
+	//Make array of events separated by type
+	splitEventsHandler = () => {
+		const typeEvents = [];
+		const arrayOfArrays = [];
+		this.state.typeEvents.map(e => {
+			typeEvents.push(e.typeEventData.typeEvent);
+		});
+		console.log('typeEvents: ', typeEvents);
+		for (let i = 0; i < typeEvents.sort().length; i++) {
+			const element = typeEvents[i];
+			const array = this.state.events.filter(type => type.eventData.tipo === element);
+			arrayOfArrays.push(array);
+		}
+		console.log('arrayOfArrays: ', arrayOfArrays);
+		this.setState({ events: arrayOfArrays.flat() });
 	};
 	//Get image banner
 	getBanner = () => {
@@ -510,6 +563,42 @@ export default class Eventos extends Component {
 		}
 	};
 
+	sendTypeEventHandler = () => {
+		this.setState({ loading: true });
+		if (this.state.typeEvent) {
+			const formData = {};
+			formData['typeEvent'] = this.state.typeEvent;
+			const typeEvents = {
+				typeEventData: formData
+			};
+			//Upload new
+			axios
+				.post('/typeevents.json?auth=' + this.state.token, typeEvents)
+				.then((response) => {
+					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
+					Alert.alert(
+						'Eventos',
+						'¡Nuevo tipo de evento enviado con exito!',
+						[ { text: 'Ok', onPress: () => this.getTypeEvents() } ],
+						{
+							cancelable: false
+						}
+					);
+				})
+				.catch((error) => {
+					this.setState({ loading: false });
+					Alert.alert('Eventos', '¡Tipo de evento fallido al enviar!', [ { text: 'Ok' } ], {
+						cancelable: false
+					});
+				});
+		} else {
+			this.setState({ loading: false });
+			Alert.alert('Eventos', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
+				cancelable: false
+			});
+		}
+	};
+
 	sendNewHandler = () => {
 		//check if the form is valid
 		if (this.state.formIsValid) {
@@ -653,15 +742,15 @@ export default class Eventos extends Component {
 		}
 	};
 
-	getDays = () => {
-		const days = this.state.events.map(e => {
-			return e.eventData.dia;
-		});
-		const daysFiltered = [...new Set(days)];
-		
-		this.setState({ days: daysFiltered.sort() });
-		console.log('days: ', this.state.days)
-	};
+	// getDays = () => {
+	// 	const days = this.state.events.map((e) => {
+	// 		return e.eventData.dia;
+	// 	});
+	// 	const daysFiltered = [ ...new Set(days) ];
+
+	// 	this.setState({ days: daysFiltered.sort() });
+	// 	console.log('days: ', this.state.days);
+	// };
 
 	render() {
 		const list = this.state.events.map((evt, index) => (
@@ -700,11 +789,6 @@ export default class Eventos extends Component {
 		);
 		const body = (
 			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
-				{/* {this.state.days.map(d => (
-					<View key={Math.random() * 1000} style={{ flexDirection: 'row', backgroundColor: 'grey', width: width * .35  }}>
-						<Text style={styles.separator}>Dia {d}</Text>
-					</View>
-				))} */}
 				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
 					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
 						{this.state.loading ? (
@@ -748,6 +832,7 @@ export default class Eventos extends Component {
 									loadPhoto={this.loadPhotoHandler}
 									image={this.state.image}
 									name={this.state.fileNameImage}
+									typeEvents={this.state.typeEvents}
 								/>
 							))}
 						</View>
@@ -783,6 +868,26 @@ export default class Eventos extends Component {
 				</Card>
 			</View>
 		);
+		const addTypeEvent = (
+			<View style={{ flex: 1, flexDirection: 'column' }}>
+				<Card style={styles.addNew}>
+					<ScrollView style={{ flex: 1 }}>
+						<CardItem bordered>
+							<View style={styles.cardBody}>
+								<CustomInput
+									key="typeEvent"
+									itemType="InlineLabel"
+									holder="Nombre del evento"
+									value={this.state.typeEvent}
+									changed={(text) => this.setState({ typeEvent: text })}
+								/>
+								{this.state.loading && spinner}
+							</View>
+						</CardItem>
+					</ScrollView>
+				</Card>
+			</View>
+		);
 
 		return (
 			<StyledSafeArea>
@@ -795,9 +900,12 @@ export default class Eventos extends Component {
 							showContentRight={true}
 							titleOfAdd="Nuevo evento"
 							get={this.getEvents}
+							addTypeEvent={() => this.setState({ addTypeEvent: true })}
+							isAddTypeEvent={this.state.addTypeEvent}
 							changeBanner={() => this.setState({ changeBanner: true })}
 							isChangeBanner={this.state.changeBanner}
 							add={() => this.setState({ addEvent: true })}
+							isAdd={this.state.addEvent}
 							goBack={() =>
 								this.setState({
 									addEvent: false,
@@ -807,8 +915,7 @@ export default class Eventos extends Component {
 									fileNameImage: null,
 									imageFormData: null
 								})}
-							isAdd={this.state.addEvent}
-							save={this.uploadPhotoHandler}
+							save={!this.state.addTypeEvent ? this.uploadPhotoHandler : this.sendTypeEventHandler}
 							isAdmin={true ? true : this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
@@ -822,12 +929,17 @@ export default class Eventos extends Component {
 					<StatusBar color="#c7175b" />
 					<View style={{ flex: 1, margin: 10 }}>
 						<ThemeProvider theme={theme}>
-							{!this.state.addEvent && !this.state.changeBanner ? (
+							{!this.state.addEvent && !this.state.changeBanner && !this.state.addTypeEvent ? (
 								eventos
-							) : this.state.addEvent && !this.state.changeBanner ? (
+							) : this.state.addEvent && !this.state.changeBanner && !this.state.addTypeEvent ? (
 								addEvent
-							) : (
+							) : this.state.changeBanner && !this.state.addEvent && !this.state.addTypeEvent ? (
 								changeBanner
+							) : (
+								this.state.addTypeEvent &&
+								!this.state.changeBanner &&
+								!this.state.addEvent &&
+								addTypeEvent
 							)}
 						</ThemeProvider>
 					</View>

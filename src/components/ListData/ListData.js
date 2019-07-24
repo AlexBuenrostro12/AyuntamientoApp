@@ -42,9 +42,10 @@ const ListData = (props) => {
 					key={props.id}
 				>
 					<ImageBackground
-						style={styles.image}
+						style={styles.imageEvent}
 						source={!dt.imagen ? require('../../assets/images/Ayuntamiento/fondo.jpg') : { uri: dt.imagen }}
 					>
+						<View style={styles.eventTextContainer}><Text style={styles.text}>{dt.tipo}</Text></View>
 						<View style={styles.textContainer}>
 							{dt.title ? (
 								<Text style={styles.text}>Día {dt.dia} - {dt.title} </Text>
@@ -104,16 +105,35 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'flex-end'
 	},
+	imageEvent: {
+		height: width / 2.38,
+		width: width / 2.38,
+		resizeMode: 'contain',
+		flexDirection: 'column',
+		justifyContent: 'space-between'
+	},
 	text: {
 		alignSelf: 'center',
 		color: 'white',
 		fontSize: 16,
 		fontWeight: 'bold'
 	},
+	eventText: {
+		alignSelf: 'center',
+		color: 'white',
+		fontSize: 14,
+		fontWeight: 'bold'
+	},
 	textContainer: {
 		justifyContent: 'center',
 		height: width / 2.38 / 2,
 		width: width / 2.38,
+		backgroundColor: 'black',
+		opacity: 0.5
+	},
+	eventTextContainer: {
+		alignContent: 'center',
+		justifyContent: 'center',
 		backgroundColor: 'black',
 		opacity: 0.5
 	},

@@ -76,7 +76,7 @@ export default class HeaderToolbar extends React.Component {
 							</MenuOption>
 						)}
 						{/*Cambiar banner*/}
-						{this.props.changeBanner && (
+						{this.props.isAdmin && this.props.changeBanner && (
 							<MenuOption onSelect={() => this.props.changeBanner()}>
 								<View style={styles.menuOption}>
 									<Image
@@ -84,6 +84,18 @@ export default class HeaderToolbar extends React.Component {
 										source={require('../../assets/images/Preferences/add.png')}
 									/>
 									<Text style={styles.menuOptionText}>Cambiar banner</Text>
+								</View>
+							</MenuOption>
+						)}
+						{/*Agregar Evento*/}
+						{this.props.isAdmin && this.props.addTypeEvent && (
+							<MenuOption onSelect={() => this.props.addTypeEvent()}>
+								<View style={styles.menuOption}>
+									<Image
+										style={styles.menuOptionImage}
+										source={require('../../assets/images/Preferences/add.png')}
+									/>
+									<Text style={styles.menuOptionText}>Agregar nuevo evento</Text>
 								</View>
 							</MenuOption>
 						)}
@@ -220,7 +232,7 @@ export default class HeaderToolbar extends React.Component {
 					{/* check if can show the search bar */}
 					{!this.props.describeGoBack && !this.props.isAdd && !this.props.showCalendar && this.props.search && search}
 					{/* check if it's not describeScreen and then check if show menu or menuAdd */}
-					{!this.props.describeGoBack && ((!this.props.isAdd && !this.props.isChangeBanner) ? preferenceMenu : preferenceMenuAdd)}
+					{!this.props.describeGoBack && ((!this.props.isAdd && !this.props.isChangeBanner && !this.props.isAddTypeEvent) ? preferenceMenu : preferenceMenuAdd)}
 					{/* check if show goBack icon of describeData */}
 					{this.props.describeGoBack && goBack}
 					{/* check if show menu of describeData */}

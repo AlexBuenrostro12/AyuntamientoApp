@@ -587,6 +587,8 @@ export default class DescribreData extends Component {
 													</View>
 												)}
 											</View>
+											<Text style={styles.direction}>{data.tipo.toUpperCase()}</Text>
+											<Text style={styles.direction}>DÍA {data.dia}</Text>
 										</View>
 									</CardItem>
 									<CardItem>

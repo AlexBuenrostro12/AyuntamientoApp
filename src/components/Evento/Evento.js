@@ -11,6 +11,8 @@ export default class Evento extends Component {
         fecha: null,
         hora: null,
 		imagen: null,
+		tipo: null,
+		dia: null,
 		itemKey: null,
 		showItemCard: false,
 		data: [],
@@ -26,6 +28,8 @@ export default class Evento extends Component {
 				this.setState({ fecha: fecha });
                 this.setState({ hora: this.props.data['hora'] });
 				this.setState({ imagen: this.props.data['imagen'] });
+				this.setState({ tipo: this.props.data['tipo'] });
+				this.setState({ dia: this.props.data['dia'] });
 				this.setState({ itemKey: key });
 			}
 		}
@@ -40,6 +44,8 @@ export default class Evento extends Component {
 				fecha: this.state.fecha,
 				hora: this.state.hora,
 				imagen: this.state.imagen,
+				tipo: this.state.tipo,
+				dia: this.state.dia,
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'Eventos',
@@ -88,7 +94,7 @@ export default class Evento extends Component {
 		// console.log('deleteItemListHandler:res: ', this.props.token, this.state.itemKey);
 		const { navigate } = this.props.describe.navigation;
 		axios
-			.delete('/news' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
+			.delete('/events' + '/' + this.state.itemKey + '.json?auth=' + this.props.token)
 			.then((response) => {
 				Alert.alert(
 					'Eventos',
@@ -127,6 +133,9 @@ export default class Evento extends Component {
 			}
 			if (dataName === 'dia') {
 				obj.dia = this.props.data[dataName];
+			}
+			if (dataName === 'tipo') {
+				obj.tipo = this.props.data[dataName];
 			}
 		}
 		const oddORnot = (this.props.index % 2);

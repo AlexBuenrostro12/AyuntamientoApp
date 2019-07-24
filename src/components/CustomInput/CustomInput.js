@@ -239,6 +239,31 @@ const customInput = (props) => {
 				</View>
 			);
 			break;
+			case 'PickTypeEvent':
+			const typeEvents = props.typeEvents.map((e) => (
+				<Picker.Item key={e.id} label={e.typeEventData.typeEvent.toString()} value={e.typeEventData.typeEvent.toString()} />
+			));
+			input = (
+				<View>
+					<Text>Seleccione tipo del evento</Text>
+					<Picker
+						mode="dropdown"
+						iosHeader={props.value}
+						iosIcon={
+							<Image
+								style={{ width: 25, height: 25 }}
+								source={require('../../assets/images/ArrowDown/arrow-down.png')}
+							/>
+						}
+						style={{ width: undefined }}
+						selectedValue={props.value}
+						onValueChange={props.changed}
+					>
+						{typeEvents}
+					</Picker>
+				</View>
+			);
+			break;
 		default:
 			input = null;
 			break;
