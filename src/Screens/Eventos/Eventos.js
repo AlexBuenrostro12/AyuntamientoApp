@@ -137,6 +137,7 @@ export default class Eventos extends Component {
 		separatorDate: 'date',
 		days: [],
 		typeEvents: [],
+		results: []
 	};
 
 	constructor(props) {
@@ -235,7 +236,8 @@ export default class Eventos extends Component {
 			else openDrawer();
 		}
 		if (this.state.search) this.startSearch();
-		if (this.state.addEvent || this.state.addTypeEvent || this.state.changeBanner) this.setState({ addEvent: false, addTypeEvent: false, changeBanner: false });
+		if (this.state.addEvent || this.state.addTypeEvent || this.state.changeBanner)
+			this.setState({ addEvent: false, addTypeEvent: false, changeBanner: false });
 		return true;
 	};
 	//Remove subscription from native button
@@ -330,30 +332,56 @@ export default class Eventos extends Component {
 	splitEventsHandler = () => {
 		const typeEvents = [];
 		const arrayOfArrays = [];
-		this.state.typeEvents.map(e => {
+		this.state.typeEvents.map((e) => {
 			typeEvents.push(e.typeEventData.typeEvent);
 		});
 		console.log('typeEvents: ', typeEvents);
 		for (let i = 0; i < typeEvents.sort().length; i++) {
 			const element = typeEvents[i];
-			const array = this.state.events.filter(type => type.eventData.tipo === element);
+			const array = this.state.events.filter((type) => type.eventData.tipo === element);
 			arrayOfArrays.push(array);
 		}
-		let daysFiltered = null;
-		const arrayOfArraysOfDays = [];
+		//Filter days
+		const arrayOfArraysByDays = [];
 		for (let e = 0; e < arrayOfArrays.length; e++) {
 			const array = arrayOfArrays[e];
 
-			const days = array.map((e) => {
-				return e.eventData.dia;
+			const dayAndType = array.map((e) => {
+				const obj = {
+					dia: e.eventData.dia,
+					tipo: e.eventData.tipo
+				};
+				return obj;
 			});
-			daysFiltered = [ ...new Set(days) ];	
-			arrayOfArraysOfDays.push(daysFiltered);	
+			// Remove duplicates days
+			const uniqueDayAndType = Array.from(new Set(dayAndType.map((a) => a.dia))).map((dia) => {
+				return dayAndType.find((a) => a.dia === dia);
+			});
+			arrayOfArraysByDays.push(uniqueDayAndType);
 		}
-		console.log('days: ', arrayOfArraysOfDays);
 
-		console.log('arrayOfArraysOrderByEvent: ', arrayOfArrays);
-		this.setState({ events: arrayOfArrays.flat() });
+		//Get separator by type and day
+		const results = [];
+		for (let x = 0; x < arrayOfArraysByDays.length; x++) {
+			const arr = arrayOfArraysByDays[x];
+			for (let c = 0; c < arr.length; c++) {
+				const elmt = arr[c];
+				for (let v = 0; v < arrayOfArrays.length; v++) {
+					const arreglo = arrayOfArrays[v];
+					const result = arreglo.filter(
+						(a) => a.eventData.dia === elmt.dia && a.eventData.tipo === elmt.tipo
+					);
+					if (result.length !== 0) results.push(result);
+				}
+			}
+		}
+		console.log('results: ', results);
+
+		// console.log('orderByDays: ', arrayOfArraysByDays);
+		// console.log('arrayOfArraysOrderByEvent: ', arrayOfArrays);
+
+		// send order array of events by day and type to array of events in state
+		this.setState({ events: results.flat(), results: results, days: arrayOfArraysByDays });
 	};
 	//Get image banner
 	getBanner = () => {
@@ -800,6 +828,7 @@ export default class Eventos extends Component {
 				/>
 			</View>
 		);
+
 		const body = (
 			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
 				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
@@ -807,9 +836,46 @@ export default class Eventos extends Component {
 						{this.state.loading ? (
 							spinner
 						) : (
-							<View style={this.state.showLikeIcons ? styles.scrollDataListIcons : styles.scrollDataList}>
-								{list}
-							</View>
+							this.state.days.map((day) => {
+								return day.map((d, index) => (
+									<View key={index} style={{ flex: 1}}>
+										<View
+											key={index}
+											style={{
+												marginBottom: 5,
+												backgroundColor: 'grey',
+												width: width * .90,
+												paddingLeft: 3
+											}}
+										>
+											<Text style={styles.separator}>
+												{d.tipo} - Día {d.dia}
+											</Text>
+										</View>
+										<View style={styles.scrollDataListIcons}>
+										{this.state.results.map((rs) => {
+											return rs.map((evt,index) => {
+												if (d.dia === evt.eventData.dia && d.tipo === evt.eventData.tipo){
+													return (
+															<Evento
+																key={evt.id}
+																id={evt.id}
+																token={this.state.token}
+																isAdmin={this.state.isAdmin}
+																refresh={this.getEvents}
+																data={evt.eventData}
+																describe={this.props}
+																index={index + 1}
+																showLikeIcons={true}
+															/>
+															);
+														}
+													});
+												})}
+										</View>
+									</View>
+								));
+							})
 						)}
 					</View>
 				</ScrollView>

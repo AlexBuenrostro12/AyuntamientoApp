@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ImageBackground, ScrollView } from 'react-native';
-import { Card } from 'native-base';
 
 const { height, width } = Dimensions.get('window');
 
@@ -17,10 +16,10 @@ const ListData = (props) => {
 						style={styles.imageEvent}
 						source={!dt.imagen ? require('../../assets/images/Ayuntamiento/fondo.jpg') : { uri: dt.imagen }}
 					>
-						<View style={styles.eventTextContainer}><Text style={styles.text}>{dt.tipo}</Text></View>
+						{/* <View style={styles.eventTextContainer}><Text style={styles.text}>{dt.tipo}</Text></View> */}
 						<View style={styles.textContainer}>
 							{dt.title ? (
-								<Text style={styles.text}>Día {dt.dia} - {dt.title} </Text>
+								<Text style={styles.text}>{dt.title} </Text>
 							) : (
 								<Text style={styles.text}>
 									{dt.destino} - {dt.horaSalida}
@@ -31,7 +30,7 @@ const ListData = (props) => {
 				</TouchableOpacity>
 	));
 
-	return <View>{props.showLikeIcons ? icons : list}</View>;
+	return <View>{icons}</View>;
 };
 
 export default ListData;
@@ -53,7 +52,7 @@ const styles = StyleSheet.create({
 		width: width / 2.38,
 		resizeMode: 'contain',
 		flexDirection: 'column',
-		justifyContent: 'space-between'
+		justifyContent: 'flex-end'
 	},
 	text: {
 		alignSelf: 'center',
@@ -91,5 +90,11 @@ const styles = StyleSheet.create({
 		color: '#676766',
 		fontSize: 16,
 		fontWeight: 'bold'
+	},
+	scrollDataListIcons: {
+		flex: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+		flexWrap: 'wrap'
 	},
 });
