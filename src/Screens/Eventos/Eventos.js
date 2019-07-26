@@ -830,7 +830,7 @@ export default class Eventos extends Component {
 											key={index}
 											style={{
 												marginBottom: 5,
-												backgroundColor: 'grey',
+												backgroundColor: '#676766',
 												width: width * .90,
 												paddingLeft: 3
 											}}
@@ -982,7 +982,7 @@ export default class Eventos extends Component {
 									imageFormData: null
 								})}
 							save={!this.state.addTypeEvent ? this.uploadPhotoHandler : this.sendTypeEventHandler}
-							isAdmin={true ? true : this.state.isAdmin}
+							isAdmin={this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
 							changed={(text) => this.searchTextHandler(text)}
