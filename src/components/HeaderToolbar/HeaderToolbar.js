@@ -81,9 +81,9 @@ export default class HeaderToolbar extends React.Component {
 								<View style={styles.menuOption}>
 									<Image
 										style={styles.menuOptionImage}
-										source={require('../../assets/images/Preferences/add.png')}
+										source={require('../../assets/images/Preferences/user-admin.png')}
 									/>
-									<Text style={styles.menuOptionText}>Cambiar banner</Text>
+									<Text style={styles.menuOptionText}>Administrador</Text>
 								</View>
 							</MenuOption>
 						)}

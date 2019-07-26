@@ -220,11 +220,6 @@ export default class Eventos extends Component {
 			this.setState({ notificationToken: FCMToken }, () => this.getFCMTokens());
 		} catch (error) {}
 	}
-	//Test Object form
-	getForms = () => {
-		const newEvent = new FormEvent('Evento 1 prueba');
-		console.log('evento: ', newEvent.event);
-	};
 	//Native backbutton
 	onBackButtonPressAndroid = () => {
 		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
@@ -312,6 +307,13 @@ export default class Eventos extends Component {
 			.then((res) => {
 				const fetchedTypeEvents = [];
 				console.log('Eventos, res: ', res);
+				const obj = {
+					typeEventData:{
+						typeEvent: 'Agregar evento'
+					},
+					id: 'Agregar evento'
+				};
+				fetchedTypeEvents.push(obj);
 				for (let key in res.data) {
 					fetchedTypeEvents.push({
 						...res.data[key],
@@ -375,10 +377,7 @@ export default class Eventos extends Component {
 				}
 			}
 		}
-		console.log('results: ', results);
-
-		// console.log('orderByDays: ', arrayOfArraysByDays);
-		// console.log('arrayOfArraysOrderByEvent: ', arrayOfArrays);
+		// console.log('results: ', results);
 
 		// send order array of events by day and type to array of events in state
 		this.setState({ events: results.flat(), results: results, days: arrayOfArraysByDays });
@@ -616,11 +615,11 @@ export default class Eventos extends Component {
 			axios
 				.post('/typeevents.json?auth=' + this.state.token, typeEvents)
 				.then((response) => {
-					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
+					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null, typeEvent: '' });
 					Alert.alert(
 						'Eventos',
-						'¡Nuevo tipo de evento enviado con exito!',
-						[ { text: 'Ok', onPress: () => this.getTypeEvents() } ],
+						'¡Evento enviado con exito!',
+						[ { text: 'Ok', onPress: () => { this.getEvents(); this.getTypeEvents(); } } ],
 						{
 							cancelable: false
 						}
@@ -644,6 +643,12 @@ export default class Eventos extends Component {
 		//check if the form is valid
 		if (this.state.formIsValid && this.state.form['tipo'].value !== '') {
 			const formData = {};
+			let ban = false;
+			if (this.state.form['tipo'].value === 'Agregar evento'){
+				this.state.form['tipo'].value = this.state.typeEvent;
+				ban = true;
+			}
+				
 			for (let formElementIdentifier in this.state.form) {
 				formData[formElementIdentifier] = this.state.form[formElementIdentifier].value;
 			}
@@ -656,14 +661,18 @@ export default class Eventos extends Component {
 				.then((response) => {
 					this.state.notifications && this.sendRemoteNotification();
 					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
-					Alert.alert(
-						'Eventos',
-						'¡Evento enviado con exito!',
-						[ { text: 'Ok', onPress: () => this.getEvents() } ],
-						{
-							cancelable: false
-						}
-					);
+					if (ban){
+						this.sendTypeEventHandler()
+					} else {
+						Alert.alert(
+							'Eventos',
+							'¡Evento enviado con exito!',
+							[ { text: 'Ok', onPress: () => this.getEvents() } ],
+							{
+								cancelable: false
+							}
+						);
+					}
 				})
 				.catch((error) => {
 					this.setState({ loading: false });
@@ -694,14 +703,14 @@ export default class Eventos extends Component {
 			const filteredEvents = this.state.events.filter((nw) => {
 				const filterEvent = nw.eventData['evento'];
 				const filterDate = nw.eventData['fecha'].split('T', 1);
-				const filterType = nw.eventData['tipo'];
 				console.log('filterNew: ', filterEvent);
 				console.log('filterDate: ', filterDate[0]);
-				if (filterEvent.includes(text) || filterDate[0].includes(text) || filterType.includes(text)) {
+				if (filterEvent.includes(text) || filterDate[0].includes(text)) {
 					ban = true;
 					return nw;
 				}
 			});
+			console.log('filteredEvents: ', filteredEvents);
 			if (ban) {
 				this.setState({ events: filteredEvents });
 			}
@@ -784,16 +793,6 @@ export default class Eventos extends Component {
 		}
 	};
 
-	getDays = () => {
-		const days = this.state.events.map((e) => {
-			return e.eventData.dia;
-		});
-		const daysFiltered = [ ...new Set(days) ];
-
-		this.setState({ days: daysFiltered.sort() });
-		console.log('days: ', this.state.days);
-	};
-
 	render() {
 		const spinner = <CustomSpinner color="blue" />;
 		const formElements = [];
@@ -815,7 +814,9 @@ export default class Eventos extends Component {
 				/>
 			</View>
 		);
-
+		let ban = false;
+		if (this.state.texToSearch !== '') 
+			ban = true;
 		const body = (
 			<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
 				<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
@@ -823,7 +824,7 @@ export default class Eventos extends Component {
 						{this.state.loading ? (
 							spinner
 						) : (
-							this.state.days.map((day) => {
+							!ban ? this.state.days.map((day) => {
 								return day.map((d, index) => (
 									<View key={index} style={{ flex: 1}}>
 										<View
@@ -863,7 +864,21 @@ export default class Eventos extends Component {
 									</View>
 								));
 							})
-						)}
+						: <View style={styles.scrollDataListIcons}>
+							{this.state.events.map((evt, index) => (
+								<Evento
+									key={evt.id}
+									id={evt.id}
+									token={this.state.token}
+									isAdmin={this.state.isAdmin}
+									refresh={this.getEvents}
+									data={evt.eventData}
+									describe={this.props}
+									index={index + 1}
+									showLikeIcons={true}
+								/>
+							))}
+						</View>)}
 					</View>
 				</ScrollView>
 			</Card>
@@ -899,6 +914,8 @@ export default class Eventos extends Component {
 									image={this.state.image}
 									name={this.state.fileNameImage}
 									typeEvents={this.state.typeEvents}
+									changedTypeEvent={(text) => this.setState({ typeEvent: text })}
+									typeEvent={this.state.typeEvent}
 								/>
 							))}
 						</View>
@@ -982,7 +999,7 @@ export default class Eventos extends Component {
 									imageFormData: null
 								})}
 							save={!this.state.addTypeEvent ? this.uploadPhotoHandler : this.sendTypeEventHandler}
-							isAdmin={this.state.isAdmin}
+							isAdmin={true ? true : this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
 							changed={(text) => this.searchTextHandler(text)}
