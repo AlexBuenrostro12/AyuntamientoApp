@@ -642,7 +642,7 @@ export default class Eventos extends Component {
 
 	sendNewHandler = () => {
 		//check if the form is valid
-		if (this.state.formIsValid) {
+		if (this.state.formIsValid && this.state.form['tipo'].value !== '') {
 			const formData = {};
 			for (let formElementIdentifier in this.state.form) {
 				formData[formElementIdentifier] = this.state.form[formElementIdentifier].value;
@@ -795,19 +795,6 @@ export default class Eventos extends Component {
 	};
 
 	render() {
-		const list = this.state.events.map((evt, index) => (
-			<Evento
-				key={evt.id}
-				id={evt.id}
-				token={this.state.token}
-				isAdmin={this.state.isAdmin}
-				refresh={this.getEvents}
-				data={evt.eventData}
-				describe={this.props}
-				index={index + 1}
-				showLikeIcons={true}
-			/>
-		));
 		const spinner = <CustomSpinner color="blue" />;
 		const formElements = [];
 		for (let key in this.state.form) {
@@ -823,7 +810,7 @@ export default class Eventos extends Component {
 				<CustomCardItemTitle
 					title="EVENTOS"
 					description="Los eventos más importantes dentro de Tecalitlán"
-					info="Delice hacia abajo, para leer las actividades a futuro."
+					info="Eventos por orden alfabético."
 					image={objUri}
 				/>
 			</View>
