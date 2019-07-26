@@ -87,18 +87,6 @@ export default class HeaderToolbar extends React.Component {
 								</View>
 							</MenuOption>
 						)}
-						{/*Agregar Evento*/}
-						{this.props.isAdmin && this.props.addTypeEvent && (
-							<MenuOption onSelect={() => this.props.addTypeEvent()}>
-								<View style={styles.menuOption}>
-									<Image
-										style={styles.menuOptionImage}
-										source={require('../../assets/images/Preferences/add.png')}
-									/>
-									<Text style={styles.menuOptionText}>Agregar nuevo evento</Text>
-								</View>
-							</MenuOption>
-						)}
 					</MenuOptions>
 				</Menu>
 			</TouchableOpacity>

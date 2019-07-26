@@ -131,7 +131,6 @@ export default class Eventos extends Component {
 		texToSearch: '',
 		search: false,
 		changeBanner: false,
-		addTypeEvent: false,
 		typeEvent: '',
 		banner: [],
 		separatorDate: 'date',
@@ -226,13 +225,13 @@ export default class Eventos extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.search && !this.state.addEvent && !this.state.addTypeEvent && !this.state.changeBanner) {
+		if (!this.state.search && !this.state.addEvent && !this.state.changeBanner) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
 		}
 		if (this.state.search) this.startSearch();
-		if (this.state.addEvent || this.state.addTypeEvent || this.state.changeBanner)
-			this.setState({ addEvent: false, addTypeEvent: false, changeBanner: false });
+		if (this.state.addEvent || this.state.changeBanner)
+			this.setState({ addEvent: false, changeBanner: false });
 		return true;
 	};
 	//Remove subscription from native button
@@ -641,14 +640,13 @@ export default class Eventos extends Component {
 
 	sendNewHandler = () => {
 		//check if the form is valid
-		if (this.state.formIsValid && this.state.form['tipo'].value !== '') {
+		if (this.state.formIsValid) {
 			const formData = {};
 			let ban = false;
 			if (this.state.form['tipo'].value === 'Agregar evento'){
 				this.state.form['tipo'].value = this.state.typeEvent;
 				ban = true;
 			}
-				
 			for (let formElementIdentifier in this.state.form) {
 				formData[formElementIdentifier] = this.state.form[formElementIdentifier].value;
 			}
@@ -951,26 +949,6 @@ export default class Eventos extends Component {
 				</Card>
 			</View>
 		);
-		const addTypeEvent = (
-			<View style={{ flex: 1, flexDirection: 'column' }}>
-				<Card style={styles.addNew}>
-					<ScrollView style={{ flex: 1 }}>
-						<CardItem bordered>
-							<View style={styles.cardBody}>
-								<CustomInput
-									key="typeEvent"
-									itemType="InlineLabel"
-									holder="Nombre del evento"
-									value={this.state.typeEvent}
-									changed={(text) => this.setState({ typeEvent: text })}
-								/>
-								{this.state.loading && spinner}
-							</View>
-						</CardItem>
-					</ScrollView>
-				</Card>
-			</View>
-		);
 
 		return (
 			<StyledSafeArea>
@@ -983,8 +961,6 @@ export default class Eventos extends Component {
 							showContentRight={true}
 							titleOfAdd="Nuevo evento"
 							get={this.getEvents}
-							addTypeEvent={() => this.setState({ addTypeEvent: true })}
-							isAddTypeEvent={this.state.addTypeEvent}
 							changeBanner={() => this.setState({ changeBanner: true })}
 							isChangeBanner={this.state.changeBanner}
 							add={() => this.setState({ addEvent: true })}
@@ -993,12 +969,11 @@ export default class Eventos extends Component {
 								this.setState({
 									addEvent: false,
 									changeBanner: false,
-									addTypeEvent: false,
 									image: null,
 									fileNameImage: null,
 									imageFormData: null
 								})}
-							save={!this.state.addTypeEvent ? this.uploadPhotoHandler : this.sendTypeEventHandler}
+							save={this.uploadPhotoHandler}
 							isAdmin={true ? true : this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
@@ -1012,18 +987,13 @@ export default class Eventos extends Component {
 					<StatusBar color="#c7175b" />
 					<View style={{ flex: 1, margin: 10 }}>
 						<ThemeProvider theme={theme}>
-							{!this.state.addEvent && !this.state.changeBanner && !this.state.addTypeEvent ? (
+							{!this.state.addEvent && !this.state.changeBanner ? (
 								eventos
-							) : this.state.addEvent && !this.state.changeBanner && !this.state.addTypeEvent ? (
+							) : this.state.addEvent && !this.state.changeBanner ? (
 								addEvent
-							) : this.state.changeBanner && !this.state.addEvent && !this.state.addTypeEvent ? (
+							) : this.state.changeBanner && !this.state.addEvent ? (
 								changeBanner
-							) : (
-								this.state.addTypeEvent &&
-								!this.state.changeBanner &&
-								!this.state.addEvent &&
-								addTypeEvent
-							)}
+							) : null}
 						</ThemeProvider>
 					</View>
 				</StyledContainer>
