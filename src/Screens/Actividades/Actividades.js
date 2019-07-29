@@ -8,7 +8,8 @@ import {
 	TimePickerAndroid,
 	Dimensions,
 	Image,
-	Platform
+	Platform,
+	BackHandler
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -29,6 +30,9 @@ import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 const { height, width } = Dimensions.get('window');
 
 export default class Actividades extends Component {
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		token: null,
 		loading: true,
@@ -107,6 +111,14 @@ export default class Actividades extends Component {
 		notificationToken: null,
 		fcmTokens: [],
 		allReadyToNotification: false,
+		search: false,
+	};
+
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 	};
 
 	//Style of drawer navigation
@@ -121,6 +133,10 @@ export default class Actividades extends Component {
 	};
 
 	async componentDidMount() {
+		//BackHandler
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 		let token = (expiresIn = email = null);
 		try {
 			console.log('Entro al try');
@@ -182,7 +198,30 @@ export default class Actividades extends Component {
 			console.log('getInitialNotification, ', getInitialNotification);
 			this.setState({ notificationToken: FCMToken }, () => this.getFCMTokens());
 		} catch (error) {}
-	}
+	};
+
+	onBackButtonPressAndroid = () => {
+		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
+		const parent = dangerouslyGetParent();
+		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
+
+		if (!this.state.showCalendar && !this.state.search) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else {
+			if (this.state.showCalendar)
+				this.showCalendar('refresh');
+			if (this.state.search)
+				this.startSearch();
+		}
+				
+		return true;
+	};
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
+	};
 
 	getActivities = () => {
 		this.setState({ loading: true, addAct: false, showButtons: true });
@@ -563,6 +602,9 @@ export default class Actividades extends Component {
 			}
 		} else this.getActivities();
 	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
 	showCalendar = (refresh) => {
 		this.setState({ showCalendar: !this.state.showCalendar });
 		if (refresh === 'refresh') this.getActivities();
@@ -607,14 +649,14 @@ export default class Actividades extends Component {
 		);
 
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.42 }}>
 				<CustomCardItemTitle
 					title="ACTIVIDADES"
 					description="Consulte las actividades y efemerides que celebramos en nuestro gobierno ciudadano."
 					info="Delice hacia abajo, para leer las actividades a futuro."
 					image={require('../../assets/images/Descripcion/descripcion.png')}
 				/>
-			</ScrollView>
+			</View>
 		);
 
 		const body = (
@@ -684,7 +726,7 @@ export default class Actividades extends Component {
 						<HeaderToolbar
 							open={this.props}
 							title={'Actividades'}
-							color="#f8ae40"
+							color="#00a19a"
 							showContentRight={true}
 							titleOfAdd="Nueva Actividad"
 							get={this.getActivities}
@@ -702,9 +744,11 @@ export default class Actividades extends Component {
 							search={this.filterData}
 							calendar={this.showCalendar}
 							showCalendar={this.state.showCalendar}
+							startSearch={this.startSearch}
+							isSearch={this.state.search}
 						/>
 					</View>
-					<StatusBar color="#f39028" />
+					<StatusBar color="#00847b" />
 					<View style={{ flex: 1, margin: 10 }}>{!this.state.addAct ? activiades : addAct}</View>
 				</View>
 			</SafeAreaView>

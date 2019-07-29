@@ -22,20 +22,12 @@ import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import {
-	food,
-	medicServices,
-	pharmacys,
-	hotels,
-	sports,
-	schools,
-	servicios,
-	entretenimiento,
-	iglesias
-} from '../../components/AuxiliarFunctions/MarkersArray';
 import axios from '../../../axios-ayuntamiento';
 
 export default class Map extends Component {
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		token: null,
 		isAdmin: false,
@@ -108,6 +100,13 @@ export default class Map extends Component {
 		modalVisible: false
 	};
 
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
+	};
+
 	//Style of drawer navigation
 	static navigationOptions = {
 		drawerIcon: ({ tintColor }) => (
@@ -120,7 +119,9 @@ export default class Map extends Component {
 	};
 	async componentDidMount() {
 		//BackHandler
-		BackHandler.addEventListener('hardwareBackPress', this.goBackHandler);
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 		//GetToken
 		let token = (expiresIn = email = null);
 		try {
@@ -165,12 +166,20 @@ export default class Map extends Component {
 			//Catch posible errors
 		}
 	}
-	componentWillUnmount() {
-		BackHandler.removeEventListener('hardwareBackPress', this.goBackHandler);
-	}
-	// Enable native button
-	goBackHandler = () => {
+	onBackButtonPressAndroid = () => {
+		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
+		const parent = dangerouslyGetParent();
+		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
+		
+		if (isDrawerOpen) closeDrawer();
+		else openDrawer();
+				
 		return true;
+	};
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
 	};
 
 	inputChangeHandler = (text, inputIdentifier) => {
@@ -661,7 +670,8 @@ export default class Map extends Component {
 					transparent={false}
 					visible={this.state.modalVisible}
 					onRequestClose={() => {
-						Alert.alert('Modal has been closed.');
+						this.setModalVisible(false);
+						this.getMarkers();
 					}}
 				>
 					<View style={styles.modal}>
@@ -841,7 +851,7 @@ export default class Map extends Component {
 					<HeaderToolbar
 						open={this.props}
 						title="Mapa"
-						color="#e2487d"
+						color="#f8ae40"
 						showContentRight={true}
 						titleOfAdd="Nuevo marcador"
 						get={this.getMarkers}
@@ -852,7 +862,7 @@ export default class Map extends Component {
 						isAdmin={this.state.isAdmin}
 					/>
 				</View>
-				<StatusBar color="#c7175b" />
+				<StatusBar color="#f39028" />
 				<View style={styles.mapContainer}>
 					{!this.state.addMarker ? (!this.state.modalVisible ? (!this.state.loading ? mapMarkers : spinner) : modal) : addMarker}
 				</View>
@@ -991,7 +1001,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		height: height / 11,
 		width: width,
-		backgroundColor: '#e2487d',
+		backgroundColor: '#f8ae40',
 		paddingLeft: 15,
 		paddingRight: 15
 	},

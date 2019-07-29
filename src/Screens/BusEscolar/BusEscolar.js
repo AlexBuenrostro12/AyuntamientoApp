@@ -7,7 +7,8 @@ import {
 	Alert,
 	TimePickerAndroid,
 	Image, 
-	Dimensions
+	Dimensions,
+	BackHandler
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
@@ -18,10 +19,12 @@ import CustommSpinner from '../../components/CustomSpinner/CustomSpinner';
 import axios from '../../../axios-ayuntamiento';
 import Buses from '../../components/Buses/Buses';
 import CustomInput from '../../components/CustomInput/CustomInput';
-import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
 export default class BusEscolar extends Component {
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		buses: [],
 		loading: true,
@@ -81,7 +84,15 @@ export default class BusEscolar extends Component {
 		formIsValid: false,
 		showButtons: true,
 		showLikeIcons: true,
-		texToSearch: ''
+		texToSearch: '',
+		search: false,
+	};
+
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 	};
 
 	//Style of drawer navigation
@@ -95,6 +106,10 @@ export default class BusEscolar extends Component {
 	};
 
 	async componentDidMount() {
+		//BackHandler
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 		try {
 			console.log('Entro al try');
 			token = await AsyncStorage.getItem('@storage_token');
@@ -132,7 +147,25 @@ export default class BusEscolar extends Component {
 		} catch (e) {
 			//Catch posible errores
 		}
-	}
+	};
+
+	onBackButtonPressAndroid = () => {
+		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
+		const parent = dangerouslyGetParent();
+		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
+
+		if (!this.state.search) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else this.startSearch()
+				
+		return true;
+	};
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
+	};
 
 	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
@@ -299,6 +332,9 @@ export default class BusEscolar extends Component {
 			}
 		} else this.getBuses();
 	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
 
 	render() {
 		console.log(this.state);
@@ -326,14 +362,14 @@ export default class BusEscolar extends Component {
 		const spinner = <CustommSpinner color="blue" />;
 
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.40 }}>
 				<CustomCardItemTitle
 					title="BUS ESCOLAR"
 					description="Consulta los horarios y destinos de tus camiones"
 					info="Delice hacia abajo, para los horarios más antiguos."
 					image={require('../../assets/images/Ubicacion/search.png')}
 				/>
-			</ScrollView>
+			</View>
 		);
 
 		const body = (
@@ -400,7 +436,7 @@ export default class BusEscolar extends Component {
 						<HeaderToolbar 
 							open={this.props} 
 							title="Buses"
-							color="#00a19a"
+							color="#d4e283"
 							showContentRight={true}
 							titleOfAdd="Nuevo bus"
 							get={this.getBuses}
@@ -414,9 +450,11 @@ export default class BusEscolar extends Component {
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
 							search={this.filterData} 
+							startSearch={this.startSearch}
+							isSearch={this.state.search}
 						/>	
 					</View>
-					<StatusBar color="#FEA621" />
+					<StatusBar color="#bac95f" />
 					<View style={{ flex: 1, margin: 10 }}>
 						{!this.state.addBus ? bus : addBus}
 					</View>

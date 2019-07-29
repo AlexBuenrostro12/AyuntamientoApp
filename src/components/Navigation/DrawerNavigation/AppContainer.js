@@ -12,6 +12,7 @@ import ActividadesScreen from '../../../Screens/Actividades/Actividades';
 import LogoutScreen from '../../../Screens/Logout/Logout';
 import DescribeDataScreen from '../../DescribeData/DescribeData';
 import MapScreen from '../../../Screens/Map/Map';
+import EventosScreen from '../../../Screens/Eventos/Eventos';
 
 const CustomDrawerComponent = (props) => (
 	<SafeAreaView style={styles.sAV}>
@@ -34,6 +35,7 @@ const AppDrawer = createDrawerNavigator({
   'Actividades': ActividadesScreen,
   'Describe' : DescribeDataScreen,
   'Mapa de Tecalitlán' : MapScreen,
+  'Eventos' : EventosScreen,
   'Salir': LogoutScreen,
 },{
   contentComponent: CustomDrawerComponent,
