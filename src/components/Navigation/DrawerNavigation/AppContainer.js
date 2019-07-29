@@ -1,6 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Image, ScrollView, SafeAreaView, Dimensions } from 'react-native';
-import { DrawerItems, createSwitchNavigator, createStackNavigator, createAppContainer, createDrawerNavigator } from 'react-navigation';
+import {
+	DrawerItems,
+	createSwitchNavigator,
+	createStackNavigator,
+	createAppContainer,
+	createDrawerNavigator
+} from 'react-navigation';
 import LoginScreen from '../../../Screens/Login/Login';
 import ManualesScreen from '../../../Screens/Manuales/Manuales';
 import BuzonCiudadanoScreen from '../../../Screens/BuzonCiudadano/BuzonCiudadano';
@@ -13,11 +19,16 @@ import LogoutScreen from '../../../Screens/Logout/Logout';
 import DescribeDataScreen from '../../DescribeData/DescribeData';
 import MapScreen from '../../../Screens/Map/Map';
 import EventosScreen from '../../../Screens/Eventos/Eventos';
+import PagosScreen from '../../../Screens/Pagos/Pagos';
 
 const CustomDrawerComponent = (props) => (
 	<SafeAreaView style={styles.sAV}>
 		<View style={styles.view}>
-			<Image resizeMode='contain' style={styles.image} source={require('../../../assets/images/Logo/prs-logo.png')} />
+			<Image
+				resizeMode="contain"
+				style={styles.image}
+				source={require('../../../assets/images/Logo/prs-logo.png')}
+			/>
 		</View>
 		<ScrollView>
 			<DrawerItems {...props} />
@@ -25,36 +36,40 @@ const CustomDrawerComponent = (props) => (
 	</SafeAreaView>
 );
 
-const AppDrawer = createDrawerNavigator({
-  'Home':  HomeScreen,
-  'Transparencia': ManualesScreen,
-  'Buzón Ciudadano': BuzonCiudadanoScreen,
-  'Noticias': NoticiasScreen,
-  'Bus Escolar': BusEscolarScreen,
-  'Reporte ciudadano': IncidenciasScreen,
-  'Actividades': ActividadesScreen,
-  'Describe' : DescribeDataScreen,
-  'Mapa de Tecalitlán' : MapScreen,
-  'Eventos' : EventosScreen,
-  'Salir': LogoutScreen,
-},{
-  contentComponent: CustomDrawerComponent,
-  contentOptions: {
-	  activeTintColor: '#676766',
-	  labelStyle: {
-		fontSize: 17,
-		fontWeight: 'normal',
-		fontStyle: 'normal',
-		color: '#676766',
-		fontFamily: 'AvenirNextLTPro-Regular',
-	  },
-	  activeBackgroundColor: '#f8ae40',
-	  itemStyle: {
-		borderBottomWidth: 1 * .5,
-		borderColor: '#676766',
-	  },
-  }
-});
+const AppDrawer = createDrawerNavigator(
+	{
+		'Home': HomeScreen,
+		'Transparencia': ManualesScreen,
+		'Buzón Ciudadano': BuzonCiudadanoScreen,
+		'Noticias': NoticiasScreen,
+		'Bus Escolar': BusEscolarScreen,
+		'Reporte ciudadano': IncidenciasScreen,
+		'Actividades': ActividadesScreen,
+		'Describe': DescribeDataScreen,
+		'Mapa de Tecalitlán': MapScreen,
+		'Eventos': EventosScreen,
+		'Pagos': PagosScreen,
+		'Salir': LogoutScreen
+	},
+	{
+		contentComponent: CustomDrawerComponent,
+		contentOptions: {
+			activeTintColor: '#676766',
+			labelStyle: {
+				fontSize: 17,
+				fontWeight: 'normal',
+				fontStyle: 'normal',
+				color: '#676766',
+				fontFamily: 'AvenirNextLTPro-Regular'
+			},
+			activeBackgroundColor: '#f8ae40',
+			itemStyle: {
+				borderBottomWidth: 1 * 0.5,
+				borderColor: '#676766'
+			}
+		}
+	}
+);
 
 const AuthStack = createStackNavigator({ Auth: LoginScreen });
 
@@ -62,12 +77,12 @@ export default createAppContainer(
 	createSwitchNavigator(
 		{
 			App: AppDrawer,
-			Auth: AuthStack,
+			Auth: AuthStack
 		},
 		{
 			initialRouteName: 'Auth'
 		}
-  )
+	)
 );
 
 const { width } = Dimensions.get('window');
@@ -80,10 +95,10 @@ const styles = StyleSheet.create({
 		height: 150,
 		backgroundColor: 'white',
 		alignItems: 'center',
-		justifyContent: 'center',
+		justifyContent: 'center'
 	},
 	image: {
-		height: width * .4,
-		width: width * .4, 
+		height: width * 0.4,
+		width: width * 0.4
 	}
 });
