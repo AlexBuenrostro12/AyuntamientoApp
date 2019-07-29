@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, Dimensions } from 'react-native';
 import { Item, Input, Label, Textarea, DatePicker, Picker } from 'native-base';
+import MapView, { Marker } from 'react-native-maps'
 import { normalize } from '../AuxiliarFunctions/FontResponsive';
 
 const { height, width } = Dimensions.get('window');
@@ -272,6 +273,30 @@ const customInput = (props) => {
 				</View>
 			);
 			break;
+			case 'PickLocation':
+			let chosenMarker = null;
+			if (props.chosenLocation) chosenMarker = <Marker coordinate={props.focusedLocation} />;
+	
+			const initialRegion = {
+				latitude: 19.47151,
+				longitude: -103.30706,
+				latitudeDelta: 0.0122,
+				longitudeDelta: width / height * 0.0122
+			};
+			input = (
+				<View style={{ flex: 1 }}>
+					<Text style={{ fontSize: 17, marginTop: 5, color: 'black' }}>Seleccione la ubicación</Text>
+					<MapView
+						style={styles.mapMarkerPicker}
+						initialRegion={initialRegion}
+						region={props.focusedLocation}
+						onPress={props.pickLocationHandler}
+					>
+						{chosenMarker}
+					</MapView>
+				</View>
+			);
+			break;
 		default:
 			input = null;
 			break;
@@ -288,7 +313,15 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		color: 'white',
 		alignSelf: 'center'
-	}
+	},
+	mapMarkerPicker: {
+		width: '100%',
+		height: 250,
+		left: 0,
+		top: 0,
+		right: 0,
+		bottom: 0
+	},
 });
 
 export default customInput;

@@ -21,6 +21,7 @@ import MapScreen from '../../../Screens/Map/Map';
 import EventosScreen from '../../../Screens/Eventos/Eventos';
 import PagosScreen from '../../../Screens/Pagos/Pagos';
 import AcercaDeScreen from '../../../Screens/AcercaDe/AcercaDe';
+import TurismoScreen from '../../../Screens/Turismo/Turismo';
 
 const CustomDrawerComponent = (props) => (
 	<SafeAreaView style={styles.sAV}>
@@ -51,6 +52,7 @@ const AppDrawer = createDrawerNavigator(
 		'Eventos': EventosScreen,
 		'Pagos': PagosScreen,
 		'Acerca de ...': AcercaDeScreen,
+		'Turismo': TurismoScreen,
 		'Salir': LogoutScreen
 	},
 	{
