@@ -153,6 +153,7 @@ export default class Eventos extends Component {
 				source={require('../../assets/images/Drawer/events.png')}
 				style={styles.drawerIcon}
 				resizeMode="contain"
+				// style={[styles.drawerIcon, { tintColor: 'green' }]}
 			/>
 		)
 	};
