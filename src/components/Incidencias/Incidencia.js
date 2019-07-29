@@ -100,7 +100,7 @@ export default class Incidencia extends Component {
         obj.approvedItem = this.approveItemListHandler;
         obj.deleteItem = this.alertCheckDeleteItem;
         obj.type =  'Reporte ciudadano';
-        obj.barProps = { title: 'Reporte', status: '#c7175b', bar: '#e2487d' };
+        obj.barProps = { title: 'Reporte', status: '#00a3e4', bar: '#1dd2fc' };
         this.setState({ showItemCard: true }, () => this.goToDescribeData(obj));
     }
 

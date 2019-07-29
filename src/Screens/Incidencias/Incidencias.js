@@ -8,7 +8,8 @@ import {
 	Alert,
 	Dimensions,
 	PermissionsAndroid,
-	Image
+	Image,
+	BackHandler
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
@@ -29,6 +30,9 @@ import Incidencia from '../../components/Incidencias/Incidencia';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
 export default class Incidencias extends Component {
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		formDescripcion: {
 			asunto: {
@@ -189,7 +193,15 @@ export default class Incidencias extends Component {
 		showMap: false,
 		latitude: null,
         longitude: null,
-        locationPermission: false
+		locationPermission: false,
+		search: false,
+	};
+
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 	};
 
 	//Style of drawer navigation
@@ -222,6 +234,10 @@ export default class Incidencias extends Component {
 	}
 
 	async componentDidMount() {
+		//BackHandler
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 		//Get the token and time of expiration
 		this.getCurrentDate();
 		this.requestLocationPermission();
@@ -265,7 +281,25 @@ export default class Incidencias extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-	}
+	};
+
+	onBackButtonPressAndroid = () => {
+		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
+		const parent = dangerouslyGetParent();
+		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
+
+		if (!this.state.search) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else this.startSearch()
+				
+		return true;
+	};
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
+	};
 
 	findLocationHandler = () => {
 		this.watchId = navigator.geolocation.watchPosition(
@@ -287,17 +321,6 @@ export default class Incidencias extends Component {
 		);
     };
     
-    // componentWillUpdate() {
-    //     console.log('willUpdate')
-    //     if (this.state.locationPermission) this.findLocationHandler();
-    //     console.log(this.state.latitude, this.state.longitude)
-    // }
-
-    // componentDidUpdate() {
-    //     console.log('didUpdate')
-    //     this.requestLocationPermission();
-    //     console.log(this.state.latitude, this.state.longitude)
-    // }
 
 	requestLocationPermission = async () => {
 		try {
@@ -687,6 +710,9 @@ export default class Incidencias extends Component {
 			}
 		} else this.getIncidents();
 	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
 
 	render() {
 		// console.log('type: ', this.state.typeOfLocation, 'showMap: ', this.state.showMap, 'ubicationForm: ', this.state.formUbicacion, 'ubicacionisValid: ', this.state.formUbicacionIsValid)
@@ -885,14 +911,14 @@ export default class Incidencias extends Component {
 			/>
 		));
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.45 }}>
 				<CustomCardItemTitle
 					title="REPORTE CIUDADANO"
 					description="Realice reportes de fallas en servicios y otras emergencias en su localidad."
 					info="Escriba todos los campos que se presenta."
 					image={require('../../assets/images/Preferences/incidents.png')}
 				/>
-			</ScrollView>
+			</View>
 		);
 
 		const body = (
@@ -924,7 +950,7 @@ export default class Incidencias extends Component {
 						<HeaderToolbar
 							open={this.props}
 							title="Reporte"
-							color="#e2487d"
+							color="#1dd2fc"
 							showContentRight={true}
 							titleOfAdd="Nuevo reporte"
 							get={this.getIncidents}
@@ -937,9 +963,11 @@ export default class Incidencias extends Component {
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
 							search={this.filterData}
+							startSearch={this.startSearch}
+							isSearch={this.state.search}
 						/>
 					</View>
-					<StatusBar color="#c7175b" />
+					<StatusBar color="#00a3e4" />
 					<View style={{ flex: 1, margin: 10 }}>{!this.state.addIncident ? incidencias : addIncident}</View>
 				</View>
 			</SafeAreaView>

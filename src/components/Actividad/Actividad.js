@@ -47,7 +47,7 @@ export default class Noticia extends Component {
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'Actividades',
-				barProps: { title: 'Actividades', status: '#f39028', bar: '#f8ae40' },
+				barProps: { title: 'Actividades', status: '#00847b', bar: '#00a19a' },
 				saveEvent: this.saveEventHandler
 			};
 			const { navigate } = this.props.describe.navigation;

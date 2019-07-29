@@ -50,7 +50,7 @@ export default class Buzon extends Component {
 				approvedItem: this.approveItemListHandler,
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'Buzón Ciudadano',
-				barProps: { title: 'Sugerencias', status: '#00847b', bar: '#00a19a' }
+				barProps: { title: 'Sugerencias', status: '#f39028', bar: '#f8ae40' }
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });
@@ -61,9 +61,8 @@ export default class Buzon extends Component {
         console.log('approveItemListHandler:res: ', this.props.token, this.state.itemKey);
         const { navigate } = this.props.describe.navigation;
         console.log('navigate: ', navigate, 'approved: ', approved);
-        let title = '';
         if (approved) body = '¡Sugerencia aprobada con éxito!';
-        else title = 'Sugerencia desaprobada con éxito!';
+        else body = '¡Sugerencia desaprobada con éxito!';
         const obj = { 
             approvedData : {
                 approved: approved

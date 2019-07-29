@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
+import { Alert, View, StyleSheet, ScrollView, Dimensions, Image, BackHandler } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -34,6 +34,9 @@ const StyledForm = styled.View`
 `;
 
 export default class BuzonCiudadano extends Component {
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		btnStyle: 'Success',
 		btnName: 'Enviar',
@@ -100,7 +103,15 @@ export default class BuzonCiudadano extends Component {
 		showButtons: true,
 		notifications: true,
 		showLikeIcons: true,
-		texToSearch: ''
+		texToSearch: '',
+		search: false
+	};
+
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 	};
 
 	//Style of drawer navigation
@@ -114,6 +125,11 @@ export default class BuzonCiudadano extends Component {
 	};
 
 	async componentDidMount() {
+		//BackHandler
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
+
 		//Get the token and time of expiration
 		let token = (expiresIn = null);
 		try {
@@ -154,6 +170,25 @@ export default class BuzonCiudadano extends Component {
 			//Catch posible errors
 		}
 	};
+
+	onBackButtonPressAndroid = () => {
+		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
+		const parent = dangerouslyGetParent();
+		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
+
+		if (!this.state.search) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else this.startSearch()
+				
+		return true;
+	};
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
+	};
+
 	cleanForm = () => {
 		const updatedSuggestionForm = {
 			...this.state.form
@@ -331,6 +366,9 @@ export default class BuzonCiudadano extends Component {
 	searchTextHandler = (text) => {
 		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
 	};
+	startSearch = () => {
+		this.setState({ search: !this.state.search });
+	};
 	filterData = (text) => {
 		if (text !== '') {
 			let ban = false;
@@ -374,14 +412,14 @@ export default class BuzonCiudadano extends Component {
 			/>
 		));
 		const title = (
-			<ScrollView style={{ flex: 1 }}>
+			<View style={{ marginBottom: 5, width: width * 0.94, height: width * 0.40 }}>
 				<CustomCardItemTitle
 					title="BUZÓN CIUDADANO"
 					description="Visualice y realice sugerencias de una manera sencilla."
 					info="Delice hacia abajo, para las sugerencias más antiguas."
 					image={require('../../assets/images/Buzon/buzon.png')}
 				/>
-			</ScrollView>
+			</View>
 		);
 
 		const body = (
@@ -443,7 +481,7 @@ export default class BuzonCiudadano extends Component {
 						<HeaderToolbar 
 							open={this.props}
 							title="Sugerencias"
-							color="#00a19a"
+							color="#f8ae40"
 							showContentRight={true}
 							titleOfAdd="Nueva sugerencia"
 							get={this.getSuggestions}
@@ -457,9 +495,11 @@ export default class BuzonCiudadano extends Component {
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
 							search={this.filterData}
+							startSearch={this.startSearch}
+							isSearch={this.state.search}
 						/>
 					</StyledHeader>
-					<StatusBar color="#FEA621" />
+					<StatusBar color="#f39028" />
 					<View style={{ flex: 1, margin: 10 }}>
 						{this.state.addSuggestion ? addSugerencia : sugerencia}
 					</View>

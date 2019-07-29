@@ -24,7 +24,7 @@ const customInput = (props) => {
 	switch (props.itemType) {
 		case 'InlineLabel':
 			input = (
-				<Item style={{ alignItems: 'center', width: width * .80, height: width * .10 }}>
+				<Item style={{ alignItems: 'center', width: width * 0.8, height: width * 0.1 }}>
 					<Input placeholder={props.holder} value={props.value} onChangeText={props.changed} />
 				</Item>
 			);
@@ -120,7 +120,7 @@ const customInput = (props) => {
 				</Picker>
 			);
 			break;
-			case 'PickAddress':
+		case 'PickAddress':
 			input = (
 				<Picker
 					mode="dropdown"
@@ -140,7 +140,7 @@ const customInput = (props) => {
 				</Picker>
 			);
 			break;
-			case 'PickCategory':
+		case 'PickCategory':
 			input = (
 				<Picker
 					mode="dropdown"
@@ -211,8 +211,69 @@ const customInput = (props) => {
 				</View>
 			);
 			break;
+		case 'PickDay':
+			const days = [];
+			for (let i = 1; i < 32; i++) days.push({ day: i });
+			const daysItems = days.map((d) => (
+				<Picker.Item key={d.day} label={d.day.toString()} value={d.day.toString()} />
+			));
+			input = (
+				<View>
+					<Text>Seleccione día del evento</Text>
+					<Picker
+						mode="dropdown"
+						iosHeader={props.value}
+						iosIcon={
+							<Image
+								style={{ width: 25, height: 25 }}
+								source={require('../../assets/images/ArrowDown/arrow-down.png')}
+							/>
+						}
+						style={{ width: undefined }}
+						selectedValue={props.value}
+						onValueChange={props.changed}
+					>
+						{daysItems}
+					</Picker>
+				</View>
+			);
+			break;
+			case 'PickTypeEvent':
+			const typeEvents = props.typeEvents.map((e) => (
+				<Picker.Item key={e.id} label={e.typeEventData.typeEvent.toString()} value={e.typeEventData.typeEvent.toString()} />
+			));
+			const otherType = (
+				<Item style={{ alignItems: 'center', width: width * 0.8, height: width * 0.1 }}>
+					<Input placeholder="Nombre del nuevo evento" value={props.typeEvent} onChangeText={props.changedTypeEvent} />
+				</Item>
+			);
+			let ban = false;
+			if (props.value === 'Agregar evento')
+				ban = true;
+			input = (
+				<View>
+					<Text>Seleccione tipo del evento</Text>
+					<Picker
+						mode="dropdown"
+						iosHeader={props.value}
+						iosIcon={
+							<Image
+								style={{ width: 25, height: 25 }}
+								source={require('../../assets/images/ArrowDown/arrow-down.png')}
+							/>
+						}
+						style={{ width: undefined }}
+						selectedValue={props.value}
+						onValueChange={props.changed}
+					>
+						{typeEvents}
+					</Picker>
+					{ban && otherType}
+				</View>
+			);
+			break;
 		default:
-			input = null
+			input = null;
 			break;
 	}
 

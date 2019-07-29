@@ -42,7 +42,7 @@ export default class Noticia extends Component {
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'Noticias',
-				barProps: { title: 'Noticias', status: '#00847b', bar: '#00a19a' }
+				barProps: { title: 'Noticias', status: '#c7175b', bar: '#e2487d' }
 			};
 			const { navigate } = this.props.describe.navigation;
 			navigate('Describe', { data: obj });

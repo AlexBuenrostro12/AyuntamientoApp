@@ -7,13 +7,6 @@ import CustomInput from '../CustomInput/CustomInput';
 const { height, width } = Dimensions.get('window');
 
 export default class HeaderToolbar extends React.Component {
-	state = {
-		search: false,
-		texToSearch: ''
-	};
-	startSearch = () => {
-		this.setState({ search: !this.state.search });
-	};
 
 	render() {
 		//Main menu
@@ -79,6 +72,18 @@ export default class HeaderToolbar extends React.Component {
 									<Text style={styles.menuOptionText}>
 										{this.props.showLikeIcons ? 'Ver como lista' : 'Ver como iconos'}
 									</Text>
+								</View>
+							</MenuOption>
+						)}
+						{/*Cambiar banner*/}
+						{this.props.isAdmin && this.props.changeBanner && (
+							<MenuOption onSelect={() => this.props.changeBanner()}>
+								<View style={styles.menuOption}>
+									<Image
+										style={styles.menuOptionImage}
+										source={require('../../assets/images/Preferences/user-admin.png')}
+									/>
+									<Text style={styles.menuOptionText}>Administrador</Text>
 								</View>
 							</MenuOption>
 						)}
@@ -173,7 +178,7 @@ export default class HeaderToolbar extends React.Component {
 		);
 
 		const search = (
-			<TouchableOpacity onPress={() => this.startSearch()}>
+			<TouchableOpacity onPress={() => this.props.startSearch()}>
 				<Image style={styles.settings} source={require('../../assets/images/Search/search.png')} />
 			</TouchableOpacity>
 		);
@@ -215,7 +220,7 @@ export default class HeaderToolbar extends React.Component {
 					{/* check if can show the search bar */}
 					{!this.props.describeGoBack && !this.props.isAdd && !this.props.showCalendar && this.props.search && search}
 					{/* check if it's not describeScreen and then check if show menu or menuAdd */}
-					{!this.props.describeGoBack && (!this.props.isAdd ? preferenceMenu : preferenceMenuAdd)}
+					{!this.props.describeGoBack && ((!this.props.isAdd && !this.props.isChangeBanner && !this.props.isAddTypeEvent) ? preferenceMenu : preferenceMenuAdd)}
 					{/* check if show goBack icon of describeData */}
 					{this.props.describeGoBack && goBack}
 					{/* check if show menu of describeData */}
@@ -239,7 +244,7 @@ export default class HeaderToolbar extends React.Component {
 					width: width * .93,
 				}}
 			>
-				<TouchableOpacity onPress={() => this.startSearch()}>
+				<TouchableOpacity onPress={() => this.props.startSearch()}>
 					<Image style={styles.settings} source={require('../../assets/images/Preferences/back.png')} />
 				</TouchableOpacity>
 				<View style={{ alignSelf: 'center' }}>
@@ -264,7 +269,7 @@ export default class HeaderToolbar extends React.Component {
 					paddingLeft: 5
 				}}
 			>
-				{!this.state.search ? contentBar : <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding' enabled>{searBar}</KeyboardAvoidingView>}
+				{!this.props.isSearch ? contentBar : <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding' enabled>{searBar}</KeyboardAvoidingView>}
 			</View>
 		);
 	}

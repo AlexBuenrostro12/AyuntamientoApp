@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ImageBackground, ScrollView } from 'react-native';
+import { Card } from 'native-base';
 
 const { height, width } = Dimensions.get('window');
 
@@ -40,7 +41,7 @@ const ListData = (props) => {
 				style={{
 					justifyContent: 'center',
 					width: width / 1.18,
-					backgroundColor: !dt.odd ? 'gainsboro' : 'white',
+					backgroundColor: !dt.odd ? 'gainsboro' : 'white'
 				}}
 			>
 				{dt.title ? (
@@ -73,10 +74,23 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'flex-end'
 	},
+	imageEvent: {
+		height: width / 2.38,
+		width: width / 2.38,
+		resizeMode: 'contain',
+		flexDirection: 'column',
+		justifyContent: 'space-between'
+	},
 	text: {
 		alignSelf: 'center',
 		color: 'white',
 		fontSize: 16,
+		fontWeight: 'bold'
+	},
+	eventText: {
+		alignSelf: 'center',
+		color: 'white',
+		fontSize: 14,
 		fontWeight: 'bold'
 	},
 	textContainer: {
@@ -84,12 +98,6 @@ const styles = StyleSheet.create({
 		height: width / 2.38 / 2,
 		width: width / 2.38,
 		backgroundColor: 'black',
-		opacity: 0.5
-	},
-	textContainerList: {
-		justifyContent: 'center',
-		width: width / 1.18,
-		backgroundColor: 'grey',
 		opacity: 0.5
 	},
 	textList: {

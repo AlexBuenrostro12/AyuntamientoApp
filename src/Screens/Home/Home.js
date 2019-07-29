@@ -7,7 +7,7 @@ import {
 	ImageBackground,
 	Dimensions,
 	BackHandler,
-	Image,	
+	Image,
 	Platform
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -24,7 +24,7 @@ import axios from '../../../axios-ayuntamiento';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import SwiperBanner from '../../components/SwiperBanner/SwiperBanner';
 
-// FCM 
+// FCM
 FCM.on(FCMEvent.Notification, async (notif) => {
 	console.log('FCMEvent: ', FCMEvent);
 	console.log('notif: ', notif);
@@ -62,6 +62,9 @@ FCM.on(FCMEvent.RefreshToken, (token) => {
 // FCM
 
 export default class Home extends Component {
+	_didFocusSubscription;
+	_willBlurSubscription;
+
 	state = {
 		news: null,
 		loading: false,
@@ -69,24 +72,33 @@ export default class Home extends Component {
 		refreshing: false,
 		notificationToken: null,
 		fcmTokens: [],
-		allReadyToNotification: false
-
+		allReadyToNotification: false,
 	};
+
+	constructor(props) {
+		super(props);
+		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
+			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
+	}
 
 	//Style of drawer navigation
 	static navigationOptions = {
 		drawerIcon: ({ tintColor }) => (
-			<Image 
+			<Image
 				source={require('../../assets/images/Drawer/home-icon.png')}
 				style={styles.drawerIcon}
-				resizeMode='contain' />
+				resizeMode="contain"
+			/>
 		)
 	};
 
 	//Obtiene el token y tiempo de expiracion almacenado globalmente en la app
 	async componentDidMount() {
 		//BackHandler
-		BackHandler.addEventListener('hardwareBackPress', this.goBackHandler);
+		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
+			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		);
 		//Get the token and time of expiration
 		let token = (expiresIn = email = null);
 		try {
@@ -144,12 +156,21 @@ export default class Home extends Component {
 		} catch (error) {}
 	};
 
-	componentWillUnmount() {
-		BackHandler.removeEventListener('hardwareBackPress', this.goBackHandler);
-	};
-	// Enable native button
-	goBackHandler = () => {
+	onBackButtonPressAndroid = () => {
+		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
+		const parent = dangerouslyGetParent();
+		console.log('parent; ', parent);
+		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
+
+		if (isDrawerOpen) closeDrawer();
+		else openDrawer();
+				
 		return true;
+	};
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+		this._willBlurSubscription && this._willBlurSubscription.remove();
 	};
 
 	//Get fcmTokens
@@ -205,7 +226,7 @@ export default class Home extends Component {
 	}; //end
 
 	getNews = () => {
-		console.log('entro')
+		console.log('entro');
 		this.setState({ loading: true });
 		axios
 			.get('/news.json?auth=' + this.state.token)
@@ -227,8 +248,7 @@ export default class Home extends Component {
 
 	render() {
 		const spinner = <CustomSpinner color="blue" />;
-		console.log('state: ', this.state);
-		let swiperBanner = <SwiperBanner news={this.state.news} open={this.props} token={this.state.token}/>;
+		let swiperBanner = <SwiperBanner news={this.state.news} open={this.props} token={this.state.token} />;
 
 		return (
 			<SafeAreaView style={styles.container}>
@@ -268,7 +288,7 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold'
 	},
 	drawerIcon: {
-		height: width * .07,
-		width: width * .07,
+		height: width * 0.07,
+		width: width * 0.07
 	}
 });
