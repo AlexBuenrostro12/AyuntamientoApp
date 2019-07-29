@@ -20,7 +20,7 @@ export default class Pagos extends React.Component {
 				style={styles.drawerIcon}
 				resizeMode="contain"
 			/>
-		)
+        )
 	};
 
 	async componentDidMount() {

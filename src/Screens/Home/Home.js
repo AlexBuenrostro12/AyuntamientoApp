@@ -90,7 +90,7 @@ export default class Home extends Component {
 				style={styles.drawerIcon}
 				resizeMode="contain"
 			/>
-		)
+		),
 	};
 
 	//Obtiene el token y tiempo de expiracion almacenado globalmente en la app
