@@ -170,9 +170,13 @@ export default class Turismo extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (isDrawerOpen) closeDrawer();
-		else openDrawer();
-
+		if (!this.state.search && !this.state.addPlace) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		}
+		if (this.state.search) this.startSearch();
+		if (this.state.addPlace)
+			this.setState({ addPlace: false });
 		return true;
 	};
 
