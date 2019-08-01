@@ -34,7 +34,7 @@ export default class DescribreData extends Component {
 		address: 'null',
 		approved: false,
 		noApproved: true,
-		urlToPlace: null
+		url: ''
 	};
 
 	constructor(props) {
@@ -68,7 +68,10 @@ export default class DescribreData extends Component {
 	}
 
 	onBackButtonPressAndroid = () => {
-		this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type));
+		if(this.state.zoomImage) 
+			this.setState({ zoomImage: false, url: '' })
+		else
+			this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type));
 
 		return true;
 	};
@@ -106,7 +109,10 @@ export default class DescribreData extends Component {
 	}
 	// Enable native button
 	goBackHandler = () => {
-		return true;
+		if(this.state.zoomImage) 
+			this.setState({ zoomImage: false, url: '' })
+		else
+			this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type));
 	};
 	//Send email
 	emailHandler = (isToAdmin, type) => {
@@ -218,6 +224,9 @@ export default class DescribreData extends Component {
 				body: body
 			}).catch(console.error);
 		}
+	};
+	showPlaceImage = (url) => {
+		this.setState({ zoomImage: true, url: url })
 	};
 
 	render() {
@@ -697,7 +706,7 @@ export default class DescribreData extends Component {
 									</View>
 								</CardItem>
 								<CardItem>
-									<Body>
+									<Body style={{ justifyContent: 'space-around' }}>
 										<ScrollView
 											horizontal={true}
 											style={{ flex: 1, alignSelf: 'center' }}
@@ -707,8 +716,7 @@ export default class DescribreData extends Component {
 												<TouchableOpacity
 													key={index}
 													style={{ alignSelf: 'flex-start' }}
-													onPress={() =>
-														this.setState({ zoomImage: true, urlToPlace: url.url })}
+													onPress={() => this.showPlaceImage(url.url)}
 												>
 													<Image style={styles.image} source={{ uri: url.url }} />
 												</TouchableOpacity>
@@ -738,7 +746,7 @@ export default class DescribreData extends Component {
 
 			image = (
 				<View style={{ flex: 1, paddingTop: height * 0.08 }}>
-					<TouchableOpacity style={{ flex: 1 }} onPress={() => this.setState({ zoomImage: false })}>
+					<TouchableOpacity style={{ flex: 1 }} onPress={() => this.setState({ zoomImage: false, url: '' })}>
 						<Image
 							style={{
 								flex: 1,
@@ -747,7 +755,7 @@ export default class DescribreData extends Component {
 								resizeMode: 'contain',
 								alignSelf: 'center'
 							}}
-							source={{ uri: data.imagen ? data.imagen : this.state.urlToPlace, scale: 1 }}
+							source={{ uri: (this.state.url !== '') ? this.state.url : data.imagen, scale: 1 }}
 						/>
 					</TouchableOpacity>
 				</View>
@@ -762,11 +770,7 @@ export default class DescribreData extends Component {
 							color={this.state.data && this.state.data.barProps.bar}
 							showContentRight={true}
 							sendEmail={card && this.emailHandler}
-							describeGoBack={() =>
-								this.setState(
-									{ loaded: false },
-									() => this.state.navigate && this.state.navigate(this.state.data.type)
-								)}
+							describeGoBack={() => this.goBackHandler()}
 							deleteManual={this.state.data && this.state.data.deleteItem}
 							isAdmin={this.state.data && this.state.data.isAdmin}
 							// here i go

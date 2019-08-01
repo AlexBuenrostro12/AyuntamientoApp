@@ -398,7 +398,7 @@ export default class Turismo extends Component {
 		if (text !== '') {
 			let ban = false;
 			const filteredPlaces = this.state.places.filter((act) => {
-				const filterPlace = act.PlaceData['lugar'];
+				const filterPlace = act.placeData['lugar'];
 				console.log('filterNew: ', filterPlace);
 				if (filterPlace.includes(text)) {
 					ban = true;
