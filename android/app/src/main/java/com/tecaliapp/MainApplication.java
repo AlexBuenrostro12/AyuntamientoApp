@@ -3,6 +3,7 @@ package com.tecaliapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.vonovak.AddCalendarEventPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -33,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
             new FIRMessagingPackage(),
             new MainReactPackage(),
+            new PickerPackage(),
             new AddCalendarEventPackage(),
             new RNGestureHandlerPackage(),
             new RNFetchBlobPackage(),

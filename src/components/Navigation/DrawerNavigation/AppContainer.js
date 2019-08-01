@@ -51,8 +51,8 @@ const AppDrawer = createDrawerNavigator(
 		'Mapa de Tecalitlán': MapScreen,
 		'Eventos': EventosScreen,
 		'Pagos': PagosScreen,
-		'Acerca de ...': AcercaDeScreen,
 		'Turismo': TurismoScreen,
+		'Acerca de ...': AcercaDeScreen,
 		'Salir': LogoutScreen
 	},
 	{

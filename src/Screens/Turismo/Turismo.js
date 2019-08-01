@@ -5,7 +5,6 @@ import {
 	SafeAreaView,
 	ScrollView,
 	Alert,
-	TimePickerAndroid,
 	Dimensions,
 	Image,
 	Platform,
@@ -13,19 +12,15 @@ import {
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
-import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import axiosCloudinary from 'axios';
-import { Calendar } from 'react-native-calendars';
-import FCM from 'react-native-fcm';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
-import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCardItemTitle';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
-import Actividad from '../../components/Actividad/Actividad';
-import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
+import TurismoAux from '../../components/TurismoAux/TurismoAux';
 
 const { height, width } = Dimensions.get('window');
 
@@ -50,6 +45,8 @@ export default class Turismo extends Component {
 			},
 			ubicacion: {
 				itemType: 'PickLocation',
+				latitude: '',
+				longitude: '',
 				valid: true
 			},
 			descripcion: {
@@ -62,10 +59,8 @@ export default class Turismo extends Component {
 				},
 				valid: false
 			},
-			imagen: {
-				itemType: 'LoadImage',
-				holder: 'IMAGEN',
-				value: '',
+			imagenes: {
+				itemType: 'LoadMultipleImage',
 				valid: true
 			}
 		},
@@ -75,20 +70,21 @@ export default class Turismo extends Component {
 			chooseFromLibraryButtonTitle: 'Abrir galeria.',
 			maxWidth: 800,
 			maxHeight: 800
-        },
-        focusedLocation: {
+		},
+		focusedLocation: {
 			latitude: 19.47151,
 			longitude: -103.30706,
 			latitudeDelta: 0.0122,
 			longitudeDelta: width / height * 0.0122
-        },
-        chosenLocation: false,
+		},
+		chosenLocation: false,
 		formIsValid: false,
-		activities: [],
+		places: [],
 		isAdmin: true,
 		image: null,
 		fileNameImage: null,
 		imageFormData: null,
+		formDataArray: [],
 		showButtons: true,
 		showLikeIcons: true,
 		notifications: true,
@@ -99,6 +95,7 @@ export default class Turismo extends Component {
 		fcmTokens: [],
 		allReadyToNotification: false,
 		search: false,
+		arrayOfUris: []
 	};
 
 	constructor(props) {
@@ -106,7 +103,7 @@ export default class Turismo extends Component {
 		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
 			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
 		);
-	};
+	}
 
 	//Style of drawer navigation
 	static navigationOptions = {
@@ -143,7 +140,7 @@ export default class Turismo extends Component {
 				if (email !== 'false') this.setState({ isAdmin: true });
 				else this.setState({ isAdmin: false });
 
-				this.getActivities();
+				this.getPlaces();
 			} else {
 				//Restrict screens if there's no token
 				console.log(this.state);
@@ -166,7 +163,7 @@ export default class Turismo extends Component {
 		} catch (e) {
 			//Catch posible errors
 		}
-	};
+	}
 
 	onBackButtonPressAndroid = () => {
 		const { openDrawer, closeDrawer, dangerouslyGetParent } = this.props.navigation;
@@ -175,33 +172,33 @@ export default class Turismo extends Component {
 
 		if (isDrawerOpen) closeDrawer();
 		else openDrawer();
-				
+
 		return true;
 	};
 
 	componentWillUnmount() {
 		this._didFocusSubscription && this._didFocusSubscription.remove();
 		this._willBlurSubscription && this._willBlurSubscription.remove();
-	};
+	}
 
-	getActivities = () => {
+	getPlaces = () => {
 		this.setState({ loading: true, addPlace: false, showButtons: true });
 		axios
-			.get('/activities.json?auth=' + this.state.token)
+			.get('/tourism.json?auth=' + this.state.token)
 			.then((res) => {
-				const fetchedActivities = [];
+				const fetchedPlaces = [];
 				for (let key in res.data) {
-					fetchedActivities.push({
+					fetchedPlaces.push({
 						...res.data[key],
 						id: key
 					});
 				}
-				this.setState({ loading: false, activities: fetchedActivities.reverse() });
+				this.setState({ loading: false, places: fetchedPlaces.reverse() });
 			})
 			.catch((err) => {
 				this.setState({ loading: false });
 			});
-    };
+	};
 
 	inputChangeHandler = (text, inputIdentifier) => {
 		const updatedForm = {
@@ -250,29 +247,41 @@ export default class Turismo extends Component {
 		}
 
 		return isValid;
-	};
+	}
 
-	sendNewActivityHandler = () => {
+	sendNewActivityHandler = (urlsResponse) => {
 		//check if the form is valid
 		this.setState({ loading: true });
-		if (this.state.formIsValid) {
+		if (this.state.formIsValid && this.state.chosenLocation && this.state.formDataArray.length !== 0) {
 			const formData = {};
 			for (let formElementIdentifier in this.state.form) {
-				formData[formElementIdentifier] = this.state.form[formElementIdentifier].value;
+				if (formElementIdentifier !== 'imagenes')
+					formData[formElementIdentifier] = this.state.form[formElementIdentifier].value;
 			}
-			const activity = {
-				activityData: formData
+			formData['ubicacion'] = {
+				latitude: this.state.focusedLocation.latitude,
+				longitude: this.state.focusedLocation.longitude
 			};
+			const obj = {};
+			for (let u = 0; u < urlsResponse.length; u++) {
+				const element = urlsResponse[u];
+				obj['url' + String(u)] = element.url;
+			}
+			formData['imagenes'] = obj;
+
+			const place = {
+				placeData: formData
+			};
+			console.log('place: ', place);
 
 			axios
-				.post('/activities.json?auth=' + this.state.token, activity)
+				.post('/tourism.json?auth=' + this.state.token, place)
 				.then((response) => {
-					this.sendRemoteNotification();
-					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
+					this.setState({ loading: false, image: null, fileNameImage: null, formDataArray: [] });
 					Alert.alert(
-						'Actividades',
-						'Actividad enviada con exito!',
-						[ { text: 'Ok', onPress: () => this.getActivities() } ],
+						'Turismo',
+						'¡Nuevo lugar enviado con exito!',
+						[ { text: 'Ok', onPress: () => this.getPlaces() } ],
 						{
 							cancelable: false
 						}
@@ -280,154 +289,132 @@ export default class Turismo extends Component {
 				})
 				.catch((error) => {
 					this.setState({ loading: false });
-					Alert.alert('Actividades', 'Actividad fallida al enviar!', [ { text: 'Ok' } ], {
+					Alert.alert('Turismo', '¡Lugar fallido al enviar!', [ { text: 'Ok' } ], {
 						cancelable: false
 					});
 				});
 		} else {
 			this.setState({ loading: false });
-			Alert.alert('Actividades', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
+			Alert.alert('Turismo', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});
 		}
 	};
 
-	
-
-	loadPhotoHandler = (show) => {
-		console.log('show: ', show);
-		if (show === 'library') {
-			ImagePicker.launchImageLibrary(this.state.options, (response) => {
-				console.log('ResponseImagePicker: ', response);
-
-				if (response.didCancel) {
-					console.log('User cancelled image picker');
-				} else if (response.error) {
-					console.log('ImagePicker Error: ', response.error);
-				} else {
-					//Destructuring response object
-					const { fileName, fileSize, type, data, uri } = response;
-					//Preset
-					const UPLOAD_PRESET_NAME = 'ayuntamiento';
-					//Image form data
-					const imageFormData = new FormData();
-					imageFormData.append('file', {
-						name: fileName,
-						size: fileSize,
-						type: type,
-						data: data,
-						uri: uri
-					});
-					imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
-					this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
-				} // else
+	loadPhotosHandler = async () => {
+		try {
+			const images = await ImagePicker.openPicker({
+				multiple: true,
+				maxFiles: 10,
+				mediaType: 'photo',
+				includeBase64: true
 			});
-		} else {
-			ImagePicker.launchCamera(this.state.options, (response) => {
-				console.log('ResponseImagePicker: ', response);
+			const formDataArray = [];
+			const arrayOfUris = [];
+			console.log('multipleImages: ', images);
+			//Preset
+			const UPLOAD_PRESET_NAME = 'ayuntamiento';
 
-				if (response.didCancel) {
-					console.log('User cancelled image picker');
-				} else if (response.error) {
-					console.log('ImagePicker Error: ', response.error);
-				} else {
-					//Destructuring response object
-					const { fileName, fileSize, type, data, uri } = response;
-					//Preset
-					const UPLOAD_PRESET_NAME = 'ayuntamiento';
-					//Image form data
-					const imageFormData = new FormData();
-					imageFormData.append('file', {
-						name: fileName,
-						size: fileSize,
-						type: type,
-						data: data,
-						uri: uri
-					});
-					imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
-					this.setState({ imageFormData: imageFormData, image: { uri: uri }, fileNameImage: fileName });
-				} // else
-			});
+			//Loop through array of images to add data to imageFormData
+			let uri = null;
+			for (let i = 0; i < images.length; i++) {
+				//Initialize imageFormData
+				let imageFormData = null;
+				//Image form data
+				imageFormData = new FormData();
+				//Add the preset to imageFormData
+				imageFormData.append('upload_preset', UPLOAD_PRESET_NAME);
+				//Create a random name
+				const name = Math.random() * 100 * i;
+				//Destructuring response
+				const { height, mime, modificationDate, data, path, size, width } = images[i];
+				uri = path;
+				imageFormData.append('file', {
+					name: String(name),
+					size: size,
+					type: mime,
+					data: data,
+					uri: uri
+				});
+				formDataArray.push(imageFormData);
+				arrayOfUris.push({
+					uri: uri
+				});
+			}
+			this.setState({ formDataArray: formDataArray, image: { uri: uri }, arrayOfUris: arrayOfUris });
+			console.log('this.state.formDataArray: ', this.state.formDataArray);
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
 	uploadPhotoHandler = () => {
-		//URL cloudinary
-		const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
 		this.setState({ loading: true });
-		console.log('Form: ', this.state.form);
-		if (this.state.imageFormData && this.state.formIsValid) {
-			axiosCloudinary({
-				url: URL_CLOUDINARY,
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
-				data: this.state.imageFormData
-			})
-				.then((response) => {
-					console.log('ResponseCloudinary: ', response);
-					//Destructurin response
+		if (this.state.formIsValid && this.state.chosenLocation && this.state.formDataArray.length !== 0) {
+			const URL_CLOUDINARY = 'https://api.cloudinary.com/v1_1/storage-images/image/upload';
+			const promises = [];
+			const urlsResponse = [];
+			for (let i = 0; i < this.state.formDataArray.length; i++) {
+				const formData = this.state.formDataArray[i];
+				console.log('formData: ', formData);
+				promises.push(
+					axiosCloudinary({
+						url: URL_CLOUDINARY,
+						method: 'POST',
+						headers: {
+							'Content-Type': 'multipart/form-data'
+						},
+						data: formData
+					})
+				);
+			}
+			console.log('promises: ', promises);
+			axiosCloudinary.all(promises).then((results) => {
+				results.forEach((response) => {
+					console.log('resultsResponse: ', response);
+					//Destructuring response
 					const { data } = response;
 					console.log('ResponseDataCloudinary: ', data);
 					//Destructuring data
 					const { url, eager } = data;
-					//Send to form image the value of url
-					this.inputChangeHandler(url, 'imagen');
-					console.log('stateofForm: ', this.state.form);
-					//Call the method to upload new
-					this.sendNewActivityHandler();
-				})
-				.catch((err) => {
-					this.setState({ loading: false });
-					Alert.alert('Actividades', 'Imagen fallida al enviar!', [ { text: 'Ok' } ], {
-						cancelable: false
-					});
-					console.log('ErrorCloudinary: ', err);
+					//Push urls into urlsResponse
+					urlsResponse.push({ url: url });
 				});
+				console.log('urlsResponse: ', urlsResponse);
+				this.sendNewActivityHandler(urlsResponse);
+			});
 		} else {
 			this.setState({ loading: false });
-			Alert.alert('Actividades', '¡Complete el formulario correctamente!', [ { text: 'Ok' } ], {
+			Alert.alert('Turismo', '¡Complete el formulario correctamente!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});
 		}
 	};
-	actOrDescNotification = () => {
-		this.setState({ notifications: !this.state.notifications });
-	};
-	changeDisplay = () => {
-		this.setState({ showLikeIcons: !this.state.showLikeIcons });
-	};
+	
 	searchTextHandler = (text) => {
 		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
 	};
 	filterData = (text) => {
 		if (text !== '') {
 			let ban = false;
-			const filteredActivities = this.state.activities.filter((act) => {
-				const filterAct = act.activityData['actividad'];
-				const filterDate = act.activityData['fecha'].split('T', 1);
-				console.log('filterNew: ', filterAct);
-				console.log('filterDate: ', filterDate[0]);
-				if (filterAct.includes(text) || filterDate[0].includes(text)) {
+			const filteredPlaces = this.state.places.filter((act) => {
+				const filterPlace = act.PlaceData['lugar'];
+				console.log('filterNew: ', filterPlace);
+				if (filterPlace.includes(text)) {
 					ban = true;
 					return act;
 				}
 			});
 			if (ban) {
-				this.setState({ activities: filteredActivities });
+				this.setState({ places: filteredPlaces });
 			}
-		} else this.getActivities();
+		} else this.getPlaces();
 	};
 	startSearch = () => {
 		this.setState({ search: !this.state.search });
 	};
-	showCalendar = (refresh) => {
-		this.setState({ showCalendar: !this.state.showCalendar });
-		if (refresh === 'refresh') this.getActivities();
-    };
 
-    pickLocationHandler = (event) => {
+	pickLocationHandler = (event) => {
 		const coordinates = event.nativeEvent.coordinate;
 		this.setState((prevState) => {
 			return {
@@ -450,42 +437,35 @@ export default class Turismo extends Component {
 			});
 		}
 		spinner = <CustomSpinner color="blue" />;
-		const list = this.state.activities.map((act, index) => (
-			<Actividad
-				key={act.id}
-				id={act.id}
+		const list = this.state.places.map((trs, index) => (
+			<TurismoAux
+				key={trs.id}
+				id={trs.id}
 				token={this.state.token}
 				isAdmin={this.state.isAdmin}
-				refresh={this.getActivities}
-				data={act.activityData}
+				refresh={this.getPlaces}
+				data={trs.placeData}
 				describe={this.props}
 				index={index + 1}
 				showLikeIcons={this.state.showLikeIcons}
-				authorizedEvent={this.state.authorizedEvent}
 			/>
 		));
 
 		const body = (
 			<View style={{ flex: 1 }}>
-                <Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
-                    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
-                        <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
-                            {this.state.loading ? (
-                                spinner
-                            ) : (
-                                <View style={styles.scrollDataListIcons}>
-                                    {null}
-                                </View>
-                            )}
-                        </View>
-                    </ScrollView>
-                </Card>
-            </View>
+				<Card style={{ flex: 2, flexDirection: 'column', justifyContent: 'flex-start' }}>
+					<ScrollView style={{ flex: 1 }} contentContainerStyle={{ margin: 5, alignItems: 'center' }}>
+						<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
+							{this.state.loading ? spinner : <View style={styles.scrollDataListIcons}>{list}</View>}
+						</View>
+					</ScrollView>
+				</Card>
+			</View>
 		);
 		const addPlaceTitle = (
 			<View style={{ flex: 1, marginBottom: 10 }}>
 				<CustomAddBanner
-					title="NUEVA LUGAR"
+					title="NUEVO LUGAR"
 					image={require('../../assets/images/Preferences/add-orange.png')}
 				/>
 			</View>
@@ -501,13 +481,14 @@ export default class Turismo extends Component {
 									itemType={e.config.itemType}
 									holder={e.config.holder}
 									value={e.config.value}
-                                    changed={(text) => this.inputChangeHandler(text, e.id)}
-                                    pickLocationHandler={(event) => this.pickLocationHandler(event)}
-                                    chosenLocation={this.state.chosenLocation}
-                                    focusedLocation={this.state.focusedLocation}
-									loadPhoto={this.loadPhotoHandler}
+									changed={(text) => this.inputChangeHandler(text, e.id)}
+									pickLocationHandler={(event) => this.pickLocationHandler(event)}
+									chosenLocation={this.state.chosenLocation}
+									focusedLocation={this.state.focusedLocation}
+									loadPhotos={this.loadPhotosHandler}
 									image={this.state.image}
 									name={this.state.fileNameImage}
+									arrayOfUris={this.state.arrayOfUris}
 								/>
 							))}
 						</View>
@@ -532,8 +513,8 @@ export default class Turismo extends Component {
 							title="Turismo"
 							color="#1dd2fc"
 							showContentRight={true}
-							titleOfAdd="Nueva lugar"
-							get={this.getActivities}
+							titleOfAdd="Nuevo lugar"
+							get={this.getPlaces}
 							add={() => this.setState({ addPlace: true })}
 							goBack={() => this.setState({ addPlace: false })}
 							isAdd={this.state.addPlace}

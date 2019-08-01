@@ -33,7 +33,8 @@ export default class DescribreData extends Component {
 		nativeGoBAck: null,
 		address: 'null',
 		approved: false,
-		noApproved: true
+		noApproved: true,
+		urlToPlace: null
 	};
 
 	constructor(props) {
@@ -41,11 +42,11 @@ export default class DescribreData extends Component {
 		this._didFocusSubscription = props.navigation.addListener('didFocus', (payload) =>
 			BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
 		);
-	};
+	}
 
 	static navigationOptions = {
 		header: null,
-		drawerLabel: () => null,
+		drawerLabel: () => null
 	};
 
 	getFullImageSize = (imagen) => {
@@ -64,19 +65,19 @@ export default class DescribreData extends Component {
 		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
 			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
 		);
-	};
+	}
 
 	onBackButtonPressAndroid = () => {
 		this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type));
-				
+
 		return true;
 	};
 
 	componentWillUnmount() {
 		this._didFocusSubscription && this._didFocusSubscription.remove();
 		this._willBlurSubscription && this._willBlurSubscription.remove();
-	};
-	
+	}
+
 	getAddressHandler = (latitude, longitude) => {
 		Geocoder.from({
 			latitude: latitude,
@@ -174,7 +175,21 @@ export default class DescribreData extends Component {
 						horaRegreso;
 					break;
 				case 'Reporte':
-					const specific = '' + localidad + '\n' + calle  + ' #' + numero + '\n' + colonia + '\n' + cp + '\n' + fecha + '\n' + referencia;
+					const specific =
+						'' +
+						localidad +
+						'\n' +
+						calle +
+						' #' +
+						numero +
+						'\n' +
+						colonia +
+						'\n' +
+						cp +
+						'\n' +
+						fecha +
+						'\n' +
+						referencia;
 					const current = '' + latitude + '\n' + longitude;
 					subject = asunto;
 					body =
@@ -184,9 +199,10 @@ export default class DescribreData extends Component {
 						'\n' +
 						descripcion +
 						'\n' +
-						'UBICACIÓN' + '\n' +
-						(latitude ? current : specific)
-						+ '\n' +
+						'UBICACIÓN' +
+						'\n' +
+						(latitude ? current : specific) +
+						'\n' +
 						'DATOS DE QUIEN REPORTA' +
 						'\n' +
 						nombre +
@@ -568,54 +584,54 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
-					case 'Eventos':
-						card = (
-							<View>
-								<Card>
-									<CardItem header>
-										<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
-											<View style={styles.titleContainer}>
-												<Text style={styles.title}>{data.evento}</Text>
-												{data.isAdmin && (
-													<View style={styles.btnsAdm}>
-														<TouchableOpacity onPress={() => data.deleteItem()}>
-															<Image
-																style={styles.btnsAdmImg}
-																source={require('../../assets/images/Delete/delete.png')}
-															/>
-														</TouchableOpacity>
-													</View>
-												)}
-											</View>
-											<Text style={styles.direction}>{data.tipo.toUpperCase()}</Text>
-											<Text style={styles.direction}>DÍA {data.dia}</Text>
+				case 'Eventos':
+					card = (
+						<View>
+							<Card>
+								<CardItem header>
+									<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+										<View style={styles.titleContainer}>
+											<Text style={styles.title}>{data.evento}</Text>
+											{data.isAdmin && (
+												<View style={styles.btnsAdm}>
+													<TouchableOpacity onPress={() => data.deleteItem()}>
+														<Image
+															style={styles.btnsAdmImg}
+															source={require('../../assets/images/Delete/delete.png')}
+														/>
+													</TouchableOpacity>
+												</View>
+											)}
 										</View>
-									</CardItem>
-									<CardItem>
-										<Body>
-											<Text style={styles.fecha}>
-												Fecha: {data.fecha} / Hora: {data.hora}
-											</Text>
-											<Text style={styles.descripcion}>{data.descripcion}</Text>
-											<TouchableOpacity
-												style={{ alignSelf: 'center' }}
-												onPress={() => this.setState({ zoomImage: true })}
-											>
-												<Image style={styles.image} source={{ uri: data.imagen }} />
-											</TouchableOpacity>
-										</Body>
-									</CardItem>
-									<View style={styles.button}>
-										<CustomButton
-											style="SaveActivity"
-											date={data.fecha}
-											clicked={() => data.saveEvent()}
-										/>
+										<Text style={styles.direction}>{data.tipo.toUpperCase()}</Text>
+										<Text style={styles.direction}>DÍA {data.dia}</Text>
 									</View>
-								</Card>
-							</View>
-						);
-				break;
+								</CardItem>
+								<CardItem>
+									<Body>
+										<Text style={styles.fecha}>
+											Fecha: {data.fecha} / Hora: {data.hora}
+										</Text>
+										<Text style={styles.descripcion}>{data.descripcion}</Text>
+										<TouchableOpacity
+											style={{ alignSelf: 'center' }}
+											onPress={() => this.setState({ zoomImage: true })}
+										>
+											<Image style={styles.image} source={{ uri: data.imagen }} />
+										</TouchableOpacity>
+									</Body>
+								</CardItem>
+								<View style={styles.button}>
+									<CustomButton
+										style="SaveActivity"
+										date={data.fecha}
+										clicked={() => data.saveEvent()}
+									/>
+								</View>
+							</Card>
+						</View>
+					);
+					break;
 				case 'Transparencia':
 					const source = { uri: data.url };
 					console.log('source: ', source);
@@ -648,6 +664,73 @@ export default class DescribreData extends Component {
 						</View>
 					);
 					break;
+
+				case 'Turismo':
+					const urls = [];
+					for (let key in data.imagenes) {
+						urls.push({ url: data.imagenes[key] });
+					}
+					const regionInicial = {
+						latitude: data.ubicacion.latitude,
+						longitude: data.ubicacion.longitude,
+						latitudeDelta: 0.0122,
+						longitudeDelta: width / height * 0.0122
+					};
+					card = (
+						<View>
+							<Card>
+								<CardItem header>
+									<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+										<View style={styles.titleContainer}>
+											<Text style={styles.title}>{data.lugar}</Text>
+											{data.isAdmin && (
+												<View style={styles.btnsAdm}>
+													<TouchableOpacity onPress={() => data.deleteItem()}>
+														<Image
+															style={styles.btnsAdmImg}
+															source={require('../../assets/images/Delete/delete.png')}
+														/>
+													</TouchableOpacity>
+												</View>
+											)}
+										</View>
+									</View>
+								</CardItem>
+								<CardItem>
+									<Body>
+										<ScrollView
+											horizontal={true}
+											style={{ flex: 1, alignSelf: 'center' }}
+											contentContainerStyle={{ justifyContent: 'center' }}
+										>
+											{urls.map((url, index) => (
+												<TouchableOpacity
+													key={index}
+													style={{ alignSelf: 'flex-start' }}
+													onPress={() =>
+														this.setState({ zoomImage: true, urlToPlace: url.url })}
+												>
+													<Image style={styles.image} source={{ uri: url.url }} />
+												</TouchableOpacity>
+											))}
+										</ScrollView>
+										<Text style={styles.descripcion}>{data.descripcion}</Text>
+										<MapView style={styles.map} initialRegion={regionInicial}>
+											<Marker
+												pinColor="red"
+												coordinate={{
+													latitude: data.ubicacion.latitude,
+													longitude: data.ubicacion.longitude
+												}}
+											/>
+										</MapView>
+									</Body>
+								</CardItem>
+							</Card>
+						</View>
+					);
+					break;
+
 				default:
 					card = null;
 					break;
@@ -664,7 +747,7 @@ export default class DescribreData extends Component {
 								resizeMode: 'contain',
 								alignSelf: 'center'
 							}}
-							source={{ uri: data.imagen, scale: 1 }}
+							source={{ uri: data.imagen ? data.imagen : this.state.urlToPlace, scale: 1 }}
 						/>
 					</TouchableOpacity>
 				</View>
@@ -776,7 +859,7 @@ const styles = StyleSheet.create({
 		fontStyle: 'normal',
 		color: 'white',
 		fontFamily: 'AvenirNextLTPro-Regular',
-		backgroundColor: '#676766',
+		backgroundColor: '#676766'
 	},
 	header: {
 		flex: 1,
