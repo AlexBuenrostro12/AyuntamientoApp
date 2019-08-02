@@ -717,7 +717,11 @@ export default class DescribreData extends Component {
 											))}
 										</ScrollView>
 										<Text style={styles.descripcion}>{data.descripcion}</Text>
-										<MapView style={styles.map} initialRegion={regionInicial}>
+										<MapView 
+											style={styles.map} 
+											initialRegion={regionInicial}
+											region={regionInicial}
+										>
 											<Marker
 												pinColor="red"
 												coordinate={{
