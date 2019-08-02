@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Text, Dimensions } from 'react-native';
 import { Item, Input, Label, Textarea, DatePicker, Picker } from 'native-base';
+import MapView, { Marker } from 'react-native-maps';
 import { normalize } from '../AuxiliarFunctions/FontResponsive';
 
 const { height, width } = Dimensions.get('window');
@@ -211,6 +212,48 @@ const customInput = (props) => {
 				</View>
 			);
 			break;
+		case 'LoadMultipleImage':
+			input = (
+				<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+					{props.arrayOfUris.length !== 0 && (
+						<View style={styles.scrollDataListIcons}>
+							{props.arrayOfUris.map((u) => (
+								<Image
+									key={u.uri}
+									source={u}
+									style={{
+										height: width * .45,
+										width: width * .38,
+										resizeMode: 'contain',
+										marginRight: 3,
+										marginBottom: 3
+									}}
+								/>
+							))}
+						</View>
+					)}
+					<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+						<TouchableOpacity
+							style={{
+								flex: 1,
+								flexDirection: 'row',
+								justifyContent: 'center',
+								backgroundColor: '#00a19a',
+								flexGrow: 1,
+								marginRight: 2
+							}}
+							onPress={() => props.loadPhotos()}
+						>
+							<Image
+								style={{ height: 30, width: 30 }}
+								source={require('../../assets/images/Imagen/image-white.png')}
+							/>
+							<Text style={styles.photoText}>Agregar Fotos</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			);
+			break;
 		case 'PickDay':
 			const days = [];
 			for (let i = 1; i < 32; i++) days.push({ day: i });
@@ -238,18 +281,25 @@ const customInput = (props) => {
 				</View>
 			);
 			break;
-			case 'PickTypeEvent':
+		case 'PickTypeEvent':
 			const typeEvents = props.typeEvents.map((e) => (
-				<Picker.Item key={e.id} label={e.typeEventData.typeEvent.toString()} value={e.typeEventData.typeEvent.toString()} />
+				<Picker.Item
+					key={e.id}
+					label={e.typeEventData.typeEvent.toString()}
+					value={e.typeEventData.typeEvent.toString()}
+				/>
 			));
 			const otherType = (
 				<Item style={{ alignItems: 'center', width: width * 0.8, height: width * 0.1 }}>
-					<Input placeholder="Nombre del nuevo evento" value={props.typeEvent} onChangeText={props.changedTypeEvent} />
+					<Input
+						placeholder="Nombre del nuevo evento"
+						value={props.typeEvent}
+						onChangeText={props.changedTypeEvent}
+					/>
 				</Item>
 			);
 			let ban = false;
-			if (props.value === 'Agregar evento')
-				ban = true;
+			if (props.value === 'Agregar evento') ban = true;
 			input = (
 				<View>
 					<Text>Seleccione tipo del evento</Text>
@@ -272,6 +322,35 @@ const customInput = (props) => {
 				</View>
 			);
 			break;
+		case 'PickLocation':
+			let chosenMarker = null;
+			if (props.chosenLocation) chosenMarker = <Marker coordinate={props.focusedLocation} />;
+
+			const initialRegion = {
+				latitude: 19.47151,
+				longitude: -103.30706,
+				latitudeDelta: 0.0122,
+				longitudeDelta: width / height * 0.0122
+			};
+			input = (
+				<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+					<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+						<Text style={{ alignSelf: 'center', fontSize: 17, marginTop: 5, color: 'black' }}>Obtener ubicación actual</Text>
+						<TouchableOpacity style={{ flex: 1, justifyContent: 'center' }} onPress={() => props.findLocationHandler()}>
+							<Image source={require('../../assets/images/Preferences/user-location.png')} style={{ width: width * .10, height: width * .10, resizeMode: 'contain', alignSelf: 'center' }} />
+						</TouchableOpacity>
+					</View>
+					<MapView
+						style={styles.mapMarkerPicker}
+						initialRegion={initialRegion}
+						region={props.focusedLocation}
+						onPress={props.pickLocationHandler}
+					>
+						{chosenMarker}
+					</MapView>
+				</View>
+			);
+			break;
 		default:
 			input = null;
 			break;
@@ -288,6 +367,20 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		color: 'white',
 		alignSelf: 'center'
+	},
+	mapMarkerPicker: {
+		width: '100%',
+		height: 250,
+		left: 0,
+		top: 0,
+		right: 0,
+		bottom: 0
+	},
+	scrollDataListIcons: {
+		flex: 2,
+		justifyContent: 'flex-start',
+		flexDirection: 'row',
+		flexWrap: 'wrap'
 	}
 });
 

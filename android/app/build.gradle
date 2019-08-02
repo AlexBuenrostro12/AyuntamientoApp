@@ -160,6 +160,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-add-calendar-event')
     implementation project(':react-native-gesture-handler')
     implementation project(':rn-fetch-blob')
