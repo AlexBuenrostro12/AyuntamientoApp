@@ -34,7 +34,8 @@ export default class DescribreData extends Component {
 		address: 'null',
 		approved: false,
 		noApproved: true,
-		url: ''
+		imageToRender: null,
+		urlOfImage: null,
 	};
 
 	constructor(props) {
@@ -55,7 +56,7 @@ export default class DescribreData extends Component {
 			const screenWidth = Dimensions.get('window').width;
 			const scaleFactor = width / screenWidth;
 			const imageHeight = height / scaleFactor;
-			this.setState({ fullWidth: screenWidth, fullHeight: imageHeight });
+			this.setState({ fullWidth: screenWidth, fullHeight: imageHeight, urlOfImage: imagen });
 		});
 	};
 	componentDidMount() {
@@ -68,10 +69,8 @@ export default class DescribreData extends Component {
 	}
 
 	onBackButtonPressAndroid = () => {
-		if(this.state.zoomImage) 
-			this.setState({ zoomImage: false, url: '' })
-		else
-			this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type));
+		if (this.state.zoomImage) this.setState({ zoomImage: false, url: '' });
+		else this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type));
 
 		return true;
 	};
@@ -98,7 +97,7 @@ export default class DescribreData extends Component {
 		const { getParam, navigate } = this.props.navigation;
 		const data = getParam('data', null);
 		if (data.imagen) this.getFullImageSize(data.imagen);
-		// if (data.latitude && data.longitude) this.getAddressHandler(data.latitude, data.longitude);
+		
 		this.setState(
 			{ data: data, navigate: navigate, loaded: true, approved: data.approved, noApproved: !data.approved },
 			() => console.log('data: ', this.state)
@@ -109,10 +108,8 @@ export default class DescribreData extends Component {
 	}
 	// Enable native button
 	goBackHandler = () => {
-		if(this.state.zoomImage) 
-			this.setState({ zoomImage: false, url: '' })
-		else
-			this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type));
+		if (this.state.zoomImage) this.setState({ zoomImage: false, url: '' });
+		else this.setState({ loaded: false }, () => this.state.navigate && this.state.navigate(this.state.data.type));
 	};
 	//Send email
 	emailHandler = (isToAdmin, type) => {
@@ -224,9 +221,6 @@ export default class DescribreData extends Component {
 				body: body
 			}).catch(console.error);
 		}
-	};
-	showPlaceImage = (url) => {
-		this.setState({ zoomImage: true, url: url })
 	};
 
 	render() {
@@ -716,7 +710,7 @@ export default class DescribreData extends Component {
 												<TouchableOpacity
 													key={index}
 													style={{ alignSelf: 'flex-start' }}
-													onPress={() => this.showPlaceImage(url.url)}
+													onPress={() => { this.getFullImageSize(url.url); this.setState({ zoomImage: true }); }}
 												>
 													<Image style={styles.image} source={{ uri: url.url }} />
 												</TouchableOpacity>
@@ -745,8 +739,8 @@ export default class DescribreData extends Component {
 			}
 
 			image = (
-				<View style={{ flex: 1, paddingTop: height * 0.08 }}>
-					<TouchableOpacity style={{ flex: 1 }} onPress={() => this.setState({ zoomImage: false, url: '' })}>
+				<View style={{ flex: 1, paddingTop: height * 0.08, justifyContent: 'center' }}>
+					<TouchableOpacity style={{ flex: 1, alignSelf: 'center' }} onPress={() => this.setState({ zoomImage: false })}>
 						<Image
 							style={{
 								flex: 1,
@@ -755,7 +749,7 @@ export default class DescribreData extends Component {
 								resizeMode: 'contain',
 								alignSelf: 'center'
 							}}
-							source={{ uri: (this.state.url !== '') ? this.state.url : data.imagen, scale: 1 }}
+							source={{ uri: this.state.urlOfImage, scale: 1 }}
 						/>
 					</TouchableOpacity>
 				</View>
@@ -782,6 +776,7 @@ export default class DescribreData extends Component {
 							{card ? <ScrollView>{card}</ScrollView> : <View style={{ flex: 1 }}>{elpdf}</View>}
 						</View>
 					)}
+					
 					{this.state.zoomImage && <ScrollView style={{ flex: 1, margin: 2 }}>{image && image}</ScrollView>}
 				</View>
 			</SafeAreaView>

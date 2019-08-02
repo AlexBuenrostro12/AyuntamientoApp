@@ -333,8 +333,13 @@ const customInput = (props) => {
 				longitudeDelta: width / height * 0.0122
 			};
 			input = (
-				<View style={{ flex: 1 }}>
-					<Text style={{ fontSize: 17, marginTop: 5, color: 'black' }}>Seleccione la ubicación</Text>
+				<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+					<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+						<Text style={{ alignSelf: 'center', fontSize: 17, marginTop: 5, color: 'black' }}>Obtener ubicación actual</Text>
+						<TouchableOpacity style={{ flex: 1, justifyContent: 'center' }} onPress={() => props.findLocationHandler()}>
+							<Image source={require('../../assets/images/Preferences/user-location.png')} style={{ width: width * .10, height: width * .10, resizeMode: 'contain', alignSelf: 'center' }} />
+						</TouchableOpacity>
+					</View>
 					<MapView
 						style={styles.mapMarkerPicker}
 						initialRegion={initialRegion}

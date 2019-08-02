@@ -8,7 +8,8 @@ import {
 	Dimensions,
 	Image,
 	Platform,
-	BackHandler
+	BackHandler,
+	PermissionsAndroid
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -95,7 +96,10 @@ export default class Turismo extends Component {
 		fcmTokens: [],
 		allReadyToNotification: false,
 		search: false,
-		arrayOfUris: []
+		arrayOfUris: [],
+		currentLatitude: null,
+		currentLongitude: null,
+		locationPermission: false,
 	};
 
 	constructor(props) {
@@ -139,7 +143,7 @@ export default class Turismo extends Component {
 				this.setState({ token: token });
 				if (email !== 'false') this.setState({ isAdmin: true });
 				else this.setState({ isAdmin: false });
-
+				this.requestLocationPermission();
 				this.getPlaces();
 			} else {
 				//Restrict screens if there's no token
@@ -178,6 +182,53 @@ export default class Turismo extends Component {
 		if (this.state.addPlace)
 			this.setState({ addPlace: false });
 		return true;
+	};
+
+	findLocationHandler = () => {
+		this.watchId = navigator.geolocation.watchPosition(
+			(position) => {
+				console.log('position: ', position);
+				this.setState((prevState) => {
+					return {
+						focusedLocation: {
+							...prevState.focusedLocation,
+							latitude: position.coords.latitude,
+							longitude: position.coords.longitude
+						},
+						chosenLocation: true
+					};
+				});
+			},
+			(error) => {
+				console.log('Error: ', error);
+			},
+			{
+				enableHighAccuracy: false,
+				timeout: 1,
+				distanceFilter: 1
+			}
+		);
+    };
+    
+
+	requestLocationPermission = async () => {
+		try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+              {
+                'title': 'Location Permission',
+                'message': 'You need location permissions to this app '
+              }
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+              console.log("You can use the location")
+              this.setState({ locationPermission:  true });
+            } else {
+              console.log("Location permission denied")
+            }
+          } catch (err) {
+            console.warn(err)
+          }
 	};
 
 	componentWillUnmount() {
@@ -493,6 +544,7 @@ export default class Turismo extends Component {
 									image={this.state.image}
 									name={this.state.fileNameImage}
 									arrayOfUris={this.state.arrayOfUris}
+									findLocationHandler={this.state.locationPermission ? this.findLocationHandler : null}
 								/>
 							))}
 						</View>
@@ -523,7 +575,7 @@ export default class Turismo extends Component {
 							goBack={() => this.setState({ addPlace: false })}
 							isAdd={this.state.addPlace}
 							save={this.uploadPhotoHandler}
-							isAdmin={true ? true : this.state.isAdmin}
+							isAdmin={this.state.isAdmin}
 							showLikeIcons={this.state.showLikeIcons}
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
