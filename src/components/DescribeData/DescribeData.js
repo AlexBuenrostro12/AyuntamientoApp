@@ -114,7 +114,7 @@ export default class DescribreData extends Component {
 	//Send email
 	emailHandler = (isToAdmin, type) => {
 		if (isToAdmin) {
-			Email('admin@admin.com', {
+			Email('computo.tecalitlan@gmail.com', {
 				subject: 'Asunto',
 				body: 'Comentario'
 			}).catch(console.error);
@@ -143,7 +143,12 @@ export default class DescribreData extends Component {
 				chofer,
 				horaSalida,
 				horaRegreso,
-				telefono
+				telefono, 
+				evento,
+				tipo,
+				dia,
+				lugar,
+				ubicacion
 			} = this.state.data;
 			let subject = (body = null);
 			switch (type) {
@@ -213,6 +218,39 @@ export default class DescribreData extends Component {
 						email +
 						'\n' +
 						telefono;
+					break;
+					case 'Eventos':
+					subject = 'Evento';
+					body =
+						evento +
+						'\n' +
+						tipo +
+						'\n' +
+						'Día: ' +
+						dia +
+						'\n' +
+						'Fecha: ' +
+						fecha +
+						'\n' +
+						'Hora: ' +
+						hora +
+						'\n' +
+						'Descripción: ' + 
+						descripcion;
+					break;
+					case 'Turismo':
+					subject = 'Lugar';
+					body =
+						lugar +
+						'\n' +
+						'Descripción: ' + 
+						descripcion + 
+						'\n' +
+						'Ubicación (coordenadas): ' +
+						'\n' +
+						'Latitude: ' + ubicacion.latitude +
+						'\n' + 
+						'Longitude: ' + ubicacion.longitude;
 					break;
 			}
 			console.log('subject: ', subject, 'body: ', body);
