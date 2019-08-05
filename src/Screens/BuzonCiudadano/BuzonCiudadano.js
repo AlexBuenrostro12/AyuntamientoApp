@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, StyleSheet, ScrollView, Dimensions, Image, BackHandler } from 'react-native';
+import { Alert, View, StyleSheet, ScrollView, Dimensions, Image, BackHandler, Text } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -116,6 +116,7 @@ export default class BuzonCiudadano extends Component {
 
 	//Style of drawer navigation
 	static navigationOptions = {
+		drawerLabel: () => (<Text style={styles.drawerLabel}>Buzón Ciudadano</Text>),
 		drawerIcon: ({ tintColor }) => (
 			<Image 
 				source={require('../../assets/images/Drawer/mailbox.png')}
@@ -183,7 +184,7 @@ export default class BuzonCiudadano extends Component {
 
 		if (this.state.search) 
 			this.startSearch();
-			
+
 		if (this.state.addSuggestion)
 			this.setState({ addSuggestion: false })
 		
@@ -558,5 +559,14 @@ const styles = StyleSheet.create({
 	drawerIcon: {
 		height: width * .07,
 		width: width * .07,
+	},
+	drawerLabel: {
+		width: width,
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: '#676766',
+		fontSize: 18,
+		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });

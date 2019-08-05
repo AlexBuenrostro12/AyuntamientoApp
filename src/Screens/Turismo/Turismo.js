@@ -9,7 +9,8 @@ import {
 	Image,
 	Platform,
 	BackHandler,
-	PermissionsAndroid
+	PermissionsAndroid,
+	Text
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -99,7 +100,7 @@ export default class Turismo extends Component {
 		arrayOfUris: [],
 		currentLatitude: null,
 		currentLongitude: null,
-		locationPermission: false,
+		locationPermission: false
 	};
 
 	constructor(props) {
@@ -111,10 +112,11 @@ export default class Turismo extends Component {
 
 	//Style of drawer navigation
 	static navigationOptions = {
+		drawerLabel: () => <Text style={styles.drawerLabel}>Turismo</Text>,
 		drawerIcon: ({ tintColor }) => (
 			<Image
 				source={require('../../assets/images/Drawer/tourism.png')}
-				style={styles.drawerIcon}
+				style={[ styles.drawerIcon, { tintColor: '#f39028' } ]}
 				resizeMode="contain"
 			/>
 		)
@@ -179,8 +181,7 @@ export default class Turismo extends Component {
 			else openDrawer();
 		}
 		if (this.state.search) this.startSearch();
-		if (this.state.addPlace)
-			this.setState({ addPlace: false });
+		if (this.state.addPlace) this.setState({ addPlace: false });
 		return true;
 	};
 
@@ -208,27 +209,23 @@ export default class Turismo extends Component {
 				distanceFilter: 1
 			}
 		);
-    };
-    
+	};
 
 	requestLocationPermission = async () => {
 		try {
-            const granted = await PermissionsAndroid.request(
-              PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-              {
-                'title': 'Location Permission',
-                'message': 'You need location permissions to this app '
-              }
-            )
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-              console.log("You can use the location")
-              this.setState({ locationPermission:  true });
-            } else {
-              console.log("Location permission denied")
-            }
-          } catch (err) {
-            console.warn(err)
-          }
+			const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
+				title: 'Location Permission',
+				message: 'You need location permissions to this app '
+			});
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				console.log('You can use the location');
+				this.setState({ locationPermission: true });
+			} else {
+				console.log('Location permission denied');
+			}
+		} catch (err) {
+			console.warn(err);
+		}
 	};
 
 	componentWillUnmount() {
@@ -445,7 +442,7 @@ export default class Turismo extends Component {
 			});
 		}
 	};
-	
+
 	searchTextHandler = (text) => {
 		this.setState({ texToSearch: text }, () => this.filterData(this.state.texToSearch));
 	};
@@ -544,7 +541,9 @@ export default class Turismo extends Component {
 									image={this.state.image}
 									name={this.state.fileNameImage}
 									arrayOfUris={this.state.arrayOfUris}
-									findLocationHandler={this.state.locationPermission ? this.findLocationHandler : null}
+									findLocationHandler={
+										this.state.locationPermission ? this.findLocationHandler : null
+									}
 								/>
 							))}
 						</View>
@@ -650,5 +649,15 @@ const styles = StyleSheet.create({
 	drawerIcon: {
 		height: width * 0.07,
 		width: width * 0.07
+	},
+	drawerLabel: {
+		width: width,
+		backgroundColor: '#f39028',
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: 'white',
+		fontSize: 18,
+		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });

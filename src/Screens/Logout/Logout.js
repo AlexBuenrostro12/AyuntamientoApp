@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, View, Alert, ImageBackground, Image, Dimensions } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Alert, ImageBackground, Image, Dimensions, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 
@@ -12,6 +12,7 @@ export default class Logout extends React.Component {
 
      //Style of drawer navigation
 	 static navigationOptions = {
+		drawerLabel: () => (<Text style={styles.drawerLabel}>Salir</Text>),
 		drawerIcon: ({ tintColor }) => (
 			<Image 
 				source={require('../../assets/images/Drawer/logout.png')}
@@ -105,5 +106,14 @@ const styles = StyleSheet.create({
     drawerIcon: {
 		height: width * .07,
 		width: width * .07,
+	},
+	drawerLabel: {
+		width: width,
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: '#676766',
+		fontSize: 18,
+		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });

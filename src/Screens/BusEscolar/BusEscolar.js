@@ -97,6 +97,7 @@ export default class BusEscolar extends Component {
 
 	//Style of drawer navigation
 	static navigationOptions = {
+		drawerLabel: () => (<Text style={styles.drawerLabel}>Bus Escolar</Text>),
 		drawerIcon: ({ tintColor }) => (
 			<Image 
 				source={require('../../assets/images/Drawer/bus.png')}
@@ -524,5 +525,14 @@ const styles = StyleSheet.create({
 	drawerIcon: {
 		height: width * .07,
 		width: width * .07,
+	},
+	drawerLabel: {
+		width: width,
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: '#676766',
+		fontSize: 18,
+		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });

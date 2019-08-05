@@ -58,14 +58,14 @@ const AppDrawer = createDrawerNavigator(
 	{
 		contentComponent: CustomDrawerComponent,
 		contentOptions: {
-			activeTintColor: '#676766',
-			labelStyle: {
-				fontSize: 17,
-				fontWeight: 'normal',
-				fontStyle: 'normal',
-				color: '#676766',
-				fontFamily: 'AvenirNextLTPro-Regular'
-			},
+			// activeTintColor: '#676766',
+			// labelStyle: {
+			// 	fontSize: 17,
+			// 	fontWeight: 'normal',
+			// 	fontStyle: 'normal',
+			// 	color: '#676766',
+			// 	fontFamily: 'AvenirNextLTPro-Regular'
+			// },
 			activeBackgroundColor: '#f8ae40',
 			itemStyle: {
 				borderBottomWidth: 1 * 0.5,

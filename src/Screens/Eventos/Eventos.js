@@ -148,13 +148,14 @@ export default class Eventos extends Component {
 
 	//Style of drawer navigation
 	static navigationOptions = {
+		drawerLabel: () => (<Text style={styles.drawerLabel}>Eventos</Text>),
 		drawerIcon: ({ tintColor }) => (
-			<Image
-				source={require('../../assets/images/Drawer/events.png')}
-				// style={styles.drawerIcon}
-				resizeMode="contain"
-				style={[styles.drawerIcon, { tintColor: 'green' }]}
-			/>
+				<Image
+					source={require('../../assets/images/Drawer/events.png')}
+					// style={styles.drawerIcon}
+					resizeMode="contain"
+					style={[styles.drawerIcon, { tintColor: 'black' }]}
+				/>
 		)
 	};
 
@@ -1040,7 +1041,17 @@ const styles = StyleSheet.create({
 	},
 	drawerIcon: {
 		height: width * 0.07,
-		width: width * 0.07
+		width: width * 0.07,
+	},
+	drawerLabel: {
+		width: width,
+		backgroundColor: 'black',
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: 'white',
+		fontSize: 18,
+		fontFamily: 'AvenirNextLTPro-Regular'
 	},
 	separator: {
 		fontSize: 15,
