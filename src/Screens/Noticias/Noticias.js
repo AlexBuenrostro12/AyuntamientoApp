@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView, Image, BackHandler } from 'react-native';
+import { View, StyleSheet, Platform, Alert, Dimensions, ScrollView, Image, BackHandler, Text } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import styled, { ThemeProvider } from 'styled-components';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -121,6 +121,7 @@ export default class Noticias extends Component {
 
 	//Style of drawer navigation
 	static navigationOptions = {
+		drawerLabel: () => (<Text style={styles.drawerLabel}>Noticias</Text>),
 		drawerIcon: ({ tintColor }) => (
 			<Image 
 				source={require('../../assets/images/Drawer/news.png')}
@@ -195,10 +196,16 @@ export default class Noticias extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.search) {
+		if (!this.state.search && !this.state.addNew) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
-		} else this.startSearch();
+		}
+
+		if (this.state.search)
+			this.startSearch();
+		
+		if (this.state.addNew)
+			this.setState({ addNew: false });
 				
 		return true;
 	};
@@ -689,5 +696,14 @@ const styles = StyleSheet.create({
 	drawerIcon: {
 		height: width * .07,
 		width: width * .07,
+	},
+	drawerLabel: {
+		width: width,
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: '#676766',
+		fontSize: 18,
+		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });

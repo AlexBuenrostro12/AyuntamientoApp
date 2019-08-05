@@ -50,6 +50,7 @@ export default class Manuales extends Component {
 
 	//Style of drawer navigation
 	static navigationOptions = {
+		drawerLabel: () => (<Text style={styles.drawerLabel}>Transparencia</Text>),
 		drawerIcon: ({ tintColor }) => (
 			<Image
 				source={require('../../assets/images/Drawer/transparency.png')}
@@ -108,8 +109,13 @@ export default class Manuales extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (isDrawerOpen) closeDrawer();
-		else openDrawer();
+		if (!this.state.show) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else {
+			this.setState({ show: false })
+		}
+
 
 		return true;
 	};
@@ -126,13 +132,6 @@ export default class Manuales extends Component {
 			},
 			(error, res) => {
 				console.log('resPDF: ', res);
-				// Android
-				// console.log(
-				// 	res.uri,
-				// 	res.type, // mime type
-				// 	res.fileName,
-				// 	res.fileSize
-				// );
 				this.setState({ resPdf: res });
 			}
 		);
@@ -363,24 +362,26 @@ export default class Manuales extends Component {
 
 		const addManualBody = (
 			<Card style={styles.add}>
-				<CardItem>
-					<TouchableOpacity style={styles.selectButton} onPress={() => this.onSelectPdfHandler()}>
-						<Text style={styles.textSelect}>Seleccionar pdf</Text>
-						<Image
-							style={styles.imageSelect}
-							resizeMode="contain"
-							source={require('../../assets/images/Preferences/pdf.png')}
-						/>
-					</TouchableOpacity>
-				</CardItem>
-				<CardItem style={{ flex: 1 }}>{this.state.resPdf && elpdf}</CardItem>
+				<ScrollView style={{ flex: 1 }}>
+					<CardItem>
+						<TouchableOpacity style={styles.selectButton} onPress={() => this.onSelectPdfHandler()}>
+							<Text style={styles.textSelect}>Seleccionar pdf</Text>
+							<Image
+								style={styles.imageSelect}
+								resizeMode="contain"
+								source={require('../../assets/images/Preferences/pdf.png')}
+							/>
+						</TouchableOpacity>
+					</CardItem>
+					<CardItem style={{ flex: 1 }}>{this.state.resPdf && elpdf}</CardItem>
+				</ScrollView>
 			</Card>
 		);
 		const addManual = (
 			<View style={{ flex: 1, flexDirection: 'column' }}>
 				{addManualTitle}
-				{addManualBody}
 				{this.state.loading && spinner}
+				{addManualBody}
 			</View>
 		);
 		return (
@@ -472,5 +473,14 @@ const styles = StyleSheet.create({
 	drawerIcon: {
 		height: width * 0.07,
 		width: width * 0.07
+	},
+	drawerLabel: {
+		width: width,
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: '#676766',
+		fontSize: 18,
+		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });
