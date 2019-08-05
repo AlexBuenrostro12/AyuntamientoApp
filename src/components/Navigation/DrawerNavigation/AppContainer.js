@@ -33,7 +33,7 @@ const CustomDrawerComponent = (props) => (
 			/>
 		</View>
 		<ScrollView>
-			<DrawerItems {...props} />
+			<DrawerItems  {...props} />
 		</ScrollView>
 	</SafeAreaView>
 );
@@ -49,8 +49,8 @@ const AppDrawer = createDrawerNavigator(
 		'Actividades': ActividadesScreen,
 		'Describe': DescribeDataScreen,
 		'Mapa de Tecalitlán': MapScreen,
-		'Eventos': EventosScreen,
 		'Pagos': PagosScreen,
+		'Eventos': EventosScreen,
 		'Turismo': TurismoScreen,
 		'Acerca de ...': AcercaDeScreen,
 		'Salir': LogoutScreen
@@ -58,14 +58,14 @@ const AppDrawer = createDrawerNavigator(
 	{
 		contentComponent: CustomDrawerComponent,
 		contentOptions: {
-			activeTintColor: '#676766',
-			labelStyle: {
-				fontSize: 17,
-				fontWeight: 'normal',
-				fontStyle: 'normal',
-				color: '#676766',
-				fontFamily: 'AvenirNextLTPro-Regular'
-			},
+			// activeTintColor: '#676766',
+			// labelStyle: {
+			// 	fontSize: 17,
+			// 	fontWeight: 'normal',
+			// 	fontStyle: 'normal',
+			// 	color: '#676766',
+			// 	fontFamily: 'AvenirNextLTPro-Regular'
+			// },
 			activeBackgroundColor: '#f8ae40',
 			itemStyle: {
 				borderBottomWidth: 1 * 0.5,

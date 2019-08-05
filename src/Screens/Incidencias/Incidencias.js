@@ -206,6 +206,7 @@ export default class Incidencias extends Component {
 
 	//Style of drawer navigation
 	static navigationOptions = {
+		drawerLabel: () => (<Text style={styles.drawerLabel}>Reporte Ciudadano</Text>),
 		drawerIcon: ({ tintColor }) => (
 			<Image
 				source={require('../../assets/images/Drawer/report.png')}
@@ -288,10 +289,16 @@ export default class Incidencias extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.search) {
+		if (!this.state.search && !this.state.addIncident) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
-		} else this.startSearch()
+		}
+
+		if (this.state.search)
+			this.startSearch();
+		
+		if (this.state.addIncident)
+			this.setState({ addIncident: false });
 				
 		return true;
 	};
@@ -898,7 +905,7 @@ export default class Incidencias extends Component {
 				key={inct.id}
 				id={inct.id}
 				token={this.state.token}
-				isAdmin={this.state.isAdmin}
+				isAdmin={true}
 				refresh={this.getIncidents}
 				approvedData={inct.approvedData}
 				personalData={inct.personalData}
@@ -1044,5 +1051,14 @@ const styles = StyleSheet.create({
 	drawerIcon: {
 		height: width * 0.07,
 		width: width * 0.07
+	},
+	drawerLabel: {
+		width: width,
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: '#676766',
+		fontSize: 18,
+		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });

@@ -13,6 +13,7 @@ export default class AcercaDe extends React.Component {
 
 	//Style of drawer navigation
 	static navigationOptions = {
+		drawerLabel: () => (<Text style={styles.drawerLabel}>Acerca de ...</Text>),
 		drawerIcon: ({ tintColor }) => (
 			<Image
 				source={require('../../assets/images/Drawer/about.png')}
@@ -129,4 +130,13 @@ const styles = StyleSheet.create({
 		height: width * 0.07,
 		width: width * 0.07
 	},
+	drawerLabel: {
+		width: width,
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: '#676766',
+		fontSize: 18,
+		fontFamily: 'AvenirNextLTPro-Regular'
+	}
 });

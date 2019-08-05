@@ -109,6 +109,7 @@ export default class Map extends Component {
 
 	//Style of drawer navigation
 	static navigationOptions = {
+		drawerLabel: () => (<Text style={styles.drawerLabel}>Mapa de Tecalitlán</Text>),
 		drawerIcon: ({ tintColor }) => (
 			<Image
 				source={require('../../assets/images/Drawer/maps.png')}
@@ -171,8 +172,12 @@ export default class Map extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 		
-		if (isDrawerOpen) closeDrawer();
-		else openDrawer();
+		if (!this.state.addMarker) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else {
+			this.setState({ addMarker: false });
+		}
 				
 		return true;
 	};
@@ -1039,6 +1044,15 @@ const styles = StyleSheet.create({
 		fontWeight: 'normal',
 		fontStyle: 'normal',
 		color: '#676766',
+		fontFamily: 'AvenirNextLTPro-Regular'
+	},
+	drawerLabel: {
+		width: width,
+		marginLeft: 18,
+		paddingBottom: 15,
+		paddingTop: 15,
+		color: '#676766',
+		fontSize: 18,
 		fontFamily: 'AvenirNextLTPro-Regular'
 	}
 });
