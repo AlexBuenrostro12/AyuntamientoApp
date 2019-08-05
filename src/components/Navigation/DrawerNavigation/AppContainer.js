@@ -33,7 +33,7 @@ const CustomDrawerComponent = (props) => (
 			/>
 		</View>
 		<ScrollView>
-			<DrawerItems {...props} />
+			<DrawerItems  {...props} />
 		</ScrollView>
 	</SafeAreaView>
 );
@@ -49,8 +49,8 @@ const AppDrawer = createDrawerNavigator(
 		'Actividades': ActividadesScreen,
 		'Describe': DescribeDataScreen,
 		'Mapa de Tecalitlán': MapScreen,
-		'Eventos': EventosScreen,
 		'Pagos': PagosScreen,
+		'Eventos': EventosScreen,
 		'Turismo': TurismoScreen,
 		'Acerca de ...': AcercaDeScreen,
 		'Salir': LogoutScreen

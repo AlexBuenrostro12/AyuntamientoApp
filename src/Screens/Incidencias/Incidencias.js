@@ -288,10 +288,16 @@ export default class Incidencias extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.search) {
+		if (!this.state.search && !this.state.addIncident) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
-		} else this.startSearch()
+		}
+
+		if (this.state.search)
+			this.startSearch();
+		
+		if (this.state.addIncident)
+			this.setState({ addIncident: false });
 				
 		return true;
 	};

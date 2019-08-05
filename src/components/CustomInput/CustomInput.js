@@ -26,15 +26,15 @@ const customInput = (props) => {
 		case 'InlineLabel':
 			input = (
 				<Item style={{ alignItems: 'center', width: width * 0.8, height: width * 0.1 }}>
-					<Input placeholder={props.holder} value={props.value} onChangeText={props.changed} />
+					<Input style={{ color: '#676766', fontSize: 17 }} placeholder={props.holder} value={props.value} onChangeText={props.changed} />
 				</Item>
 			);
 			break;
 		case 'FloatingLabel':
 			input = (
 				<Item floatingLabel>
-					<Label>{props.holder}</Label>
-					<Input onChangeText={props.changed} secureTextEntry={props.password} />
+					<Label style={{ color: '#676766', fontSize: 17 }}>{props.holder}</Label>
+					<Input style={{ color: '#676766', fontSize: 17 }} onChangeText={props.changed} secureTextEntry={props.password} />
 				</Item>
 			);
 			break;
@@ -47,35 +47,37 @@ const customInput = (props) => {
 			);
 			break;
 		case 'Textarea':
-			input = <Textarea rowSpan={8} bordered placeholder={props.holder} onChangeText={props.changed} />;
+			input = <Textarea style={{ color: '#676766', fontSize: 17 }} rowSpan={8} bordered placeholder={props.holder} onChangeText={props.changed} />;
 			break;
 		case 'Fecha':
 			input = null;
 			break;
 		case 'Date':
 			input = (
-				<DatePicker
-					defaultDate={new Date()}
-					minimumDate={new Date(2018, 1, 1)}
-					maximumDate={new Date(2022, 12, 31)}
-					locale={'es'}
-					timeZoneOffsetInMinutes={undefined}
-					modalTransparent={false}
-					animationType={'fade'}
-					androidMode={'calendar'}
-					placeHolderText={props.holder}
-					textStyle={{ color: 'black' }}
-					placeHolderTextStyle={{ color: 'black' }}
-					onDateChange={props.changed}
-					disabled={false}
-				/>
+				<View style={{ flex: 1, justifyContent: 'flex-start', alignSelf: 'flex-start' }}>
+					<DatePicker
+						defaultDate={new Date()}
+						minimumDate={new Date(2018, 1, 1)}
+						maximumDate={new Date(2022, 12, 31)}
+						locale={'es'}
+						timeZoneOffsetInMinutes={undefined}
+						modalTransparent={false}
+						animationType={'fade'}
+						androidMode={'calendar'}
+						placeHolderText={props.holder}
+						textStyle={{ color: '#676766', fontSize: 17 }}
+						placeHolderTextStyle={{ color: '#676766', fontSize: 17 }}
+						onDateChange={props.changed}
+						disabled={false}
+					/>
+				</View>
 			);
 			break;
 		case 'Hour':
 			input = (
 				<Item floatingLabel>
-					<Label>{props.holder}</Label>
-					<Input value={props.value} onTouchStart={props.changed1} />
+					<Label style={{ color: '#676766', fontSize: 17 }}>{props.holder}</Label>
+					<Input style={{ color: '#676766', fontSize: 17 }} value={props.value} onTouchStart={props.changed1} />
 				</Item>
 			);
 			break;
@@ -90,7 +92,7 @@ const customInput = (props) => {
 							source={require('../../assets/images/ArrowDown/arrow-down.png')}
 						/>
 					}
-					style={{ width: undefined }}
+					style={{ width: undefined, alignSelf: 'flex-start', color: '#676766', fontSize: 17 }}
 					selectedValue={props.value}
 					onValueChange={props.changed}
 				>
@@ -110,7 +112,7 @@ const customInput = (props) => {
 							source={require('../../assets/images/ArrowDown/arrow-down.png')}
 						/>
 					}
-					style={{ width: undefined }}
+					style={{ width: undefined, color: '#676766', fontSize: 17 }}
 					selectedValue={props.value}
 					onValueChange={props.changed}
 				>
@@ -132,7 +134,7 @@ const customInput = (props) => {
 							source={require('../../assets/images/ArrowDown/arrow-down.png')}
 						/>
 					}
-					style={{ width: undefined }}
+					style={{ width: undefined, color: '#676766', fontSize: 17 }}
 					selectedValue={props.value}
 					onValueChange={props.changed}
 				>
@@ -152,7 +154,7 @@ const customInput = (props) => {
 							source={require('../../assets/images/ArrowDown/arrow-down.png')}
 						/>
 					}
-					style={{ width: undefined }}
+					style={{ width: undefined, color: '#676766', fontSize: 17 }}
 					selectedValue={props.value}
 					onValueChange={props.changed}
 				>
@@ -262,7 +264,7 @@ const customInput = (props) => {
 			));
 			input = (
 				<View>
-					<Text>Seleccione día del evento</Text>
+					<Text style={{ color: '#676766', fontSize: 17 }}>Seleccione día del evento</Text>
 					<Picker
 						mode="dropdown"
 						iosHeader={props.value}
@@ -272,7 +274,7 @@ const customInput = (props) => {
 								source={require('../../assets/images/ArrowDown/arrow-down.png')}
 							/>
 						}
-						style={{ width: undefined }}
+						style={{ width: undefined, color: '#676766', fontSize: 17 }}
 						selectedValue={props.value}
 						onValueChange={props.changed}
 					>
@@ -295,6 +297,7 @@ const customInput = (props) => {
 						placeholder="Nombre del nuevo evento"
 						value={props.typeEvent}
 						onChangeText={props.changedTypeEvent}
+						style={{ color: '#676766', fontSize: 17 }}
 					/>
 				</Item>
 			);
@@ -302,7 +305,7 @@ const customInput = (props) => {
 			if (props.value === 'Agregar evento') ban = true;
 			input = (
 				<View>
-					<Text>Seleccione tipo del evento</Text>
+					<Text style={{ color: '#676766', fontSize: 17 }}>Seleccione tipo del evento</Text>
 					<Picker
 						mode="dropdown"
 						iosHeader={props.value}
@@ -312,7 +315,7 @@ const customInput = (props) => {
 								source={require('../../assets/images/ArrowDown/arrow-down.png')}
 							/>
 						}
-						style={{ width: undefined }}
+						style={{ width: undefined, color: '#676766', fontSize: 17 }}
 						selectedValue={props.value}
 						onValueChange={props.changed}
 					>

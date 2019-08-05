@@ -176,11 +176,17 @@ export default class BuzonCiudadano extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.search) {
+		if (!this.state.search && !this.state.addSuggestion) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
-		} else this.startSearch()
-				
+		}
+
+		if (this.state.search) 
+			this.startSearch();
+			
+		if (this.state.addSuggestion)
+			this.setState({ addSuggestion: false })
+		
 		return true;
 	};
 

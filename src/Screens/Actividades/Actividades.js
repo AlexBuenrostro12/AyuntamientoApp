@@ -205,7 +205,7 @@ export default class Actividades extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.showCalendar && !this.state.search) {
+		if (!this.state.showCalendar && !this.state.search && !this.state.addAct) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
 		} else {
@@ -214,6 +214,9 @@ export default class Actividades extends Component {
 			if (this.state.search)
 				this.startSearch();
 		}
+
+		if (this.state.addAct)
+			this.setState({ addAct: false });
 				
 		return true;
 	};

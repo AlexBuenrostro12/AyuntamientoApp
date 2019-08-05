@@ -151,14 +151,15 @@ export default class Eventos extends Component {
 		drawerIcon: ({ tintColor }) => (
 			<Image
 				source={require('../../assets/images/Drawer/events.png')}
-				style={styles.drawerIcon}
+				// style={styles.drawerIcon}
 				resizeMode="contain"
-				// style={[styles.drawerIcon, { tintColor: 'green' }]}
+				style={[styles.drawerIcon, { tintColor: 'green' }]}
 			/>
 		)
 	};
 
 	async componentDidMount() {
+		console.log('this.props: ', this.props);
 		//BackHandler
 		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
 			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)

@@ -154,10 +154,16 @@ export default class BusEscolar extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 
-		if (!this.state.search) {
+		if (!this.state.search && !this.state.addBus) {
 			if (isDrawerOpen) closeDrawer();
 			else openDrawer();
-		} else this.startSearch()
+		}
+
+		if (this.state.search)
+			this.startSearch();
+		
+		if(this.state.addBus)
+			this.setState({ addBus: false });
 				
 		return true;
 	};

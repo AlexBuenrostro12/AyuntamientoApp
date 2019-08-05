@@ -171,8 +171,12 @@ export default class Map extends Component {
 		const parent = dangerouslyGetParent();
 		const isDrawerOpen = parent && parent.state && parent.state.isDrawerOpen;
 		
-		if (isDrawerOpen) closeDrawer();
-		else openDrawer();
+		if (!this.state.addMarker) {
+			if (isDrawerOpen) closeDrawer();
+			else openDrawer();
+		} else {
+			this.setState({ addMarker: false });
+		}
 				
 		return true;
 	};
