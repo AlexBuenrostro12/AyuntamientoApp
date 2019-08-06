@@ -905,7 +905,7 @@ export default class Incidencias extends Component {
 				key={inct.id}
 				id={inct.id}
 				token={this.state.token}
-				isAdmin={true}
+				isAdmin={this.state.isAdmin}
 				refresh={this.getIncidents}
 				approvedData={inct.approvedData}
 				personalData={inct.personalData}
