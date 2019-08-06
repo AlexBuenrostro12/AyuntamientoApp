@@ -140,8 +140,6 @@ class Login extends Component {
 				});
 			}
 		}
-		console.log(this.state);
-
 		const spinner = (
 				<Spinner color="blue" />		
 		);
