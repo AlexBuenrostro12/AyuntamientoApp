@@ -92,6 +92,7 @@ export default class Manual extends Component {
 
 
 	componentDidMount() {
+		console.log('manualProps: ', this.props);
 		const data = [];
 		const obj = {};
 		for (let dataName in this.props.data) {
