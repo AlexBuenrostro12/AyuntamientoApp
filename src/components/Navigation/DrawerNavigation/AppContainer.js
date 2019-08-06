@@ -47,7 +47,6 @@ const AppDrawer = createDrawerNavigator(
 		'Bus Escolar': BusEscolarScreen,
 		'Reporte ciudadano': IncidenciasScreen,
 		'Actividades': ActividadesScreen,
-		'Describe': DescribeDataScreen,
 		'Mapa de Tecalitlán': MapScreen,
 		'Pagos': PagosScreen,
 		'Eventos': EventosScreen,
@@ -71,17 +70,19 @@ const AppDrawer = createDrawerNavigator(
 				borderBottomWidth: 1 * 0.5,
 				borderColor: '#676766'
 			}
-		}
+		},
 	}
 );
 
 const AuthStack = createStackNavigator({ Auth: LoginScreen });
+const DescribeStack = createStackNavigator({ Describe: DescribeDataScreen });
 
 export default createAppContainer(
 	createSwitchNavigator(
 		{
 			App: AppDrawer,
-			Auth: AuthStack
+			Auth: AuthStack,
+			Describe: DescribeStack,
 		},
 		{
 			initialRouteName: 'Auth'

@@ -47,7 +47,7 @@ export default class DescribreData extends Component {
 
 	static navigationOptions = {
 		header: null,
-		drawerLabel: () => null
+		drawerLabel: () => null,
 	};
 
 	getFullImageSize = (imagen) => {
@@ -94,8 +94,10 @@ export default class DescribreData extends Component {
 	};
 
 	getDataHandler = () => {
-		const { getParam, navigate } = this.props.navigation;
-		const data = getParam('data', null);
+		console.log('this.props.describe: ', this.props);
+		const { navigate, dangerouslyGetParent } = this.props.navigation;
+	
+		const data = dangerouslyGetParent().getParam('data');
 		if (data.imagen) this.getFullImageSize(data.imagen);
 		
 		this.setState(
@@ -802,8 +804,8 @@ export default class DescribreData extends Component {
 				<View style={styles.container}>
 					<View>
 						<HeaderToolbar
-							title={this.state.data && this.state.data.barProps.title}
-							color={this.state.data && this.state.data.barProps.bar}
+							title={this.state.data ? this.state.data.barProps.title : 'Describe Data Screen'}
+							color={this.state.data ? this.state.data.barProps.bar : 'black'}
 							showContentRight={true}
 							sendEmail={card && this.emailHandler}
 							describeGoBack={() => this.goBackHandler()}
