@@ -8,13 +8,17 @@ import {
 	TouchableOpacity,
 	Image,
 	Text,
-	BackHandler
+	BackHandler,
+	Alert,
+	PermissionsAndroid,
+	Platform
 } from 'react-native';
 import { Card, CardItem, Body } from 'native-base';
 import Email from 'react-native-email';
 import Pdf from 'react-native-pdf';
 import MapView, { Marker } from 'react-native-maps';
 import Geocoder from 'react-native-geocoding';
+import RNFetchBlob from 'rn-fetch-blob';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import CustomButton from '.././CustomButton/CustomButton';
 import HeaderToolbar from '../HeaderToolbar/HeaderToolbar';
@@ -36,6 +40,7 @@ export default class DescribreData extends Component {
 		noApproved: true,
 		imageToRender: null,
 		urlOfImage: null,
+		nameOfImage: null
 	};
 
 	constructor(props) {
@@ -47,16 +52,16 @@ export default class DescribreData extends Component {
 
 	static navigationOptions = {
 		header: null,
-		drawerLabel: () => null,
+		drawerLabel: () => null
 	};
 
-	getFullImageSize = (imagen) => {
+	getFullImageSize = (imagen, name) => {
 		Image.getSize(imagen, (width, height) => {
 			// calculate image width and height
 			const screenWidth = Dimensions.get('window').width;
 			const scaleFactor = width / screenWidth;
 			const imageHeight = height / scaleFactor;
-			this.setState({ fullWidth: screenWidth, fullHeight: imageHeight, urlOfImage: imagen });
+			this.setState({ fullWidth: screenWidth, fullHeight: imageHeight, urlOfImage: imagen, nameOfImage: name });
 		});
 	};
 	componentDidMount() {
@@ -96,10 +101,10 @@ export default class DescribreData extends Component {
 	getDataHandler = () => {
 		console.log('this.props.describe: ', this.props);
 		const { navigate, dangerouslyGetParent } = this.props.navigation;
-	
+
 		const data = dangerouslyGetParent().getParam('data');
-		if (data.imagen) this.getFullImageSize(data.imagen);
-		
+		if (data.imagen) this.getFullImageSize(data.imagen, String(Math.random() * 10000));
+
 		this.setState(
 			{ data: data, navigate: navigate, loaded: true, approved: data.approved, noApproved: !data.approved },
 			() => console.log('data: ', this.state)
@@ -145,7 +150,7 @@ export default class DescribreData extends Component {
 				chofer,
 				horaSalida,
 				horaRegreso,
-				telefono, 
+				telefono,
 				evento,
 				tipo,
 				dia,
@@ -221,7 +226,7 @@ export default class DescribreData extends Component {
 						'\n' +
 						telefono;
 					break;
-					case 'Eventos':
+				case 'Eventos':
 					subject = 'Evento';
 					body =
 						evento +
@@ -237,22 +242,24 @@ export default class DescribreData extends Component {
 						'Hora: ' +
 						hora +
 						'\n' +
-						'Descripción: ' + 
+						'Descripción: ' +
 						descripcion;
 					break;
-					case 'Turismo':
+				case 'Turismo':
 					subject = 'Lugar';
 					body =
 						lugar +
 						'\n' +
-						'Descripción: ' + 
-						descripcion + 
+						'Descripción: ' +
+						descripcion +
 						'\n' +
 						'Ubicación (coordenadas): ' +
 						'\n' +
-						'Latitude: ' + ubicacion.latitude +
-						'\n' + 
-						'Longitude: ' + ubicacion.longitude;
+						'Latitude: ' +
+						ubicacion.latitude +
+						'\n' +
+						'Longitude: ' +
+						ubicacion.longitude;
 					break;
 			}
 			console.log('subject: ', subject, 'body: ', body);
@@ -260,6 +267,50 @@ export default class DescribreData extends Component {
 				subject: subject,
 				body: body
 			}).catch(console.error);
+		}
+	};
+
+	downloadImageHandler = async (url) => {
+		try {
+			const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
+				title: 'Descargar',
+				message: 'Es necesario este permiso para descargar imagenes',
+				buttonNeutral: 'Preguntar despues',
+				buttonNegative: 'Cancelar',
+				buttonPositive: 'OK'
+			});
+			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+				console.log('You can download');
+
+				const { config, fs } = RNFetchBlob;
+				let PictureDir = fs.dirs.PictureDir;
+				// alert(PictureDir);
+				let options = {
+					fileCache: true,
+					addAndroidDownloads: {
+						useDownloadManager: true,
+						notification: true,
+						path: PictureDir + '/'+ String(this.state.nameOfImage) + '.png',
+						mime: 'image/png',
+						description: 'downloading_file'
+					}
+				};
+				config(options).fetch('GET', url).then((res) => {
+					if (res.data) {
+						console.log('res: ', res);
+						Alert.alert('TecaliApp', '¡Imagen almacenada en el dispositivo!');
+					} else {
+						console.log('Failed');
+					}
+				})
+				 .catch(err => {
+					 Alert.alert('Error: ', err.toString());
+				 });
+			} else {
+				console.log('You cant download');
+			}
+		} catch (err) {
+			console.warn(err);
 		}
 	};
 
@@ -741,13 +792,17 @@ export default class DescribreData extends Component {
 								</CardItem>
 								<CardItem>
 									<Body style={{ justifyContent: 'space-around' }}>
-										<Text style={[styles.descripcion, { marginBottom: 5, marginTop: 5 }]}>{data.descripcion}</Text>
+										<Text style={[ styles.descripcion, { marginBottom: 5, marginTop: 5 } ]}>
+											{data.descripcion}
+										</Text>
 										{urls.map((url, index) => (
 											<TouchableOpacity
 												key={index}
 												style={{ alignSelf: 'center' }}
-												onPress={() => { this.getFullImageSize(url.url); this.setState({ zoomImage: true }); }}
-												onLongPress={() => alert('This is the long pres for ' + url.url)}
+												onPress={() => {
+													this.getFullImageSize(url.url, String(Math.random() * 10000));
+													this.setState({ zoomImage: true });
+												}}
 											>
 												<Image style={styles.image} source={{ uri: url.url }} />
 											</TouchableOpacity>
@@ -758,9 +813,11 @@ export default class DescribreData extends Component {
 											contentContainerStyle={{ justifyContent: 'center' }}
 										>
 										</ScrollView> */}
-										<Text style={[styles.descripcion, { marginBottom: 5, marginTop: 5 }]}>Ubicación</Text>
-										<MapView 
-											style={styles.map} 
+										<Text style={[ styles.descripcion, { marginBottom: 5, marginTop: 5 } ]}>
+											Ubicación
+										</Text>
+										<MapView
+											style={styles.map}
 											initialRegion={regionInicial}
 											region={regionInicial}
 										>
@@ -786,10 +843,21 @@ export default class DescribreData extends Component {
 
 			image = (
 				<View style={{ flex: 1, paddingTop: height * 0.08, justifyContent: 'center' }}>
-					<TouchableOpacity 
-						style={{ flex: 1, alignSelf: 'center' }} 
+					<TouchableOpacity
+						style={{ flex: 1, alignSelf: 'center' }}
 						onPress={() => this.setState({ zoomImage: false })}
-						onLongPress={() => alert('This is long press for ' + this.state.urlOfImage)}
+						onLongPress={() =>
+							Alert.alert(
+								'Descargar',
+								'¿Desea descargar esta imagen?',
+								[
+									{ text: 'Si', onPress: () => this.downloadImageHandler(this.state.urlOfImage) },
+									{ text: 'No' }
+								],
+								{
+									cancelable: false
+								}
+							)}
 					>
 						<Image
 							style={{
@@ -807,7 +875,7 @@ export default class DescribreData extends Component {
 		}
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
-				<View style={[styles.container, { backgroundColor: !this.state.zoomImage ? 'white' : 'black' }]}>
+				<View style={[ styles.container, { backgroundColor: !this.state.zoomImage ? 'white' : 'black' } ]}>
 					<View>
 						<HeaderToolbar
 							title={this.state.data ? this.state.data.barProps.title : 'Describe Data Screen'}
@@ -826,7 +894,7 @@ export default class DescribreData extends Component {
 							{card ? <ScrollView>{card}</ScrollView> : <View style={{ flex: 1 }}>{elpdf}</View>}
 						</View>
 					)}
-					
+
 					{this.state.zoomImage && <ScrollView style={{ flex: 1, margin: 2 }}>{image && image}</ScrollView>}
 				</View>
 			</SafeAreaView>
