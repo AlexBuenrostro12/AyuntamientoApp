@@ -741,22 +741,24 @@ export default class DescribreData extends Component {
 								</CardItem>
 								<CardItem>
 									<Body style={{ justifyContent: 'space-around' }}>
-										<ScrollView
+										<Text style={[styles.descripcion, { marginBottom: 5, marginTop: 5 }]}>{data.descripcion}</Text>
+										{urls.map((url, index) => (
+											<TouchableOpacity
+												key={index}
+												style={{ alignSelf: 'center' }}
+												onPress={() => { this.getFullImageSize(url.url); this.setState({ zoomImage: true }); }}
+												onLongPress={() => alert('This is the long pres for ' + url.url)}
+											>
+												<Image style={styles.image} source={{ uri: url.url }} />
+											</TouchableOpacity>
+										))}
+										{/* <ScrollView
 											horizontal={true}
-											style={{ flex: 1, alignSelf: 'center' }}
+											style={{ flex: 1, alignSelf: 'center', marginBottom: 10 }}
 											contentContainerStyle={{ justifyContent: 'center' }}
 										>
-											{urls.map((url, index) => (
-												<TouchableOpacity
-													key={index}
-													style={{ alignSelf: 'flex-start' }}
-													onPress={() => { this.getFullImageSize(url.url); this.setState({ zoomImage: true }); }}
-												>
-													<Image style={styles.image} source={{ uri: url.url }} />
-												</TouchableOpacity>
-											))}
-										</ScrollView>
-										<Text style={styles.descripcion}>{data.descripcion}</Text>
+										</ScrollView> */}
+										<Text style={[styles.descripcion, { marginBottom: 5, marginTop: 5 }]}>Ubicación</Text>
 										<MapView 
 											style={styles.map} 
 											initialRegion={regionInicial}
@@ -784,7 +786,11 @@ export default class DescribreData extends Component {
 
 			image = (
 				<View style={{ flex: 1, paddingTop: height * 0.08, justifyContent: 'center' }}>
-					<TouchableOpacity style={{ flex: 1, alignSelf: 'center' }} onPress={() => this.setState({ zoomImage: false })}>
+					<TouchableOpacity 
+						style={{ flex: 1, alignSelf: 'center' }} 
+						onPress={() => this.setState({ zoomImage: false })}
+						onLongPress={() => alert('This is long press for ' + this.state.urlOfImage)}
+					>
 						<Image
 							style={{
 								flex: 1,
@@ -801,7 +807,7 @@ export default class DescribreData extends Component {
 		}
 		return (
 			<SafeAreaView style={{ flex: 1 }}>
-				<View style={styles.container}>
+				<View style={[styles.container, { backgroundColor: !this.state.zoomImage ? 'white' : 'black' }]}>
 					<View>
 						<HeaderToolbar
 							title={this.state.data ? this.state.data.barProps.title : 'Describe Data Screen'}
