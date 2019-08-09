@@ -960,7 +960,7 @@ export default class Eventos extends Component {
 						<HeaderToolbar
 							open={this.props}
 							title="Eventos"
-							color="#e2487d"
+							color="#090707"
 							showContentRight={true}
 							titleOfAdd="Nuevo evento"
 							get={this.getEvents}
@@ -987,7 +987,7 @@ export default class Eventos extends Component {
 							isSearch={this.state.search}
 						/>
 					</StyledHeader>
-					<StatusBar color="#c7175b" />
+					<StatusBar color="#000000" />
 					<View style={{ flex: 1, margin: 10 }}>
 						<ThemeProvider theme={theme}>
 							{!this.state.addEvent && !this.state.changeBanner ? (

@@ -303,12 +303,14 @@ export default class DescribreData extends Component {
 				const { config, fs } = RNFetchBlob;
 				let DownloadDir = fs.dirs.DownloadDir;
 				const stringName = this.makeNameHandler();
+				const nameImage = String(this.state.nameOfImage) + String(stringName) + '.png';
+				console.log('nameImage: ', nameImage);
 				let options = {
 					fileCache: true,
 					addAndroidDownloads: {
 						useDownloadManager: true,
 						notification: true,
-						path: DownloadDir + '/'+ stringName + String(this.state.nameOfImage) + '.png',
+						path: DownloadDir + '/' + String(nameImage),
 						mime: 'image/png',
 						description: 'downloading_file'
 					}
