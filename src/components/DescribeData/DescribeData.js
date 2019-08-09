@@ -61,7 +61,7 @@ export default class DescribreData extends Component {
 			const screenWidth = Dimensions.get('window').width;
 			const scaleFactor = width / screenWidth;
 			const imageHeight = height / scaleFactor;
-			this.setState({ fullWidth: screenWidth, fullHeight: imageHeight, urlOfImage: imagen, nameOfImage: name });
+			this.setState({ fullWidth: screenWidth, fullHeight: imageHeight, urlOfImage: imagen, nameOfImage: Math.trunc(name) });
 		});
 	};
 	componentDidMount() {
@@ -270,6 +270,16 @@ export default class DescribreData extends Component {
 		}
 	};
 
+	makeNameHandler = () => {
+		var result           = '';
+		var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		var charactersLength = characters.length;
+		for ( var i = 0; i < 8; i++ ) {
+		   result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+		return result;
+	};
+
 	downloadImageHandler = async (url) => {
 		try {
 			const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
@@ -283,14 +293,14 @@ export default class DescribreData extends Component {
 				console.log('You can download');
 
 				const { config, fs } = RNFetchBlob;
-				let PictureDir = fs.dirs.PictureDir;
-				// alert(PictureDir);
+				let DownloadDir = fs.dirs.DownloadDir;
+				const stringName = this.makeNameHandler();
 				let options = {
 					fileCache: true,
 					addAndroidDownloads: {
 						useDownloadManager: true,
 						notification: true,
-						path: PictureDir + '/'+ String(this.state.nameOfImage) + '.png',
+						path: DownloadDir + '/'+ stringName + String(this.state.nameOfImage) + '.png',
 						mime: 'image/png',
 						description: 'downloading_file'
 					}
