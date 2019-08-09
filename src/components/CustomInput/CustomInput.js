@@ -102,6 +102,28 @@ const customInput = (props) => {
 			);
 			break;
 		case 'PickerDirection':
+			const directions = [
+				{ name: 'Reglamentos' },
+				{ name: 'Secretario general' },
+				{ name: 'Comunicación social' },
+				{ name: 'Obras públicas' },
+				{ name: 'Educación' },
+				{ name: 'Planeación y participación ciudadana' },
+				{ name: 'Turismo' },
+				{ name: 'Fomento agropecuario' },
+				{ name: 'Agua potable' },
+				{ name: 'Servicios generales' },
+				{ name: 'Parques y jardines' },
+				{ name: 'Alumbrado público' },
+				{ name: 'Cementerio' },
+				{ name: 'Ecología' },
+				{ name: 'Seguridad pública' },
+				{ name: 'Protección civil' },
+				{ name: 'Vialidad' },
+			];
+			const catItems = directions.map((dir, index) => (
+				<Picker.Item key={index} label={dir.name} value={dir.name} />
+			))
 			input = (
 				<Picker
 					mode="dropdown"
@@ -116,10 +138,7 @@ const customInput = (props) => {
 					selectedValue={props.value}
 					onValueChange={props.changed}
 				>
-					<Picker.Item label="Direction 1" value="Direction 1" />
-					<Picker.Item label="Direction 2" value="Direction 2" />
-					<Picker.Item label="Direction 3" value="Direction 3" />
-					<Picker.Item label="Direction 4" value="Direction 4" />
+					{catItems}
 				</Picker>
 			);
 			break;
