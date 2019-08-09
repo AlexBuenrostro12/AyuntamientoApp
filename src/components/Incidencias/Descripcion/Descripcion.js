@@ -9,6 +9,28 @@ export default class Descripcion extends Component {
 
         switch (this.props.itemType) {
             case 'Picker':
+                    const directions = [
+                        { name: 'Reglamentos' },
+                        { name: 'Secretario general' },
+                        { name: 'Comunicación social' },
+                        { name: 'Obras públicas' },
+                        { name: 'Educación' },
+                        { name: 'Planeación y participación ciudadana' },
+                        { name: 'Turismo' },
+                        { name: 'Fomento agropecuario' },
+                        { name: 'Agua potable' },
+                        { name: 'Servicios generales' },
+                        { name: 'Parques y jardines' },
+                        { name: 'Alumbrado público' },
+                        { name: 'Cementerio' },
+                        { name: 'Ecología' },
+                        { name: 'Seguridad pública' },
+                        { name: 'Protección civil' },
+                        { name: 'Vialidad' },
+                    ];
+                    const catItems = directions.map((dir, index) => (
+                        <Picker.Item key={index} label={dir.name} value={dir.name} />
+                    ));
                 descripcion = (
                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}>
                         <Text style={{ fontWeight: 'bold' }}>Departamento al que se dirige:</Text>
@@ -20,10 +42,7 @@ export default class Descripcion extends Component {
                             selectedValue={this.props.value}
                             onValueChange={this.props.changed}
                         >
-                            <Picker.Item label="Direccion 1" value="Direccion 1" />
-                            <Picker.Item label="Direccion 2" value="Direccion 2" />
-                            <Picker.Item label="Direccion 3" value="Direccion 3" />
-                            <Picker.Item label="Direccion 4" value="Direccion 4" />
+                           {catItems}
                         </Picker>
                     </View>
                 );
