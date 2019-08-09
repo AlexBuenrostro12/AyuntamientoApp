@@ -476,7 +476,7 @@ export default class Noticias extends Component {
 			axios
 				.post('/news.json?auth=' + this.state.token, news)
 				.then((response) => {
-					this.sendRemoteNotification();
+					this.state.notifications && this.sendRemoteNotification();
 					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
 					Alert.alert(
 						'Noticias',
