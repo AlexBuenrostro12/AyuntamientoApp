@@ -329,6 +329,7 @@ export default class BusEscolar extends Component {
 					});
 				});
 		} else {
+			this.setState({ loading: false });
 			Alert.alert('Bus escolar', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});

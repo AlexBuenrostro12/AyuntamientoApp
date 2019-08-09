@@ -863,7 +863,7 @@ export default class Incidencias extends Component {
 		);
 
 		const buttons = (
-			<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+			<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'center' }}>
 				<CustomButton style="SuccessReport" clicked={() => this.uploadPhotoHandler()} name="ENVIAR REPORTE" />
 				<CustomButton
 					style="CallReport"
