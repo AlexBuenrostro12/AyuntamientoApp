@@ -40,7 +40,7 @@ export default class DescribreData extends Component {
 		noApproved: true,
 		imageToRender: null,
 		urlOfImage: null,
-		nameOfImage: null
+		nameOfImage: null,
 	};
 
 	constructor(props) {
@@ -155,7 +155,9 @@ export default class DescribreData extends Component {
 				tipo,
 				dia,
 				lugar,
-				ubicacion
+				ubicacion,
+				lugarSalida,
+				lugarRegreso,
 			} = this.state.data;
 			let subject = (body = null);
 			switch (type) {
@@ -183,8 +185,14 @@ export default class DescribreData extends Component {
 						'Chofer: ' +
 						chofer +
 						'\n' +
+						'Lugar de salida: ' +
+						lugarSalida +
+						'\n'+
 						'Salida: ' +
 						horaSalida +
+						'\n' +
+						'Lugar de regreso: ' + 
+						lugarRegreso +
 						'\n' +
 						'Regreso: ' +
 						horaRegreso;
@@ -486,7 +494,9 @@ export default class DescribreData extends Component {
 									<Body>
 										<Text style={styles.descripcion}>Placa del camión: {data.placa}</Text>
 										<Text style={styles.descripcion}>Chofer: {data.chofer}</Text>
+										<Text style={styles.descripcion}>Lugar de salida: {data.lugarSalida}</Text>
 										<Text style={styles.descripcion}>Salida: {data.horaSalida}</Text>
+										<Text style={styles.descripcion}>Lugar de regreso: {data.lugarRegreso}</Text>
 										<Text style={styles.descripcion}>Regreso: {data.horaRegreso}</Text>
 									</Body>
 								</CardItem>
@@ -893,7 +903,7 @@ export default class DescribreData extends Component {
 							showContentRight={true}
 							sendEmail={card && this.emailHandler}
 							describeGoBack={() => this.goBackHandler()}
-							deleteManual={this.state.data && this.state.data.deleteItem}
+							deleteManual={this.state.data && this.state.data.deleteItemManual}
 							isAdmin={this.state.data && this.state.data.isAdmin}
 							// here i go
 						/>

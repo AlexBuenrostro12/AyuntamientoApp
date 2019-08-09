@@ -32,6 +32,12 @@ export default class Buses extends Component {
 				case 'horaSalida':
 					obj.horaSalida = this.props.data[dataName];
 					break;
+				case 'lugarSalida':
+					obj.lugarSalida = this.props.data[dataName];
+					break;
+				case 'lugarRegreso':
+					obj.lugarRegreso = this.props.data[dataName];
+					break;
 				default:
 					null;
 					break;

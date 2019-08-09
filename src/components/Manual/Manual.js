@@ -34,7 +34,7 @@ export default class Manual extends Component {
 				fecha: this.state.fecha,
 				isAdmin: this.props.isAdmin,
 				type: 'Transparencia',
-				deleteItem: this.alertCheckDeleteItem,
+				deleteItemManual: this.alertCheckDeleteItem,
 				barProps: { title: 'Transparencia', status: '#00847b', bar: '#00a19a' }
 			};
 			const { navigate } = this.props.describe.navigation;
