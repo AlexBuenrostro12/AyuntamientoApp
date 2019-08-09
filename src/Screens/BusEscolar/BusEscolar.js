@@ -52,12 +52,32 @@ export default class BusEscolar extends Component {
 				},
 				valid: false
 			},
+			lugarSalida: {
+				itemType: 'FloatingLabel',
+				holder: 'Lugar de salida',
+				value: '',
+				validation: {
+					minLength: 1,
+					maxLength: 30
+				},
+				valid: false
+			},
 			horaSalida: {
 				itemType: 'Hour',
 				holder: 'Salida',
 				value: '',
 				validation: {
 					haveValue: true
+				},
+				valid: false
+			},
+			lugarRegreso: {
+				itemType: 'FloatingLabel',
+				holder: 'Lugar de regreso',
+				value: '',
+				validation: {
+					minLength: 1,
+					maxLength: 30
 				},
 				valid: false
 			},
@@ -79,7 +99,7 @@ export default class BusEscolar extends Component {
 					maxLength: 30
 				},
 				valid: false
-			}
+			},
 		},
 		formIsValid: false,
 		showButtons: true,
@@ -309,6 +329,7 @@ export default class BusEscolar extends Component {
 					});
 				});
 		} else {
+			this.setState({ loading: false });
 			Alert.alert('Bus escolar', '¡Complete correctamente el formulario!', [ { text: 'Ok' } ], {
 				cancelable: false
 			});

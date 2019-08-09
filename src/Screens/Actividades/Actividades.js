@@ -422,7 +422,7 @@ export default class Actividades extends Component {
 			axios
 				.post('/activities.json?auth=' + this.state.token, activity)
 				.then((response) => {
-					this.sendRemoteNotification();
+					this.state.notifications && this.sendRemoteNotification();
 					this.setState({ loading: false, image: null, fileNameImage: null, imageFormData: null });
 					Alert.alert(
 						'Actividades',

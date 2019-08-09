@@ -49,7 +49,7 @@ export default class Evento extends Component {
 				isAdmin: this.props.isAdmin,
 				deleteItem: this.alertCheckDeleteItem,
 				type: 'Eventos',
-                barProps: { title: 'Eventos', status: '#c7175b', bar: '#e2487d' },
+                barProps: { title: 'Eventos', status: '#000000', bar: '#090707' },
                 saveEvent: this.saveEventHandler
 			};
 			const { navigate } = this.props.describe.navigation;

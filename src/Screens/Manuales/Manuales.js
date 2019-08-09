@@ -193,10 +193,18 @@ export default class Manuales extends Component {
 	};
 
 	savePdfHandler = () => {
-		const { uri, type, fileName, fileSize } = this.state.resPdf;
-		console.log('Save pdf: ', uri, 'type: ', type, 'file: ', fileName);
-
-		this.uploadFile(this.state.resPdf);
+		if (this.state.resPdf) {
+			const { uri, type, fileName, fileSize } = this.state.resPdf;
+			console.log('Save pdf: ', uri, 'type: ', type, 'file: ', fileName);
+			this.uploadFile(this.state.resPdf);
+		} else {
+			Alert.alert(
+				'Trasparencia',
+				'¡Seleccione algun documento para subir!',
+				[ { text: 'Ok', onPress: () => null } ],
+				{ cancelable: false }
+			);
+		}
 	};
 
 	saveDataHandler = (file, url) => {
