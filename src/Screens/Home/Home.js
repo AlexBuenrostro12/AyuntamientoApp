@@ -74,6 +74,7 @@ export default class Home extends Component {
 		notificationToken: null,
 		fcmTokens: [],
 		allReadyToNotification: false,
+		currentGif: require('../../assets/images/Gif/teca-centro1.gif'),
 	};
 
 	constructor(props) {
@@ -97,6 +98,7 @@ export default class Home extends Component {
 
 	//Obtiene el token y tiempo de expiracion almacenado globalmente en la app
 	async componentDidMount() {
+		this.changeFirstGifHandler();
 		//BackHandler
 		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>
 			BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
@@ -173,6 +175,9 @@ export default class Home extends Component {
 	componentWillUnmount() {
 		this._didFocusSubscription && this._didFocusSubscription.remove();
 		this._willBlurSubscription && this._willBlurSubscription.remove();
+
+		clearTimeout(this.firstGif);
+		clearTimeout(this.secondGif);
 	};
 
 	//Get fcmTokens
@@ -248,13 +253,25 @@ export default class Home extends Component {
 			});
 	};
 
+	changeFirstGifHandler = () => {
+		this.firstGif = setTimeout(() => {
+			this.setState({ currentGif: require('../../assets/images/Gif/teca-centro2.gif') }, () => this.changeSecondGifHandler())
+		}, 10000)
+	};
+
+	changeSecondGifHandler = () => {
+		this.secondGif = setTimeout(() => {
+			this.setState({ currentGif: require('../../assets/images/Gif/teca-centro1.gif') }, () => this.changeFirstGifHandler())
+		}, 10000)
+	};
+
 	render() {
 		const spinner = <CustomSpinner color="blue" />;
 		let swiperBanner = <SwiperBanner news={this.state.news} open={this.props} token={this.state.token} />;
 
 		return (
 			<SafeAreaView style={styles.container}>
-				<ImageBackground style={styles.view} source={require('../../assets/images/Gif/teca-centro.gif')}>
+				<ImageBackground style={styles.view} source={this.state.currentGif}>
 					<View>
 						<HeaderToolbar open={this.props} title="Home" color="rgba(52, 52, 52, 0.8)" />
 					</View>
