@@ -3,7 +3,8 @@
         "titleBar.activeBackground": "#FF8800",
         "titleBar.activeForeground": "#ffffff"
     },
-    "editor.fontSize": 18,
+    "editor.fontSize": 17,
+    "editor.fontWeight": "400",
     "files.exclude": {
         "**/.classpath": true,
         "**/.project": true,
