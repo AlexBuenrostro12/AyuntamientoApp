@@ -225,10 +225,10 @@ class Login extends Component {
             alignItems: "center"
           }}
         >
-          <Image
+          {true && <Image
             style={styles.image}
             source={require("../../assets/images/Ayuntamiento/logo.png")}
-          />
+          />}
 
           {!this.state.loading ? (
             <View style={styles.form}>
