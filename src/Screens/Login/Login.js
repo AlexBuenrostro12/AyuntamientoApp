@@ -19,6 +19,7 @@ import CustomInput from "../../components/CustomInput/CustomInput";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import Spinner from "../../components/CustomSpinner/CustomSpinner";
 import { normalize } from "../../components/AuxiliarFunctions/FontResponsive";
+import KBAvoiding from "../../components/KBAvoiding/KBAvoiding";
 
 class Login extends Component {
   state = {
@@ -40,7 +41,8 @@ class Login extends Component {
     idToken: null,
     expiresIn: null,
     email: null,
-    loading: false
+    loading: false,
+    isInputFocused: false,
   };
   //Cambia de formulario dependiendo click de cada boton
   changeFormHandler = (ban, identifier) => {
@@ -158,6 +160,10 @@ class Login extends Component {
       });
   };
 
+  
+  focusedInput = () => this.setState({ isInputFocused: true });
+  onEndEditing = () => this.setState({ isInputFocused: false });
+
   render() {
     const formElements = [];
     for (let key in this.state.form) {
@@ -225,10 +231,10 @@ class Login extends Component {
             alignItems: "center"
           }}
         >
-          {true && <Image
-            style={styles.image}
-            source={require("../../assets/images/Ayuntamiento/logo.png")}
-          />}
+            {!this.state.isInputFocused && <Image
+              style={styles.image}
+              source={require("../../assets/images/Ayuntamiento/logo.png")}
+            />}
 
           {!this.state.loading ? (
             <View style={styles.form}>
@@ -237,22 +243,27 @@ class Login extends Component {
               {/* New form login */}
               {!this.state.index && (
                 <View style={styles.imageButtonsContainerForm}>
-                  {!this.state.index && <View style={styles.loginBtns}>
-                    <CustomButton
-                      style="Login"
-                      name="Regresar al inicio"
-                      clicked={() => this.changeFormHandler(true, "index")}
-                    />
-                  </View>}
-                  {!this.state.index && formElements.map(e => (
-                    <CustomInput
-                      key={e.id}
-                      itemType={e.config.itemType}
-                      holder={e.config.holder}
-                      changed={text => this.inputChangeHandler(text, e.id)}
-                      password={e.config.password}
-                    />
-                  ))}
+                  {!this.state.index && !this.state.isInputFocused && (
+                    <View style={styles.loginBtns}>
+                      <CustomButton
+                        style="Login"
+                        name="Regresar al inicio"
+                        clicked={() => this.changeFormHandler(true, "index")}
+                      />
+                    </View>
+                  )}
+                  {!this.state.index &&
+                    formElements.map(e => (
+                      <CustomInput
+                        key={e.id}
+                        itemType={e.config.itemType}
+                        holder={e.config.holder}
+                        changed={text => this.inputChangeHandler(text, e.id)}
+                        password={e.config.password}
+                        focused={this.focusedInput}
+                        endEditing={this.onEndEditing}
+                      />
+                    ))}
                   {!this.state.index && (
                     <CustomButton
                       style="Success"
@@ -278,7 +289,11 @@ class Login extends Component {
       </SafeAreaView>
     );
 
-    return <Aux>{form}</Aux>;
+    return (
+      <Aux>
+        <KBAvoiding>{form}</KBAvoiding>
+      </Aux>
+    );
   }
 }
 
