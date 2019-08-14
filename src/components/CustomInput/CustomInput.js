@@ -42,7 +42,7 @@ const customInput = (props) => {
 			input = (
 				<Item floatingLabel>
 					<Label style={{ color: 'white', fontSize: normalize(15) }}>{props.holder}</Label>
-					<Input onEndEditing={() => props.endEditing()} onFocus={() => props.focused()} style={{ color: 'white' }} onChangeText={props.changed} secureTextEntry={props.password} />
+					<Input onEndEditing={() => props.endEditing(props.holder)} onFocus={() => props.focused(props.holder)} style={{ color: 'white' }} onChangeText={props.changed} secureTextEntry={props.password} />
 				</Item>
 			);
 			break;
