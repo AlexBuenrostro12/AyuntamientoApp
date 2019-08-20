@@ -1,0 +1,17 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'TecaliApp' do
+  # Comment the next line if you don't want to use dynamic frameworks
+
+  # Pods for TecaliApp
+
+   	pod 'Firebase'
+    pod 'Firebase/Messaging'
+    pod 'react-native-async-storage', :path => '../node_modules/@react-native-community/async-storage'
+    pod 'React', path: '../node_modules/react-native'
+    pod 'yoga', path: '../node_modules/react-native/ReactCommon/yoga'
+    pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+    pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+    pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+end
