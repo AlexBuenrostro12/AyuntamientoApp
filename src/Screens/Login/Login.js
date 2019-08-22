@@ -283,7 +283,7 @@ class Login extends Component {
     );
 
     const form = (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#FEA621' }}>
         <StatusBar color="#FEA621" />
         <View style={{ flex: 1 }}>{content}</View>
       </SafeAreaView>

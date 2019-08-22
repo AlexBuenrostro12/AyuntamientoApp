@@ -19,6 +19,7 @@
 		159B07C0230EEBE500B7EA18 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		159B07C1230EEBF300B7EA18 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		159B07C4230EEF9F00B7EA18 /* AvenirNextLTPro-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 159B07C2230EEDED00B7EA18 /* AvenirNextLTPro-Regular.otf */; };
+		159B081E230F26C500B7EA18 /* boton app.png in Resources */ = {isa = PBXBuildFile; fileRef = 159B07D8230F26C500B7EA18 /* boton app.png */; };
 		15CFAFDA230DAB3E0042B2B8 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		15CFB014230DAB6F0042B2B8 /* libRNFIRMessaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15858F08230C5E2A00E5A6B0 /* libRNFIRMessaging.a */; };
 		15CFB01C230DAF980042B2B8 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CFB01B230DAF8F0042B2B8 /* libRNFetchBlob.a */; };
@@ -545,6 +546,7 @@
 		15858F03230C5E2A00E5A6B0 /* RNFIRMessaging.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFIRMessaging.xcodeproj; path = "../node_modules/react-native-fcm/ios/RNFIRMessaging.xcodeproj"; sourceTree = "<group>"; };
 		15858F0A230C5E7200E5A6B0 /* TecaliApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = TecaliApp.entitlements; path = TecaliApp/TecaliApp.entitlements; sourceTree = "<group>"; };
 		159B07C2230EEDED00B7EA18 /* AvenirNextLTPro-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AvenirNextLTPro-Regular.otf"; path = "../src/assets/fonts/AvenirNextLTPro-Regular.otf"; sourceTree = "<group>"; };
+		159B07D8230F26C500B7EA18 /* boton app.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "boton app.png"; path = "../../../boton/boton app.png"; sourceTree = "<group>"; };
 		15A598C7230C67C700C44D49 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCAsyncStorage.xcodeproj; path = "../node_modules/@react-native-community/async-storage/ios/RNCAsyncStorage.xcodeproj"; sourceTree = "<group>"; };
 		15CFB016230DAF8F0042B2B8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		15CFB01D230DB1300042B2B8 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
@@ -722,6 +724,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				159B07D8230F26C500B7EA18 /* boton app.png */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -1638,6 +1641,7 @@
 				FEE0FB9382A94430A28087A9 /* Feather.ttf in Resources */,
 				41F8BF94D5E646BA85EB16C6 /* FontAwesome.ttf in Resources */,
 				60D4512F7E084A2CAEA208F9 /* FontAwesome5_Brands.ttf in Resources */,
+				159B081E230F26C500B7EA18 /* boton app.png in Resources */,
 				ADCD85CE5D854EA1A116DD16 /* FontAwesome5_Regular.ttf in Resources */,
 				4350554EAD2345069CEF2A31 /* FontAwesome5_Solid.ttf in Resources */,
 				5D9A7FACC9B347D2BED020E3 /* Foundation.ttf in Resources */,
