@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '9.0'
 
 target 'TecaliApp' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -9,9 +9,27 @@ target 'TecaliApp' do
    	pod 'Firebase'
     pod 'Firebase/Messaging'
     pod 'react-native-async-storage', :path => '../node_modules/@react-native-community/async-storage'
-    pod 'React', path: '../node_modules/react-native'
+    pod 'React', path: '../node_modules/react-native', :subspecs => [
+    'Core',
+    'CxxBridge', # Include this for RN >= 0.47
+    'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
+    'RCTText',
+    'RCTNetwork',
+    'RCTWebSocket', # Needed for debugging
+    'RCTAnimation', # Needed for FlatList and animations running on native UI thread
+    # Add any other subspecs you want to use in your project
+    'RCTLinkingIOS',
+    'RCTImage',
+    ]
+    
     pod 'yoga', path: '../node_modules/react-native/ReactCommon/yoga'
+    
+    # Third party deps podspec link
     pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
     pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
     pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+    pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+    pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
 end
