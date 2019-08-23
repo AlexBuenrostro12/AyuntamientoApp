@@ -9,7 +9,8 @@ import {
   Alert,
   Image,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import Communications from "react-native-communications";
@@ -44,6 +45,7 @@ class Login extends Component {
     loading: false,
     isInputFocused: false,
   };
+  
   //Cambia de formulario dependiendo click de cada boton
   changeFormHandler = (ban, identifier) => {
     switch (identifier) {
@@ -106,8 +108,6 @@ class Login extends Component {
     if (isAdmin) {
       url =
         "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyBix5LF2utfHvWl6VB2cjdvZKtjXdbLz98";
-      //email = this.state.form.email.value;
-      //password = this.state.form.password.value;
       body = {
         email: email.value,
         password: password.value,
@@ -245,11 +245,9 @@ class Login extends Component {
                 <View style={styles.imageButtonsContainerForm}>
                   {!this.state.index && !this.state.isInputFocused && (
                     <View style={styles.loginBtns}>
-                      <CustomButton
-                        style="Login"
-                        name="Regresar al inicio"
-                        clicked={() => this.changeFormHandler(true, "index")}
-                      />
+                      <TouchableOpacity style={{ backgroundColor: '#878787', borderRadius: 3 }} onPress={() => this.changeFormHandler(true, "index")}>
+                        <Text style={styles.itemTextFormButton}>Regresar al inicio</Text>
+                      </TouchableOpacity>
                     </View>
                   )}
                   {!this.state.index &&
@@ -265,11 +263,9 @@ class Login extends Component {
                       />
                     ))}
                   {!this.state.index && (
-                    <CustomButton
-                      style="Success"
-                      name="Ingresar"
-                      clicked={() => this.signInUser(true)}
-                    />
+                    <TouchableOpacity style={{ backgroundColor: '#869E25', borderRadius: 3, margin: 5 }} onPress={() => this.signInUser(true)}>
+                      <Text style={styles.itemTextFormButton}>Ingresar</Text>
+                    </TouchableOpacity>
                   )}
                 </View>
               )}
@@ -283,7 +279,7 @@ class Login extends Component {
     );
 
     const form = (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#FEA621' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
         <StatusBar color="#FEA621" />
         <View style={{ flex: 1 }}>{content}</View>
       </SafeAreaView>
@@ -390,6 +386,15 @@ const styles = StyleSheet.create({
     color: "white",
     borderRadius: 5,
     alignSelf: "center"
+  },
+  itemTextFormButton: {
+    fontFamily: "AvenirNextLTPro-Regular",
+    fontSize: normalize(16),
+    fontWeight: "bold",
+    color: "white",
+    alignSelf: "center",
+    marginTop: Platform.OS === 'ios' ? 5 : 0,
+    padding: 5
   }
 });
 
