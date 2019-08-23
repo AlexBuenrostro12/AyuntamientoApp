@@ -458,7 +458,7 @@ export default class BusEscolar extends Component {
 		);
 
 		return (
-			<SafeAreaView style={{ flex: 1 }}>
+			<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
 				<View style={styles.container}>
 					<View>
 						<HeaderToolbar 
@@ -499,7 +499,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		flexWrap: 'wrap',
-		overflow: 'scroll'
+		overflow: 'scroll',
+		backgroundColor: 'white'
 	},
 	view: {
 		flex: 1,

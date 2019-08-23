@@ -22,13 +22,17 @@ const theme = {
 	backgroundColor: '#00a19a'
 };
 const { height, width } = Dimensions.get('window');
-const StyledSafeArea = styled.SafeAreaView`flex: ${theme.commonFlex};`;
+const StyledSafeArea = styled.SafeAreaView`
+	flex: ${theme.commonFlex};
+	background-color: black;
+`;
 
 const StyledContainer = styled.View`
 	flex: ${theme.commonFlex};
 	flex-direction: column;
 	flex-wrap: wrap;
 	overflow: scroll;
+	background-color: white;
 `;
 
 const StyledHeader = styled.View``;
@@ -64,7 +68,7 @@ export default class Noticias extends Component {
 			direccion: {
 				itemType: 'PickerDirection',
 				holder: 'Dirección',
-				value: 'Direccion 1',
+				value: 'Reglamentos',
 				valid: true
 			},
 			fecha: {
@@ -675,7 +679,8 @@ const styles = StyleSheet.create({
 	cardBody: {
 		flex: 1,
 		flexDirection: 'column',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		alignContent: 'center',
 	},
 	scrollDataListIcons: {
 		flex: 1,

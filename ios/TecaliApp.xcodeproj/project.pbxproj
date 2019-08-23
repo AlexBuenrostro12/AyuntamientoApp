@@ -20,6 +20,9 @@
 		159B07C1230EEBF300B7EA18 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		159B07C4230EEF9F00B7EA18 /* AvenirNextLTPro-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 159B07C2230EEDED00B7EA18 /* AvenirNextLTPro-Regular.otf */; };
 		159B081E230F26C500B7EA18 /* boton app.png in Resources */ = {isa = PBXBuildFile; fileRef = 159B07D8230F26C500B7EA18 /* boton app.png */; };
+		15B688E323105712001A4666 /* libRCTPdf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15B688C223105708001A4666 /* libRCTPdf.a */; };
+		15B688EA23105C40001A4666 /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15B688E923105C3B001A4666 /* libRNDocumentPicker.a */; };
+		15B688F1231076EE001A4666 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15B688F0231076DA001A4666 /* libRNImagePicker.a */; };
 		15CFAFDA230DAB3E0042B2B8 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		15CFB014230DAB6F0042B2B8 /* libRNFIRMessaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15858F08230C5E2A00E5A6B0 /* libRNFIRMessaging.a */; };
 		15CFB01C230DAF980042B2B8 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CFB01B230DAF8F0042B2B8 /* libRNFetchBlob.a */; };
@@ -256,6 +259,27 @@
 			proxyType = 2;
 			remoteGlobalIDString = 1FA65622A09E4E5504F80B3610AB78F1;
 			remoteInfo = yoga;
+		};
+		15B688C123105708001A4666 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15B6889823105708001A4666 /* RCTPdf.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 20D8E03F1C8E946C00039823;
+			remoteInfo = RCTPdf;
+		};
+		15B688E823105C3B001A4666 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15B688E423105C3B001A4666 /* RNDocumentPicker.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E01DD9DB1D2311A600C39062;
+			remoteInfo = RNDocumentPicker;
+		};
+		15B688EF231076DA001A4666 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15B688EB231076D9001A4666 /* RNImagePicker.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
+			remoteInfo = RNImagePicker;
 		};
 		15CFAEE5230D9DC20042B2B8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -548,6 +572,9 @@
 		159B07C2230EEDED00B7EA18 /* AvenirNextLTPro-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AvenirNextLTPro-Regular.otf"; path = "../src/assets/fonts/AvenirNextLTPro-Regular.otf"; sourceTree = "<group>"; };
 		159B07D8230F26C500B7EA18 /* boton app.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "boton app.png"; path = "../../../boton/boton app.png"; sourceTree = "<group>"; };
 		15A598C7230C67C700C44D49 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCAsyncStorage.xcodeproj; path = "../node_modules/@react-native-community/async-storage/ios/RNCAsyncStorage.xcodeproj"; sourceTree = "<group>"; };
+		15B6889823105708001A4666 /* RCTPdf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPdf.xcodeproj; path = "../node_modules/react-native-pdf/ios/RCTPdf.xcodeproj"; sourceTree = "<group>"; };
+		15B688E423105C3B001A4666 /* RNDocumentPicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDocumentPicker.xcodeproj; path = "../node_modules/react-native-document-picker/ios/RNDocumentPicker.xcodeproj"; sourceTree = "<group>"; };
+		15B688EB231076D9001A4666 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		15CFB016230DAF8F0042B2B8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		15CFB01D230DB1300042B2B8 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNGestureHandler.xcodeproj; path = "../node_modules/react-native-gesture-handler/ios/RNGestureHandler.xcodeproj"; sourceTree = "<group>"; };
 		15CFB144230DC7BC0042B2B8 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -606,6 +633,9 @@
 				159B07BF230EEAF700B7EA18 /* libRCTAnimation.a in Frameworks */,
 				159B07C0230EEBE500B7EA18 /* libRCTNetwork.a in Frameworks */,
 				159B07C1230EEBF300B7EA18 /* libRCTLinking.a in Frameworks */,
+				15B688E323105712001A4666 /* libRCTPdf.a in Frameworks */,
+				15B688EA23105C40001A4666 /* libRNDocumentPicker.a in Frameworks */,
+				15B688F1231076EE001A4666 /* libRNImagePicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -795,6 +825,30 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		15B6889923105708001A4666 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				15B688C223105708001A4666 /* libRCTPdf.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		15B688E523105C3B001A4666 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				15B688E923105C3B001A4666 /* libRNDocumentPicker.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		15B688EC231076D9001A4666 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				15B688F0231076DA001A4666 /* libRNImagePicker.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		15CFB017230DAF8F0042B2B8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -879,6 +933,9 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				15B688EB231076D9001A4666 /* RNImagePicker.xcodeproj */,
+				15B688E423105C3B001A4666 /* RNDocumentPicker.xcodeproj */,
+				15B6889823105708001A4666 /* RCTPdf.xcodeproj */,
 				15CFB1A9230DCBBE0042B2B8 /* AirMaps.xcodeproj */,
 				15CFB18D230DCA400042B2B8 /* RNReanimated.xcodeproj */,
 				15CFB144230DC7BC0042B2B8 /* RCTText.xcodeproj */,
@@ -1055,11 +1112,15 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = U37D43M2NL;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
 							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
 								enabled = 1;
 							};
 						};
@@ -1125,6 +1186,10 @@
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
 				},
 				{
+					ProductGroup = 15B6889923105708001A4666 /* Products */;
+					ProjectRef = 15B6889823105708001A4666 /* RCTPdf.xcodeproj */;
+				},
+				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
 					ProjectRef = 139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */;
 				},
@@ -1149,6 +1214,10 @@
 					ProjectRef = 15A598C7230C67C700C44D49 /* RNCAsyncStorage.xcodeproj */;
 				},
 				{
+					ProductGroup = 15B688E523105C3B001A4666 /* Products */;
+					ProjectRef = 15B688E423105C3B001A4666 /* RNDocumentPicker.xcodeproj */;
+				},
+				{
 					ProductGroup = 15CFB017230DAF8F0042B2B8 /* Products */;
 					ProjectRef = 15CFB016230DAF8F0042B2B8 /* RNFetchBlob.xcodeproj */;
 				},
@@ -1159,6 +1228,10 @@
 				{
 					ProductGroup = 15CFB01E230DB1300042B2B8 /* Products */;
 					ProjectRef = 15CFB01D230DB1300042B2B8 /* RNGestureHandler.xcodeproj */;
+				},
+				{
+					ProductGroup = 15B688EC231076D9001A4666 /* Products */;
+					ProjectRef = 15B688EB231076D9001A4666 /* RNImagePicker.xcodeproj */;
 				},
 				{
 					ProductGroup = 15CFB18E230DCA400042B2B8 /* Products */;
@@ -1363,6 +1436,27 @@
 			fileType = archive.ar;
 			path = libyoga.a;
 			remoteRef = 15A599C9230C849900C44D49 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		15B688C223105708001A4666 /* libRCTPdf.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPdf.a;
+			remoteRef = 15B688C123105708001A4666 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		15B688E923105C3B001A4666 /* libRNDocumentPicker.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNDocumentPicker.a;
+			remoteRef = 15B688E823105C3B001A4666 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		15B688F0231076DA001A4666 /* libRNImagePicker.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNImagePicker.a;
+			remoteRef = 15B688EF231076DA001A4666 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		15CFAEE6230D9DC20042B2B8 /* libDoubleConversion.a */ = {
@@ -1834,6 +1928,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TecaliApp/TecaliApp.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = U37D43M2NL;
@@ -1866,6 +1962,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = TecaliApp;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1876,6 +1973,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TecaliApp/TecaliApp.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = U37D43M2NL;
 				HEADER_SEARCH_PATHS = (
@@ -1907,6 +2006,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = TecaliApp;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

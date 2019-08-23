@@ -896,7 +896,7 @@ export default class DescribreData extends Component {
 			);
 		}
 		return (
-			<SafeAreaView style={{ flex: 1 }}>
+			<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
 				<View style={[ styles.container, { backgroundColor: !this.state.zoomImage ? 'white' : 'black' } ]}>
 					<View>
 						<HeaderToolbar

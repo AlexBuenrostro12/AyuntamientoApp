@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList, Platform } from 'react-native';
 import CustomSpinner from '../CustomSpinner/CustomSpinner';
 import axios from '../../../axios-ayuntamiento';
 
@@ -141,7 +141,6 @@ export default class SwiperBanner extends Component {
 						onEndReachedThreshold={0.1}
 						refreshing={this.state.refreshing}
 						inverted={true}
-						initialScrollIndex={this.state.childrenCount - 1}
 					/>
 				</View>
 			</View>
@@ -188,7 +187,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-start',
 		height: width * 0.8,
 		width: width * 0.9,
-		borderRadius: 3,
+		borderRadius: Platform.OS === 'ios' ? 15 : 3,
 		margin: 5,
 	},
 	textCard: {

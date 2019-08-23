@@ -12,13 +12,17 @@ import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import Buzon from '../../components/Buzon/Buzon';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 
-const StyledSafeArea = styled.SafeAreaView`flex: 1;`;
+const StyledSafeArea = styled.SafeAreaView`
+	flex: 1;
+	background-color: black;
+`;
 
 const StyledContainer = styled.View`
 	flex: 1;
 	flex-direction: column;
 	flex-wrap: wrap;
 	overflow: scroll;
+	background-color: white;
 `;
 
 const StyledHeader = styled.View``;
