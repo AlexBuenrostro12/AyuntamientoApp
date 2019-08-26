@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text, Dimensions, Platform } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Text, Dimensions, Platform, DatePickerIOS } from 'react-native';
 import { Item, Input, Label, Textarea, DatePicker, Picker } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import { normalize } from '../AuxiliarFunctions/FontResponsive';
@@ -75,12 +75,27 @@ const customInput = (props) => {
 			);
 			break;
 		case 'Hour':
-			input = (
+			Platform.OS === 'ios' ? input = (
+				<View style={{  marginRight: Platform.OS === 'ios' ? 18 : 22 }}>
+					<Label style={{ color: '#676766', fontSize: 17 }}>{props.holder}</Label>
+					<DatePickerIOS
+						initialDate={new Date()}
+						mode='time'
+						onDateChange={props.changed}
+					/>
+				</View>
+			) : input = (
 				<Item floatingLabel>
 					<Label style={{ color: '#676766', fontSize: 17 }}>{props.holder}</Label>
 					<Input style={{ color: '#676766', fontSize: 17 }} value={props.value} onTouchStart={props.changed1} />
 				</Item>
 			);
+			// input = (
+			// 	<Item floatingLabel>
+			// 		<Label style={{ color: '#676766', fontSize: 17 }}>{props.holder}</Label>
+			// 		<Input style={{ color: '#676766', fontSize: 17 }} value={props.value} onTouchStart={props.changed1} />
+			// 	</Item>
+			// );
 			break;
 		case 'PickerSchedule':
 			input = (

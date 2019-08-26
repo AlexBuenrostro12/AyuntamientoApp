@@ -472,7 +472,7 @@ export default class BusEscolar extends Component {
 							goBack={() => this.setState({ addBus: false })}
 							isAdd={this.state.addBus}
 							save={this.sendNewBusHandler}
-							isAdmin={this.state.isAdmin}
+							isAdmin={true ?  true : this.state.isAdmin}
 							changeDisplay={this.changeDisplay}
 							showLikeIcons={this.state.showLikeIcons}
 							changed={(text) => this.searchTextHandler(text)}
