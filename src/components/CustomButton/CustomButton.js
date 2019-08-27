@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Button, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { View, StyleSheet, Button, Text, Image, TouchableOpacity, Dimensions, Platform } from 'react-native';
 
 const { height, width } = Dimensions.get('window');
 
@@ -27,10 +27,14 @@ const customButton = (props) => {
 			button = <Button onPress={props.clicked} title={props.name} color="red" />;
 			break;
 		case 'SuccessReport':
-			button = <Button onPress={props.clicked} title={props.name} color="#bac95f" />;
+			button = <TouchableOpacity onPress={props.clicked} style={{ flex: 1, alignItems: "center", backgroundColor: "#bac95f", padding: 5, borderRadius: 3 }}>
+				<Text style={styles.report}>{props.name}</Text>
+			</TouchableOpacity>;
 			break;
 		case 'CallReport':
-			button = <Button onPress={props.clicked} title={props.name} color="#c7175b" />;
+			button = <TouchableOpacity onPress={props.clicked} style={{ flex: 1, alignItems: "center", backgroundColor: "#c7175b", padding: 5, borderRadius: 3 }}>
+				<Text style={styles.report}>{props.name}</Text>
+			</TouchableOpacity>;
 			break;
 		case 'SaveActivity':
 			button = (
@@ -91,7 +95,16 @@ const styles = StyleSheet.create({
 	saveActivityImage: {
 		height: width / 12,
 		width: width / 12
-	}
+	},
+	report: {
+		fontSize: 16,
+		fontStyle: 'normal',
+		fontWeight: 'bold',
+		color: 'white',
+		fontFamily: 'AvenirNextLTPro-Regular',
+		alignSelf: 'center',
+		marginTop: Platform.OS === 'ios' ? 5 : 0,
+	},
 });
 
 export default customButton;

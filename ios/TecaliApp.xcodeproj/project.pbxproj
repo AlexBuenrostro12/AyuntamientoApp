@@ -13,13 +13,15 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		15858EDC230C5DBD00E5A6B0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 15858EDB230C5DBD00E5A6B0 /* GoogleService-Info.plist */; };
+		15963E542315A065007580CF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 15963E532315A065007580CF /* GoogleService-Info.plist */; };
+		15963E562315A0EE007580CF /* boton app.png in Resources */ = {isa = PBXBuildFile; fileRef = 15963E552315A0EE007580CF /* boton app.png */; };
+		15963EE42315A687007580CF /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CFB1AE230DCBBE0042B2B8 /* libAirMaps.a */; };
+		15963F8D2315A9B4007580CF /* libRNReanimated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CFB193230DCA400042B2B8 /* libRNReanimated.a */; };
 		159B077B230EE86100B7EA18 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
 		159B07BF230EEAF700B7EA18 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		159B07C0230EEBE500B7EA18 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		159B07C1230EEBF300B7EA18 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		159B07C4230EEF9F00B7EA18 /* AvenirNextLTPro-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 159B07C2230EEDED00B7EA18 /* AvenirNextLTPro-Regular.otf */; };
-		159B081E230F26C500B7EA18 /* boton app.png in Resources */ = {isa = PBXBuildFile; fileRef = 159B07D8230F26C500B7EA18 /* boton app.png */; };
 		15B688E323105712001A4666 /* libRCTPdf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15B688C223105708001A4666 /* libRCTPdf.a */; };
 		15B688EA23105C40001A4666 /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15B688E923105C3B001A4666 /* libRNDocumentPicker.a */; };
 		15B688F1231076EE001A4666 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15B688F0231076DA001A4666 /* libRNImagePicker.a */; };
@@ -27,8 +29,6 @@
 		15CFB014230DAB6F0042B2B8 /* libRNFIRMessaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15858F08230C5E2A00E5A6B0 /* libRNFIRMessaging.a */; };
 		15CFB01C230DAF980042B2B8 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CFB01B230DAF8F0042B2B8 /* libRNFetchBlob.a */; };
 		15CFB026230DB1390042B2B8 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CFB023230DB1310042B2B8 /* libRNGestureHandler.a */; };
-		15CFB196230DCA480042B2B8 /* libRNReanimated.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CFB193230DCA400042B2B8 /* libRNReanimated.a */; };
-		15CFB1F5230DCBD10042B2B8 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CFB1AE230DCBBE0042B2B8 /* libAirMaps.a */; };
 		15CFB261230DD40D0042B2B8 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15CFB16F230DC7BD0042B2B8 /* libRCTText.a */; };
 		1B69666DDE2D44D8B6AD0FCF /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 020A847752394D7C8384F3C9 /* AntDesign.ttf */; };
 		23DCF929837446C7A2A283CC /* Roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9582801466E496EB51279B6 /* Roboto_medium.ttf */; };
@@ -232,19 +232,19 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNFIRMessaging;
 		};
+		15963EFD2315A687007580CF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15858EDD230C5DDA00E5A6B0 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0E7C341FA544E64E23E052A68E4A0A5E;
+			remoteInfo = React;
+		};
 		15A598FF230C67C700C44D49 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 15A598C7230C67C700C44D49 /* RNCAsyncStorage.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNCAsyncStorage;
-		};
-		15A59932230C71A100C44D49 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 15858EDD230C5DDA00E5A6B0 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0E7C341FA544E64E23E052A68E4A0A5E;
-			remoteInfo = React;
 		};
 		15A59934230C71A100C44D49 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -565,12 +565,12 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TecaliApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TecaliApp/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		15858EDB230C5DBD00E5A6B0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		15858EDD230C5DDA00E5A6B0 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 		15858F03230C5E2A00E5A6B0 /* RNFIRMessaging.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFIRMessaging.xcodeproj; path = "../node_modules/react-native-fcm/ios/RNFIRMessaging.xcodeproj"; sourceTree = "<group>"; };
 		15858F0A230C5E7200E5A6B0 /* TecaliApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = TecaliApp.entitlements; path = TecaliApp/TecaliApp.entitlements; sourceTree = "<group>"; };
+		15963E532315A065007580CF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		15963E552315A0EE007580CF /* boton app.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "boton app.png"; path = "../../boton app.png"; sourceTree = "<group>"; };
 		159B07C2230EEDED00B7EA18 /* AvenirNextLTPro-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AvenirNextLTPro-Regular.otf"; path = "../src/assets/fonts/AvenirNextLTPro-Regular.otf"; sourceTree = "<group>"; };
-		159B07D8230F26C500B7EA18 /* boton app.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "boton app.png"; path = "../../../boton/boton app.png"; sourceTree = "<group>"; };
 		15A598C7230C67C700C44D49 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCAsyncStorage.xcodeproj; path = "../node_modules/@react-native-community/async-storage/ios/RNCAsyncStorage.xcodeproj"; sourceTree = "<group>"; };
 		15B6889823105708001A4666 /* RCTPdf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPdf.xcodeproj; path = "../node_modules/react-native-pdf/ios/RCTPdf.xcodeproj"; sourceTree = "<group>"; };
 		15B688E423105C3B001A4666 /* RNDocumentPicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDocumentPicker.xcodeproj; path = "../node_modules/react-native-document-picker/ios/RNDocumentPicker.xcodeproj"; sourceTree = "<group>"; };
@@ -627,8 +627,7 @@
 				15CFB01C230DAF980042B2B8 /* libRNFetchBlob.a in Frameworks */,
 				15CFB261230DD40D0042B2B8 /* libRCTText.a in Frameworks */,
 				15CFB026230DB1390042B2B8 /* libRNGestureHandler.a in Frameworks */,
-				15CFB196230DCA480042B2B8 /* libRNReanimated.a in Frameworks */,
-				15CFB1F5230DCBD10042B2B8 /* libAirMaps.a in Frameworks */,
+				15963F8D2315A9B4007580CF /* libRNReanimated.a in Frameworks */,
 				159B077B230EE86100B7EA18 /* libRCTImage.a in Frameworks */,
 				159B07BF230EEAF700B7EA18 /* libRCTAnimation.a in Frameworks */,
 				159B07C0230EEBE500B7EA18 /* libRCTNetwork.a in Frameworks */,
@@ -636,6 +635,7 @@
 				15B688E323105712001A4666 /* libRCTPdf.a in Frameworks */,
 				15B688EA23105C40001A4666 /* libRNDocumentPicker.a in Frameworks */,
 				15B688F1231076EE001A4666 /* libRNImagePicker.a in Frameworks */,
+				15963EE42315A687007580CF /* libAirMaps.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -747,14 +747,14 @@
 		13B07FAE1A68108700A75B9A /* TecaliApp */ = {
 			isa = PBXGroup;
 			children = (
+				15963E552315A0EE007580CF /* boton app.png */,
+				15963E532315A065007580CF /* GoogleService-Info.plist */,
 				15858F0A230C5E7200E5A6B0 /* TecaliApp.entitlements */,
-				15858EDB230C5DBD00E5A6B0 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				159B07D8230F26C500B7EA18 /* boton app.png */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -800,7 +800,7 @@
 				15858EFE230C5DDA00E5A6B0 /* libnanopb.a */,
 				15858F00230C5DDA00E5A6B0 /* libPods-TecaliApp.a */,
 				15858F02230C5DDA00E5A6B0 /* libProtobuf.a */,
-				15A59933230C71A100C44D49 /* libReact.a */,
+				15963EFE2315A687007580CF /* libReact.a */,
 				15A59935230C71A100C44D49 /* libreact-native-async-storage.a */,
 				15CFB1C8230DCBBE0042B2B8 /* libRNGestureHandler.a */,
 				15CFB108230DC0FC0042B2B8 /* libRNReanimated.a */,
@@ -1410,18 +1410,18 @@
 			remoteRef = 15858F07230C5E2A00E5A6B0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		15963EFE2315A687007580CF /* libReact.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReact.a;
+			remoteRef = 15963EFD2315A687007580CF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		15A59900230C67C700C44D49 /* libRNCAsyncStorage.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNCAsyncStorage.a;
 			remoteRef = 15A598FF230C67C700C44D49 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		15A59933230C71A100C44D49 /* libReact.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libReact.a;
-			remoteRef = 15A59932230C71A100C44D49 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		15A59935230C71A100C44D49 /* libreact-native-async-storage.a */ = {
@@ -1728,15 +1728,14 @@
 				159B07C4230EEF9F00B7EA18 /* AvenirNextLTPro-Regular.otf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-				15858EDC230C5DBD00E5A6B0 /* GoogleService-Info.plist in Resources */,
 				1B69666DDE2D44D8B6AD0FCF /* AntDesign.ttf in Resources */,
 				58009C95FA5A4853AE727D07 /* Entypo.ttf in Resources */,
 				23FFC3D1C9024BE2B9E3D584 /* EvilIcons.ttf in Resources */,
 				FEE0FB9382A94430A28087A9 /* Feather.ttf in Resources */,
 				41F8BF94D5E646BA85EB16C6 /* FontAwesome.ttf in Resources */,
 				60D4512F7E084A2CAEA208F9 /* FontAwesome5_Brands.ttf in Resources */,
-				159B081E230F26C500B7EA18 /* boton app.png in Resources */,
 				ADCD85CE5D854EA1A116DD16 /* FontAwesome5_Regular.ttf in Resources */,
+				15963E562315A0EE007580CF /* boton app.png in Resources */,
 				4350554EAD2345069CEF2A31 /* FontAwesome5_Solid.ttf in Resources */,
 				5D9A7FACC9B347D2BED020E3 /* Foundation.ttf in Resources */,
 				28F75310323D4E16B5EE779A /* Ionicons.ttf in Resources */,
@@ -1745,6 +1744,7 @@
 				9A26E8543CF34AE88DF47F92 /* Octicons.ttf in Resources */,
 				23DCF929837446C7A2A283CC /* Roboto_medium.ttf in Resources */,
 				8442FC99353447848DE0B4D5 /* Roboto.ttf in Resources */,
+				15963E542315A065007580CF /* GoogleService-Info.plist in Resources */,
 				CC46B9A074764A499B7AAB63 /* rubicon-icon-font.ttf in Resources */,
 				4B14131DD9B749B288B948C5 /* SimpleLineIcons.ttf in Resources */,
 				AF13918E414B4183A7053961 /* Zocial.ttf in Resources */,

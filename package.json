@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "react-native run-android && react-native run-ios",
-    "test": "jest"
+    "test": "jest",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.3.0",

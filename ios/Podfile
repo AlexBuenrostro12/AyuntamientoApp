@@ -20,6 +20,11 @@ target 'TecaliApp' do
     # Add any other subspecs you want to use in your project
     'RCTLinkingIOS',
     'RCTImage',
+    #react-native-maps
+    #'RCTActionSheet',
+    #'RCTGeolocation',
+    #'RCTSettings',
+    #'RCTVibration',
     ]
     
     pod 'yoga', path: '../node_modules/react-native/ReactCommon/yoga'
@@ -31,5 +36,14 @@ target 'TecaliApp' do
 
     pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
     pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+    
+    #react-native-maps
+    #pod 'react-native-maps', path: '../node_modules/react-native-maps'
+    # pod 'react-native-google-maps', path: rn_maps_path  # Uncomment this line if you want to support GoogleMaps on iOS
+    # pod 'GoogleMaps'  # Uncomment this line if you want to support GoogleMaps on iOS
+    # pod 'Google-Maps-iOS-Utils' # Uncomment this line if you want to support GoogleMaps on iOS
 
 end
+
+#react-native-maps
+

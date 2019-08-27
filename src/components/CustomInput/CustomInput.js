@@ -90,12 +90,6 @@ const customInput = (props) => {
 					<Input style={{ color: '#676766', fontSize: 17 }} value={props.value} onTouchStart={props.changed1} />
 				</Item>
 			);
-			// input = (
-			// 	<Item floatingLabel>
-			// 		<Label style={{ color: '#676766', fontSize: 17 }}>{props.holder}</Label>
-			// 		<Input style={{ color: '#676766', fontSize: 17 }} value={props.value} onTouchStart={props.changed1} />
-			// 	</Item>
-			// );
 			break;
 		case 'PickerSchedule':
 			input = (
