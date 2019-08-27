@@ -242,7 +242,7 @@ export default class Incidencias extends Component {
 		);
 		//Get the token and time of expiration
 		this.getCurrentDate();
-		Platform.OS === 'android' ? this.requestLocationPermission() :  null;
+		Platform.OS === 'android' ? this.requestLocationPermission() :  this.findLocationHandler();
 		let token = (email = expiresIn = null);
 		try {
 			console.log('Entro al try');
@@ -310,23 +310,23 @@ export default class Incidencias extends Component {
 	};
 
 	findLocationHandler = () => {
-		this.watchId = navigator.geolocation.watchPosition(
-			(position) => {
-				console.log('position: ', position);
-				this.setState({
-					latitude: position.coords.latitude,
-					longitude: position.coords.longitude
-				});
-			},
-			(error) => {
-				console.log('Error: ', error);
-			},
-			{
-				enableHighAccuracy: false,
-				timeout: 1,
-				distanceFilter: 1
-			}
-		);
+			this.watchId = navigator.geolocation.watchPosition(
+				(position) => {
+					console.log('position: ', position);
+					this.setState({
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude
+					});
+				},
+				(error) => {
+					console.log('Error: ', error);
+				},
+				{
+					enableHighAccuracy: false,
+					timeout: 1,
+					distanceFilter: 1
+				}
+			);
     };
     
 

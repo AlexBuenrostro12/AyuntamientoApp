@@ -22,7 +22,7 @@ target 'TecaliApp' do
     'RCTImage',
     #react-native-maps
     #'RCTActionSheet',
-    #'RCTGeolocation',
+    'RCTGeolocation',
     #'RCTSettings',
     #'RCTVibration',
     ]
