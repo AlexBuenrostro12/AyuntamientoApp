@@ -172,13 +172,13 @@ const customInput = (props) => {
 				<Picker
 					mode="dropdown"
 					iosHeader={props.value}
-					iosIcon={
-						<Image
-							style={{ width: 25, height: 25 }}
-							source={require('../../assets/images/ArrowDown/arrow-down.png')}
-						/>
-					}
-					style={{ width: undefined, color: '#676766', fontSize: 17 }}
+					// iosIcon={
+					// 	<Image
+					// 		style={{ width: 25, height: 25 }}
+					// 		source={require('../../assets/images/ArrowDown/arrow-down.png')}
+					// 	/>
+					// }
+					style={ Platform.OS === 'android' ? { width: undefined, color: '#676766', fontSize: 17 } : { width: undefined }}
 					selectedValue={props.value}
 					onValueChange={props.changed}
 				>

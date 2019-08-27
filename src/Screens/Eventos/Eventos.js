@@ -33,13 +33,17 @@ const theme = {
 	backgroundColor: '#00a19a'
 };
 const { height, width } = Dimensions.get('window');
-const StyledSafeArea = styled.SafeAreaView`flex: ${theme.commonFlex};`;
+const StyledSafeArea = styled.SafeAreaView`
+	flex: ${theme.commonFlex};
+	background-color: black;
+`;
 
 const StyledContainer = styled.View`
 	flex: ${theme.commonFlex};
 	flex-direction: column;
 	flex-wrap: wrap;
 	overflow: scroll;
+	background-color: white;
 `;
 
 const StyledHeader = styled.View``;

@@ -52,7 +52,7 @@ export default class Actividades extends Component {
 			direccion: {
 				itemType: 'PickerDirection',
 				holder: 'Dirección',
-				value: 'Direccion 1',
+				value: 'Reglamentos',
 				valid: true
 			},
 			fecha: {
@@ -763,13 +763,15 @@ export default class Actividades extends Component {
 
 const styles = StyleSheet.create({
 	safe: {
-		flex: 1
+		flex: 1,
+		backgroundColor: 'black'
 	},
 	container: {
 		flex: 1,
 		flexDirection: 'column',
 		flexWrap: 'wrap',
-		overflow: 'scroll'
+		overflow: 'scroll',
+		backgroundColor: 'white'
 	},
 	body: {
 		flex: 1,

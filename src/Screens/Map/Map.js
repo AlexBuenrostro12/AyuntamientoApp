@@ -10,7 +10,8 @@ import {
 	ScrollView,
 	Alert,
 	Modal,
-	TouchableOpacity
+	TouchableOpacity,
+	Platform
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -851,40 +852,42 @@ export default class Map extends Component {
 		);
 
 		return (
-			<SafeAreaView style={styles.container}>
-				<View>
-					<HeaderToolbar
-						open={this.props}
-						title="Mapa"
-						color="#f8ae40"
-						showContentRight={true}
-						titleOfAdd="Nuevo marcador"
-						get={this.getMarkers}
-						add={() => this.setState({ addMarker: true })}
-						goBack={() => this.setState({ addMarker: false })}
-						isAdd={this.state.addMarker}
-						save={this.uploadPhotoHandler}
-						isAdmin={this.state.isAdmin}
-					/>
-				</View>
-				<StatusBar color="#f39028" />
-				<View style={styles.mapContainer}>
-					{!this.state.addMarker ? (!this.state.modalVisible ? (!this.state.loading ? mapMarkers : spinner) : modal) : addMarker}
-				</View>
-				{!this.state.addMarker && (
+			<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
+				<View style={styles.container}>
 					<View>
-						<View style={styles.footerBar}>
-							<Text style={styles.interestPoints}>Puntos de interes</Text>
-							<TouchableOpacity onPress={() => this.setModalVisible(true)}>
-								<Image
-									source={require('../../assets/images/ArrowDown/arrow-down-white.png')}
-									style={{ height: width * 0.05, width: width * 0.05 }}
-									resizeMode="contain"
-								/>
-							</TouchableOpacity>
-						</View>
+						<HeaderToolbar
+							open={this.props}
+							title="Mapa"
+							color="#f8ae40"
+							showContentRight={true}
+							titleOfAdd="Nuevo marcador"
+							get={this.getMarkers}
+							add={() => this.setState({ addMarker: true })}
+							goBack={() => this.setState({ addMarker: false })}
+							isAdd={this.state.addMarker}
+							save={this.uploadPhotoHandler}
+							isAdmin={this.state.isAdmin}
+						/>
 					</View>
-				)}
+					<StatusBar color="#f39028" />
+					<View style={styles.mapContainer}>
+						{!this.state.addMarker ? (!this.state.modalVisible ? (!this.state.loading ? mapMarkers : spinner) : modal) : addMarker}
+					</View>
+					{!this.state.addMarker && (
+						<View>
+							<View style={styles.footerBar}>
+								<Text style={styles.interestPoints}>Puntos de interes</Text>
+								<TouchableOpacity onPress={() => this.setModalVisible(true)}>
+									<Image
+										source={require('../../assets/images/ArrowDown/arrow-down-white.png')}
+										style={{ height: width * 0.05, width: width * 0.05 }}
+										resizeMode="contain"
+									/>
+								</TouchableOpacity>
+							</View>
+						</View>
+					)}
+				</View>
 			</SafeAreaView>
 		);
 	}
@@ -900,7 +903,7 @@ const styles = StyleSheet.create({
 	},
 	map: {
 		width: '100%',
-		height: height * 0.78,
+		height: Platform.OS === 'android' ? height * 0.78 : height * 0.73,
 		left: 0,
 		top: 0,
 		right: 0,
@@ -914,7 +917,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexWrap: 'wrap',
 		flexDirection: 'column',
-		overflow: 'scroll'
+		overflow: 'scroll',
+		backgroundColor: 'white'
 	},
 	marker: {
 		height: width * 0.08,
