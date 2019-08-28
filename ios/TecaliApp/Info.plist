@@ -96,5 +96,9 @@
 	<string>TecaliApp quiere usar tu ubicaciòn</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>TecaliApp quiere usar tu ubicaciòn</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>TecaliApp quiere usar tu calendario</string>
+	<key>NSContactsUsageDescription</key>
+	<string>TecaliApp quiere usar tus contactos</string>
 </dict>
 </plist>

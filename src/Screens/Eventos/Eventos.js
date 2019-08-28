@@ -73,7 +73,7 @@ export default class Eventos extends Component {
 			tipo: {
 				itemType: 'PickTypeEvent',
 				holder: 'Seleccione tipo de evento',
-				value: '',
+				value: 'Festival de los sones',
 				valid: true
 			},
 			dia: {
@@ -981,7 +981,7 @@ export default class Eventos extends Component {
 									imageFormData: null
 								})}
 							save={this.uploadPhotoHandler}
-							isAdmin={this.state.isAdmin}
+							isAdmin={true ? true : this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
 							changed={(text) => this.searchTextHandler(text)}
