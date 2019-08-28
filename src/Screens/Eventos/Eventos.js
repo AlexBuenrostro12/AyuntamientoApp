@@ -981,7 +981,7 @@ export default class Eventos extends Component {
 									imageFormData: null
 								})}
 							save={this.uploadPhotoHandler}
-							isAdmin={true ? true : this.state.isAdmin}
+							isAdmin={this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
 							changed={(text) => this.searchTextHandler(text)}

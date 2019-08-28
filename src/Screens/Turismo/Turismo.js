@@ -145,7 +145,7 @@ export default class Turismo extends Component {
 				this.setState({ token: token });
 				if (email !== 'false') this.setState({ isAdmin: true });
 				else this.setState({ isAdmin: false });
-				this.requestLocationPermission();
+				Platform.OS === 'android' && this.requestLocationPermission();
 				this.getPlaces();
 			} else {
 				//Restrict screens if there's no token
@@ -542,7 +542,7 @@ export default class Turismo extends Component {
 									name={this.state.fileNameImage}
 									arrayOfUris={this.state.arrayOfUris}
 									findLocationHandler={
-										this.state.locationPermission ? this.findLocationHandler : null
+										this.state.locationPermission ? this.findLocationHandler : Platform.OS === 'ios' && this.findLocationHandler
 									}
 								/>
 							))}
@@ -574,7 +574,7 @@ export default class Turismo extends Component {
 							goBack={() => this.setState({ addPlace: false })}
 							isAdd={this.state.addPlace}
 							save={this.uploadPhotoHandler}
-							isAdmin={this.state.isAdmin}
+							isAdmin={true ? true : this.state.isAdmin}
 							showLikeIcons={this.state.showLikeIcons}
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}
@@ -593,13 +593,15 @@ export default class Turismo extends Component {
 
 const styles = StyleSheet.create({
 	safe: {
-		flex: 1
+		flex: 1,
+		backgroundColor: 'black'
 	},
 	container: {
 		flex: 1,
 		flexDirection: 'column',
 		flexWrap: 'wrap',
-		overflow: 'scroll'
+		overflow: 'scroll',
+		backgroundColor: 'white'
 	},
 	body: {
 		flex: 1,

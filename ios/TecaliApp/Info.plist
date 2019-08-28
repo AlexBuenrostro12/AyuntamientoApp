@@ -41,6 +41,22 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>TecaliApp quiere usar tu calendario</string>
+	<key>NSCameraUsageDescription</key>
+	<string>TecaliApp quiere acceder a tu camara</string>
+	<key>NSContactsUsageDescription</key>
+	<string>TecaliApp quiere usar tus contactos</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>TecaliApp quiere usar tu ubicaciòn</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TecaliApp quiere usar tu ubicaciòn</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>TecaliApp quiere acceder al uso del microfono</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>TecaliApp quiere acceder a tu galeria</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -79,26 +95,8 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
-	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to use your camera</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to use your microphone (for videos)</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>TecaliApp quiere usar tu ubicaciòn</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>TecaliApp quiere usar tu ubicaciòn</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>TecaliApp quiere usar tu calendario</string>
-	<key>NSContactsUsageDescription</key>
-	<string>TecaliApp quiere usar tus contactos</string>
 </dict>
 </plist>

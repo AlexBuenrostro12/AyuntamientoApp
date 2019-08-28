@@ -234,13 +234,6 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNFIRMessaging;
 		};
-		15963EFD2315A687007580CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 15858EDD230C5DDA00E5A6B0 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0E7C341FA544E64E23E052A68E4A0A5E;
-			remoteInfo = React;
-		};
 		15A598FF230C67C700C44D49 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 15A598C7230C67C700C44D49 /* RNCAsyncStorage.xcodeproj */;
@@ -812,7 +805,6 @@
 				15858EFE230C5DDA00E5A6B0 /* libnanopb.a */,
 				15858F00230C5DDA00E5A6B0 /* libPods-TecaliApp.a */,
 				15858F02230C5DDA00E5A6B0 /* libProtobuf.a */,
-				15963EFE2315A687007580CF /* libReact.a */,
 				15A59935230C71A100C44D49 /* libreact-native-async-storage.a */,
 				15CFB1C8230DCBBE0042B2B8 /* libRNGestureHandler.a */,
 				15CFB108230DC0FC0042B2B8 /* libRNReanimated.a */,
@@ -1433,13 +1425,6 @@
 			fileType = archive.ar;
 			path = libRNFIRMessaging.a;
 			remoteRef = 15858F07230C5E2A00E5A6B0 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		15963EFE2315A687007580CF /* libReact.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libReact.a;
-			remoteRef = 15963EFD2315A687007580CF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		15A59900230C67C700C44D49 /* libRNCAsyncStorage.a */ = {
