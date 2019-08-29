@@ -75,7 +75,8 @@ const { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: 'black'
     },
     containerImage: {
 		flex: 1,

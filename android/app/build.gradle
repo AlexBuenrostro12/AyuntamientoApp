@@ -160,6 +160,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-reanimated')
+    implementation project(':react-native-fcm')
     implementation project(':react-native-fs')
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-add-calendar-event')
@@ -167,7 +169,6 @@ dependencies {
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-document-picker')
     implementation project(':react-native-maps')
-    implementation project(':react-native-fcm')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-pdf')
     implementation project(':react-native-image-picker')

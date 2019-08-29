@@ -289,48 +289,73 @@ export default class DescribreData extends Component {
 	};
 
 	downloadImageHandler = async (url) => {
-		try {
-			const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
-				title: 'Descargar',
-				message: 'Es necesario este permiso para descargar imagenes',
-				buttonNeutral: 'Preguntar despues',
-				buttonNegative: 'Cancelar',
-				buttonPositive: 'OK'
-			});
-			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-				console.log('You can download');
-
-				const { config, fs } = RNFetchBlob;
-				let DownloadDir = fs.dirs.DownloadDir;
-				const stringName = this.makeNameHandler();
-				const nameImage = String(this.state.nameOfImage) + String(stringName) + '.png';
-				console.log('nameImage: ', nameImage);
-				let options = {
-					fileCache: true,
-					addAndroidDownloads: {
-						useDownloadManager: true,
-						notification: true,
-						path: DownloadDir + '/' + String(nameImage),
-						mime: 'image/png',
-						description: 'downloading_file'
-					}
-				};
-				config(options).fetch('GET', url).then((res) => {
-					if (res.data) {
-						console.log('res: ', res);
-						Alert.alert('TecaliApp', '¡Imagen almacenada en el dispositivo!');
-					} else {
-						console.log('Failed');
-					}
-				})
-				 .catch(err => {
-					 Alert.alert('Error: ', err.toString());
-				 });
-			} else {
-				console.log('You cant download');
+		if (Platform.OS === 'android') {
+			try {
+				const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
+					title: 'Descargar',
+					message: 'Es necesario este permiso para descargar imagenes',
+					buttonNeutral: 'Preguntar despues',
+					buttonNegative: 'Cancelar',
+					buttonPositive: 'OK'
+				});
+				if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+					console.log('You can download');
+	
+					const { config, fs } = RNFetchBlob;
+					let DownloadDir = fs.dirs.DownloadDir;
+					const stringName = this.makeNameHandler();
+					const nameImage = String(this.state.nameOfImage) + String(stringName) + '.png';
+					console.log('nameImage: ', nameImage);
+					let options = {
+						fileCache: true,
+						addAndroidDownloads: {
+							useDownloadManager: true,
+							notification: true,
+							path: DownloadDir + '/' + String(nameImage),
+							mime: 'image/png',
+							description: 'downloading_file'
+						}
+					};
+					
+					config(options).fetch('GET', url).then((res) => {
+						if (res.data) {
+							console.log('res: ', res);
+							Alert.alert('TecaliApp', '¡Imagen almacenada en el dispositivo!');
+						} else {
+							console.log('Failed');
+						}
+					})
+					 .catch(err => {
+						 Alert.alert('Error: ', err.toString());
+					 });
+				} else {
+					console.log('You cant download');
+				}
+			} catch (err) {
+				console.warn(err);
 			}
-		} catch (err) {
-			console.warn(err);
+		} else {
+			const { config, fs } = RNFetchBlob;
+			let DownloadDir = fs.dirs.DownloadDir;
+			const stringName = this.makeNameHandler();
+			const nameImage = String(this.state.nameOfImage) + String(stringName) + '.png';
+			console.log('nameImage: ', nameImage);
+			let options = {
+				fileCache: false,
+				path: DownloadDir + '/' + String(nameImage)
+			};
+					
+			config(options).fetch('GET', url).then((res) => {
+				if (res.data) {
+					console.log('res: ', res);
+					Alert.alert('TecaliApp', '¡Imagen almacenada en el dispositivo!');
+				} else {
+					console.log('Failed');
+				}
+			})
+			.catch(err => {
+				Alert.alert('Error: ', err.toString());
+			});
 		}
 	};
 
@@ -896,7 +921,7 @@ export default class DescribreData extends Component {
 			);
 		}
 		return (
-			<SafeAreaView style={{ flex: 1 }}>
+			<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
 				<View style={[ styles.container, { backgroundColor: !this.state.zoomImage ? 'white' : 'black' } ]}>
 					<View>
 						<HeaderToolbar

@@ -52,7 +52,7 @@ export default class Actividades extends Component {
 			direccion: {
 				itemType: 'PickerDirection',
 				holder: 'Dirección',
-				value: 'Direccion 1',
+				value: 'Reglamentos',
 				valid: true
 			},
 			fecha: {
@@ -392,10 +392,10 @@ export default class Actividades extends Component {
 				};
 			} else {
 				body = {
-					to: this.state.notificationToken,
+					registration_ids: this.state.fcmTokens,
 					notification: {
-						title: 'Simple FCM Client',
-						body: 'Click me to go to detail',
+						title: 'Nueva actividad',
+						body: '!' + this.state.form['actividad'].value + '¡',
 						sound: 'default'
 					},
 					data: {},
@@ -763,13 +763,15 @@ export default class Actividades extends Component {
 
 const styles = StyleSheet.create({
 	safe: {
-		flex: 1
+		flex: 1,
+		backgroundColor: 'black'
 	},
 	container: {
 		flex: 1,
 		flexDirection: 'column',
 		flexWrap: 'wrap',
-		overflow: 'scroll'
+		overflow: 'scroll',
+		backgroundColor: 'white'
 	},
 	body: {
 		flex: 1,
