@@ -574,7 +574,7 @@ export default class Turismo extends Component {
 							goBack={() => this.setState({ addPlace: false })}
 							isAdd={this.state.addPlace}
 							save={this.uploadPhotoHandler}
-							isAdmin={true ? true : this.state.isAdmin}
+							isAdmin={this.state.isAdmin}
 							showLikeIcons={this.state.showLikeIcons}
 							changed={(text) => this.searchTextHandler(text)}
 							value={this.state.texToSearch}

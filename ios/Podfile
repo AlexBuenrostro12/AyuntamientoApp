@@ -37,7 +37,7 @@ target 'TecaliApp' do
     pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
     pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
     
-    #pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
+    pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
     
     #react-native-maps
     #pod 'react-native-maps', path: '../node_modules/react-native-maps'
