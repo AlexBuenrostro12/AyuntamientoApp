@@ -392,10 +392,10 @@ export default class Actividades extends Component {
 				};
 			} else {
 				body = {
-					to: this.state.notificationToken,
+					registration_ids: this.state.fcmTokens,
 					notification: {
-						title: 'Simple FCM Client',
-						body: 'Click me to go to detail',
+						title: 'Nueva actividad',
+						body: '!' + this.state.form['actividad'].value + '¡',
 						sound: 'default'
 					},
 					data: {},

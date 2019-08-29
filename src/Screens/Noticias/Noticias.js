@@ -238,10 +238,10 @@ export default class Noticias extends Component {
 				};
 			} else {
 				body = {
-					to: this.state.notificationToken,
+					registration_ids: this.state.fcmTokens,
 					notification: {
-						title: 'Simple FCM Client',
-						body: 'Click me to go to detail',
+						title: 'Nueva noticia',
+						body: '!' + this.state.form['noticia'].value + '¡',
 						sound: 'default'
 					},
 					data: {},
