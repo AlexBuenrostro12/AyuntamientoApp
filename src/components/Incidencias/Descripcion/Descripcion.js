@@ -37,7 +37,7 @@ export default class Descripcion extends Component {
                         <Picker
                             mode="dropdown"
                             iosHeader={this.props.value}
-                            iosIcon={<Image style={{ width: 25, height: 25 }} source={require('../../../assets/images/ArrowDown/arrow-down.png')} />}
+                            //iosIcon={null}//<Image style={{ width: 25, height: 25 }} source={require('../../../assets/images/ArrowDown/arrow-down.png')} />}
                             style={{ width: undefined }}
                             selectedValue={this.props.value}
                             onValueChange={this.props.changed}

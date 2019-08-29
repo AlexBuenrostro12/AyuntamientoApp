@@ -9,7 +9,8 @@ import {
 	Dimensions,
 	PermissionsAndroid,
 	Image,
-	BackHandler
+	BackHandler, 
+	Platform
 } from 'react-native';
 import { Card, CardItem } from 'native-base';
 import ImagePicker from 'react-native-image-picker';
@@ -46,7 +47,7 @@ export default class Incidencias extends Component {
 			},
 			direccion: {
 				itemType: 'Picker',
-				value: 'Direccion 1',
+				value: 'Reglamentos',
 				valid: true
 			},
 			descripcion: {
@@ -241,7 +242,7 @@ export default class Incidencias extends Component {
 		);
 		//Get the token and time of expiration
 		this.getCurrentDate();
-		this.requestLocationPermission();
+		Platform.OS === 'android' ? this.requestLocationPermission() :  this.findLocationHandler();
 		let token = (email = expiresIn = null);
 		try {
 			console.log('Entro al try');
@@ -309,23 +310,23 @@ export default class Incidencias extends Component {
 	};
 
 	findLocationHandler = () => {
-		this.watchId = navigator.geolocation.watchPosition(
-			(position) => {
-				console.log('position: ', position);
-				this.setState({
-					latitude: position.coords.latitude,
-					longitude: position.coords.longitude
-				});
-			},
-			(error) => {
-				console.log('Error: ', error);
-			},
-			{
-				enableHighAccuracy: false,
-				timeout: 1,
-				distanceFilter: 1
-			}
-		);
+			this.watchId = navigator.geolocation.watchPosition(
+				(position) => {
+					console.log('position: ', position);
+					this.setState({
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude
+					});
+				},
+				(error) => {
+					console.log('Error: ', error);
+				},
+				{
+					enableHighAccuracy: false,
+					timeout: 1,
+					distanceFilter: 1
+				}
+			);
     };
     
 
@@ -951,7 +952,7 @@ export default class Incidencias extends Component {
 		);
 
 		return (
-			<SafeAreaView style={{ flex: 1 }}>
+			<SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
 				<View style={styles.container}>
 					<View>
 						<HeaderToolbar
@@ -989,7 +990,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		flexWrap: 'wrap',
-		overflow: 'scroll'
+		overflow: 'scroll',
+		backgroundColor: 'white',
 	},
 	view: {
 		flex: 1

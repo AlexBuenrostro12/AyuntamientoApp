@@ -72,13 +72,15 @@ const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	sav: {
-		flex: 1
+		flex: 1,
+		backgroundColor: 'black'
 	},
 	container: {
 		flex: 1,
 		flexDirection: 'column',
 		flexWrap: 'wrap',
-		overflow: 'scroll'
+		overflow: 'scroll',
+		backgroundColor: 'white'
 	},
 	body: {
 		flex: 1,

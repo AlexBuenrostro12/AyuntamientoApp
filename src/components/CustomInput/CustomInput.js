@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Text, Dimensions, Platform, DatePickerIOS } from 'react-native';
 import { Item, Input, Label, Textarea, DatePicker, Picker } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import { normalize } from '../AuxiliarFunctions/FontResponsive';
@@ -54,7 +54,8 @@ const customInput = (props) => {
 			break;
 		case 'Date':
 			input = (
-				<View style={{ flex: 1, justifyContent: 'flex-start', alignSelf: 'flex-start' }}>
+				// marginRight don't work 
+				<View style={{  marginRight: Platform.OS === 'ios' ? 18 : 22 }}>
 					<DatePicker
 						defaultDate={new Date()}
 						minimumDate={new Date(2018, 1, 1)}
@@ -74,7 +75,16 @@ const customInput = (props) => {
 			);
 			break;
 		case 'Hour':
-			input = (
+			Platform.OS === 'ios' ? input = (
+				<View style={{  marginRight: Platform.OS === 'ios' ? 18 : 22 }}>
+					<Label style={{ color: '#676766', fontSize: 17 }}>{props.holder}</Label>
+					<DatePickerIOS
+						initialDate={new Date()}
+						mode='time'
+						onDateChange={props.changed}
+					/>
+				</View>
+			) : input = (
 				<Item floatingLabel>
 					<Label style={{ color: '#676766', fontSize: 17 }}>{props.holder}</Label>
 					<Input style={{ color: '#676766', fontSize: 17 }} value={props.value} onTouchStart={props.changed1} />
@@ -128,13 +138,8 @@ const customInput = (props) => {
 				<Picker
 					mode="dropdown"
 					iosHeader={props.value}
-					iosIcon={
-						<Image
-							style={{ width: 25, height: 25 }}
-							source={require('../../assets/images/ArrowDown/arrow-down.png')}
-						/>
-					}
-					style={{ width: undefined, color: '#676766', fontSize: 17 }}
+					// iosIcon={null}
+					style={Platform.OS === 'ios' ? { alignSelf: 'center', marginRight: 15 } : { width: undefined, color: '#676766', fontSize: 17, marginRight: 25 }}
 					selectedValue={props.value}
 					onValueChange={props.changed}
 				>
@@ -167,13 +172,13 @@ const customInput = (props) => {
 				<Picker
 					mode="dropdown"
 					iosHeader={props.value}
-					iosIcon={
-						<Image
-							style={{ width: 25, height: 25 }}
-							source={require('../../assets/images/ArrowDown/arrow-down.png')}
-						/>
-					}
-					style={{ width: undefined, color: '#676766', fontSize: 17 }}
+					// iosIcon={
+					// 	<Image
+					// 		style={{ width: 25, height: 25 }}
+					// 		source={require('../../assets/images/ArrowDown/arrow-down.png')}
+					// 	/>
+					// }
+					style={ Platform.OS === 'android' ? { width: undefined, color: '#676766', fontSize: 17 } : { width: undefined }}
 					selectedValue={props.value}
 					onValueChange={props.changed}
 				>
@@ -287,13 +292,7 @@ const customInput = (props) => {
 					<Picker
 						mode="dropdown"
 						iosHeader={props.value}
-						iosIcon={
-							<Image
-								style={{ width: 25, height: 25 }}
-								source={require('../../assets/images/ArrowDown/arrow-down.png')}
-							/>
-						}
-						style={{ width: undefined, color: '#676766', fontSize: 17 }}
+						style={Platform.OS === 'android' ? { width: undefined, color: '#676766', fontSize: 17 } : { width: undefined }}
 						selectedValue={props.value}
 						onValueChange={props.changed}
 					>
@@ -328,13 +327,7 @@ const customInput = (props) => {
 					<Picker
 						mode="dropdown"
 						iosHeader={props.value}
-						iosIcon={
-							<Image
-								style={{ width: 25, height: 25 }}
-								source={require('../../assets/images/ArrowDown/arrow-down.png')}
-							/>
-						}
-						style={{ width: undefined, color: '#676766', fontSize: 17 }}
+						style={ Platform.OS === 'android' ? { width: undefined, color: '#676766', fontSize: 17 } : { width: undefined } }
 						selectedValue={props.value}
 						onValueChange={props.changed}
 					>
@@ -377,13 +370,12 @@ const customInput = (props) => {
 			input = null;
 			break;
 	}
-
 	return <View style={styles.inputElement}>{input}</View>;
 };
 
 const styles = StyleSheet.create({
 	inputElement: {
-		padding: 5
+		padding: 5,
 	},
 	photoText: {
 		fontWeight: 'bold',
