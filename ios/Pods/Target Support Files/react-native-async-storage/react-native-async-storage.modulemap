@@ -1,0 +1,6 @@
+framework module react_native_async_storage {
+  umbrella header "react-native-async-storage-umbrella.h"
+
+  export *
+  module * { export * }
+}

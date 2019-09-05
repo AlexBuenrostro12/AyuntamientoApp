@@ -13,7 +13,7 @@
 		<string>boton app.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.gobiernotecalitlan.TecaliApp</string>
+	<string>com.gobtecalitlan.TecaliApp</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -78,6 +78,12 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>AvenirNextLTPro-Regular.otf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>location</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
