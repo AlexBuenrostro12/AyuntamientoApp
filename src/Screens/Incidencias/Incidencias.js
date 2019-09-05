@@ -242,7 +242,7 @@ export default class Incidencias extends Component {
 		);
 		//Get the token and time of expiration
 		this.getCurrentDate();
-		Platform.OS === 'android' ? this.requestLocationPermission() :  this.findLocationHandler();
+		Platform.OS === 'android' ? this.requestLocationPermission() :  this.iOSFindLocationHandler();
 		let token = (email = expiresIn = null);
 		try {
 			console.log('Entro al try');
@@ -252,10 +252,10 @@ export default class Incidencias extends Component {
 			//Use the expires in
 			const parseExpiresIn = new Date(parseInt(expiresIn));
 			const now = new Date();
-			console.log('Incidencias.js: ', token);
-			console.log('Incidencias.js: ', parseExpiresIn, now);
-			console.log('Incidencias.js: ', this.state.tokenIsValid);
-			console.log('Incidencias.js: ', email);
+			//console.log('Incidencias.js: ', token);
+			//console.log('Incidencias.js: ', parseExpiresIn, now);
+			//console.log('Incidencias.js: ', this.state.tokenIsValid);
+			//console.log('Incidencias.js: ', email);
 			if (token && parseExpiresIn > now) {
 				this.setState({ token: token });
 
@@ -309,6 +309,24 @@ export default class Incidencias extends Component {
 		this._willBlurSubscription && this._willBlurSubscription.remove();
 	};
 
+	iOSFindLocationHandler = () => {
+		console.log('iosLocation');
+		let geoOptions = {
+			enableHighAccuracy: true,
+			timeOut: 20000,
+			maximumAge: 60 * 60 * 24,
+		};
+		this.watchId = navigator.geolocation.getCurrentPosition(this.geoSuccess, this.geoError, geoOptions);
+	};
+
+	geoSuccess = (position) => {
+		console.log('position:ios: ', position);
+	};
+
+	geoError = (error) => {
+		console.log('err:ios: ', error);
+	};
+	
 	findLocationHandler = () => {
 			this.watchId = navigator.geolocation.watchPosition(
 				(position) => {

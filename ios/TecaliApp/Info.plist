@@ -42,21 +42,21 @@
 		</dict>
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
-	<string>TecaliApp quiere usar tu calendario</string>
+	<string>TecaliApp quiere acceder a tu calendario</string>
 	<key>NSCameraUsageDescription</key>
 	<string>TecaliApp quiere acceder a tu camara</string>
 	<key>NSContactsUsageDescription</key>
-	<string>TecaliApp quiere usar tus contactos</string>
+	<string>TecaliApp quiere acceder a tus contactos</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>TecaliApp quiere usar tu ubicaciòn</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>TecaliApp quiere usar tu ubicaciòn</string>
+	<string>TecaliApp quiere acceder a tu ubicaciòn</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>TecaliApp quiere acceder al uso del microfono</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>TecaliApp quiere acceder a tu galeria</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TecaliApp quiere acceder tu ubicaciòn</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
