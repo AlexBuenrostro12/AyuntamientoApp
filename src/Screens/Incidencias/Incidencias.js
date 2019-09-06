@@ -311,16 +311,17 @@ export default class Incidencias extends Component {
 
 	iOSFindLocationHandler = () => {
 		console.log('iosLocation');
-		let geoOptions = {
-			enableHighAccuracy: true,
-			timeOut: 20000,
-			maximumAge: 60 * 60 * 24,
+		const geoOptions = {
+			enableHighAccuracy: true, 
+			timeout: 20000, 
+			maximumAge: 1000
 		};
 		this.watchId = navigator.geolocation.getCurrentPosition(this.geoSuccess, this.geoError, geoOptions);
 	};
 
 	geoSuccess = (position) => {
-		console.log('position:ios: ', position);
+		const location = JSON.stringify(position);
+		console.log('position:ios: ', location);
 	};
 
 	geoError = (error) => {
