@@ -82,6 +82,8 @@ const customInput = (props) => {
 						initialDate={new Date()}
 						mode='time'
 						onDateChange={props.changed}
+						minuteInterval={1}
+						date={props.value}
 					/>
 				</View>
 			) : input = (

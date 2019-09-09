@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions, Platform, TouchableOpacity } from 'react-native';
 import { Picker, Item, Input } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 
@@ -18,12 +18,6 @@ export default class Ubicacion extends Component {
 						<Picker
 							mode="dropdown"
 							iosHeader={this.props.value}
-							// iosIcon={
-							// 	<Image
-							// 		style={{ width: 25, height: 25 }}
-							// 		source={require('../../../assets/images/ArrowDown/arrow-down.png')}
-							// 	/>
-							// }
 							style={{ width: undefined }}
 							selectedValue={this.props.value}
 							onValueChange={this.props.changed}
@@ -61,27 +55,45 @@ export default class Ubicacion extends Component {
 				);
 				break;
 			case 'SelectDirection':
-				ubicacion = (
-					<View style={{ flex: 1, marginTop: 15, flexDirection: 'column', justifyContent: 'center' }}>
-						<Text style={{ fontWeight: 'bold' }}>Seleccione tipo de ubicación:</Text>
-						<Picker
-							mode="dropdown"
-							iosHeader={this.props.value}
-							// iosIcon={
-							// 	<Image
-							// 		style={{ width: 25, height: 25 }}
-							// 		source={require('../../../assets/images/ArrowDown/arrow-down.png')}
-							// 	/>
-							// }
-							style={{ width: undefined }}
-							selectedValue={this.props.value}
-							onValueChange={this.props.changed}
-						>
-							<Picker.Item label="Dirección específica" value="Dirección específica" />
-							<Picker.Item label="Su ubicación actual" value="Su ubicación actual" />
-						</Picker>
-					</View>
-				);
+				const innerWhite = { backgroundColor: 'white' };
+				const innerBlue = { backgroundColor: 'blue' };
+				Platform.OS === 'android' ? 
+					ubicacion = (
+						<View style={{ flex: 1, marginTop: 15, flexDirection: 'column', justifyContent: 'center' }}>
+							<Text style={{ fontWeight: 'bold' }}>Seleccione tipo de ubicación:</Text>
+							<Picker
+								mode="dropdown"
+								iosHeader={this.props.value}
+								style={{ width: undefined }}
+								selectedValue={this.props.value}
+								onValueChange={this.props.changed}
+							>
+								<Picker.Item label="Dirección específica" value="Dirección específica" />
+								<Picker.Item label="Su ubicación actual" value="Su ubicación actual" />
+							</Picker>
+						</View>
+					) : 
+					ubicacion = (
+						<View style={{ flex: 1, marginTop: 15, flexDirection: 'column', justifyContent: 'center' }}>
+							<Text style={{ fontWeight: 'bold' }}>Seleccione tipo de ubicación:</Text>
+							<View style={styles.checkBoxContainer}>
+								<View style={styles.checkBoxsubContainer}>
+									<Text>Dirección específica</Text>
+									<TouchableOpacity 
+										style={[styles.checkBox, this.props.value === 'Dirección específica' ? innerBlue : innerWhite]}
+										onPress={() => this.props.changed('Dirección específica')}
+									/>
+								</View>
+								<View style={styles.checkBoxsubContainer}>
+									<Text>Su ubicación actual</Text>
+									<TouchableOpacity 
+										style={[styles.checkBox, this.props.value === 'Su ubicación actual' ? innerBlue : innerWhite]}
+										onPress={() => this.props.changed('Su ubicación actual')}
+									/>
+								</View>
+							</View>
+						</View>
+					);
 				break;
 
 			default:
@@ -101,5 +113,24 @@ const styles = StyleSheet.create({
 		top: 0,
 		right: 0,
 		bottom: 0
+	},
+	checkBoxContainer: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	checkBoxsubContainer: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	checkBox: {
+		height: width * .07,
+		width: width * .07,
+		borderWidth: 2,
+		borderColor: 'blue',
+		borderRadius: 15
 	}
 });

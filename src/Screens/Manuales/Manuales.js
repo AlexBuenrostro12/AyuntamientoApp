@@ -23,6 +23,7 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import Manual from '../../components/Manual/Manual';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 import axios from '../../../axios-ayuntamiento';
+import KBAvoiding from '../../components/KBAvoiding/KBAvoiding';
 
 const { height, width } = Dimensions.get('window');
 
@@ -413,7 +414,9 @@ export default class Manuales extends Component {
 						/>
 					</View>
 					<StatusBar color="#00847b" />
-					<View style={{ flex: 1, margin: 10 }}>{!this.state.show ? manuales : addManual}</View>
+					<KBAvoiding>
+						<View style={{ flex: 1, margin: 10 }}>{!this.state.show ? manuales : addManual}</View>
+					</KBAvoiding>
 				</View>
 			</SafeAreaView>
 		);

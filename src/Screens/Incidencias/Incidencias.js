@@ -29,6 +29,7 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import Incidencia from '../../components/Incidencias/Incidencia';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
+import KBAvoiding from '../../components/KBAvoiding/KBAvoiding';
 
 export default class Incidencias extends Component {
 	_didFocusSubscription;
@@ -194,7 +195,6 @@ export default class Incidencias extends Component {
 		showMap: false,
 		latitude: null,
         longitude: null,
-		locationPermission: false,
 		search: false,
 	};
 
@@ -242,7 +242,7 @@ export default class Incidencias extends Component {
 		);
 		//Get the token and time of expiration
 		this.getCurrentDate();
-		Platform.OS === 'android' ? this.requestLocationPermission() :  this.iOSFindLocationHandler();
+		Platform.OS === 'android' ? this.requestLocationPermission() :  this.findLocationHandler();
 		let token = (email = expiresIn = null);
 		try {
 			console.log('Entro al try');
@@ -309,7 +309,7 @@ export default class Incidencias extends Component {
 		this._willBlurSubscription && this._willBlurSubscription.remove();
 	};
 
-	iOSFindLocationHandler = () => {
+	iOSFindLocationHandler = async () => {
 		console.log('iosLocation');
 		const geoOptions = {
 			enableHighAccuracy: true, 
@@ -328,7 +328,31 @@ export default class Incidencias extends Component {
 		console.log('err:ios: ', error);
 	};
 	
-	findLocationHandler = () => {
+	findLocationHandler = async () => {
+		//Check ios permission in info.plist it's nor working
+		if (Platform.OS === 'ios') { 
+			navigator.geolocation.setRNConfiguration({ skipPermissionRequests: true });
+			const res = navigator.geolocation.requestAuthorization();
+			if (res) {
+				this.watchId = navigator.geolocation.watchPosition(
+					(position) => {
+						console.log('position: ', position);
+						this.setState({
+							latitude: position.coords.latitude,
+							longitude: position.coords.longitude
+						});
+					},
+					(error) => {
+						console.log('Error: ', error);
+					},
+					{
+						enableHighAccuracy: false,
+						timeout: 1,
+						distanceFilter: 1
+					}
+				);	
+			}
+		} else {
 			this.watchId = navigator.geolocation.watchPosition(
 				(position) => {
 					console.log('position: ', position);
@@ -345,7 +369,9 @@ export default class Incidencias extends Component {
 					timeout: 1,
 					distanceFilter: 1
 				}
-			);
+			);	
+
+		}
     };
     
 
@@ -360,7 +386,6 @@ export default class Incidencias extends Component {
             )
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
               console.log("You can use the location")
-              this.setState({ locationPermission:  true });
               this.findLocationHandler();
             } else {
               console.log("Location permission denied")
@@ -803,11 +828,11 @@ export default class Incidencias extends Component {
 							key="selectTypeUbication"
 							itemType="SelectDirection"
 							value={this.state.typeOfLocation}
-							changed={(text) => {
+							changed={Platform.OS === 'android' ? (text) => {
 								this.state.latitude
 									? this.typeOfLocation(text)
 									: alert('Active su ubicación GPS y reinicie la app para usar su ubicación actual');
-							}}
+							} : this.typeOfLocation}
 						/>
 
 						{this.state.showMap ? (
@@ -995,7 +1020,9 @@ export default class Incidencias extends Component {
 						/>
 					</View>
 					<StatusBar color="#00a3e4" />
-					<View style={{ flex: 1, margin: 10 }}>{!this.state.addIncident ? incidencias : addIncident}</View>
+					<KBAvoiding>
+						<View style={{ flex: 1, margin: 10 }}>{!this.state.addIncident ? incidencias : addIncident}</View>
+					</KBAvoiding>
 				</View>
 			</SafeAreaView>
 		);
