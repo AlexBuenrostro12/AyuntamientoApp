@@ -740,7 +740,7 @@ export default class Actividades extends Component {
 							goBack={() => this.setState({ addAct: false })}
 							isAdd={this.state.addAct}
 							save={this.uploadPhotoHandler}
-							isAdmin={true ? true : this.state.isAdmin}
+							isAdmin={this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
 							changeDisplay={this.changeDisplay}

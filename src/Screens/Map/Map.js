@@ -24,6 +24,7 @@ import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
+import KBAvoiding from '../../components/KBAvoiding/KBAvoiding';
 
 export default class Map extends Component {
 	_didFocusSubscription;
@@ -870,9 +871,11 @@ export default class Map extends Component {
 						/>
 					</View>
 					<StatusBar color="#f39028" />
-					<View style={styles.mapContainer}>
-						{!this.state.addMarker ? (!this.state.modalVisible ? (!this.state.loading ? mapMarkers : spinner) : modal) : addMarker}
-					</View>
+					<KBAvoiding>
+						<View style={styles.mapContainer}>
+							{!this.state.addMarker ? (!this.state.modalVisible ? (!this.state.loading ? mapMarkers : spinner) : modal) : addMarker}
+						</View>
+					</KBAvoiding>
 					{!this.state.addMarker && (
 						<View>
 							<View style={styles.footerBar}>
