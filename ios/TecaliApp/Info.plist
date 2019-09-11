@@ -47,12 +47,14 @@
 	<string>TecaliApp quiere acceder a tu camara</string>
 	<key>NSContactsUsageDescription</key>
 	<string>TecaliApp quiere acceder a tus contactos</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>TecaliApp quiere acceder a tu ubicaciòn</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>TecaliApp quiere acceder tu ubicaciòn</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>TecaliApp quiere acceder al uso del microfono</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>TecaliApp quiere acceder a tu ubicación</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TecaliApp quiere acceder a tu ubicación</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>TecaliApp quiere acceder a tu ubicación</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
 	<key>NSPhotoLibraryUsageDescription</key>

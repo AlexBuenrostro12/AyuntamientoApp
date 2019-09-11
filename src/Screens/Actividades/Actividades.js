@@ -27,6 +27,7 @@ import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
 import Actividad from '../../components/Actividad/Actividad';
 import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
+import KBAvoiding from '../../components/KBAvoiding/KBAvoiding';
 
 const { height, width } = Dimensions.get('window');
 
@@ -739,7 +740,7 @@ export default class Actividades extends Component {
 							goBack={() => this.setState({ addAct: false })}
 							isAdd={this.state.addAct}
 							save={this.uploadPhotoHandler}
-							isAdmin={this.state.isAdmin}
+							isAdmin={true ? true : this.state.isAdmin}
 							notifications={this.actOrDescNotification}
 							actOrDesc={this.state.notifications}
 							changeDisplay={this.changeDisplay}
@@ -754,7 +755,9 @@ export default class Actividades extends Component {
 						/>
 					</View>
 					<StatusBar color="#00847b" />
-					<View style={{ flex: 1, margin: 10 }}>{!this.state.addAct ? activiades : addAct}</View>
+					<KBAvoiding>
+						<View style={{ flex: 1, margin: 10 }}>{!this.state.addAct ? activiades : addAct}</View>
+					</KBAvoiding>
 				</View>
 			</SafeAreaView>
 		);

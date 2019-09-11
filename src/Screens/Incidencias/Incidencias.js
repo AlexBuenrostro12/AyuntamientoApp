@@ -17,6 +17,7 @@ import ImagePicker from 'react-native-image-picker';
 import axiosCloudinary from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import Communications from 'react-native-communications';
+import Permissions from 'react-native-permissions';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
 import StatusBar from '../../UI/StatusBar/StatusBar';
 import Ubicacion from '../../components/Incidencias/Ubicacion/Ubicacion';
@@ -196,6 +197,7 @@ export default class Incidencias extends Component {
 		latitude: null,
         longitude: null,
 		search: false,
+		requestiOSLocation: null,
 	};
 
 	constructor(props) {
@@ -242,7 +244,7 @@ export default class Incidencias extends Component {
 		);
 		//Get the token and time of expiration
 		this.getCurrentDate();
-		Platform.OS === 'android' ? this.requestLocationPermission() :  this.findLocationHandler();
+		Platform.OS === 'android' ? this.requestLocationPermission() :  this.requestLocationPermissioniOS();
 		let token = (email = expiresIn = null);
 		try {
 			console.log('Entro al try');
@@ -308,70 +310,27 @@ export default class Incidencias extends Component {
 		this._didFocusSubscription && this._didFocusSubscription.remove();
 		this._willBlurSubscription && this._willBlurSubscription.remove();
 	};
-
-	iOSFindLocationHandler = async () => {
-		console.log('iosLocation');
-		const geoOptions = {
-			enableHighAccuracy: true, 
-			timeout: 20000, 
-			maximumAge: 1000
-		};
-		this.watchId = navigator.geolocation.getCurrentPosition(this.geoSuccess, this.geoError, geoOptions);
-	};
-
-	geoSuccess = (position) => {
-		const location = JSON.stringify(position);
-		console.log('position:ios: ', location);
-	};
-
-	geoError = (error) => {
-		console.log('err:ios: ', error);
-	};
 	
-	findLocationHandler = async () => {
+	findLocationHandler = () => {
 		//Check ios permission in info.plist it's nor working
-		if (Platform.OS === 'ios') { 
-			navigator.geolocation.setRNConfiguration({ skipPermissionRequests: true });
-			const res = navigator.geolocation.requestAuthorization();
-			if (res) {
-				this.watchId = navigator.geolocation.watchPosition(
-					(position) => {
-						console.log('position: ', position);
-						this.setState({
-							latitude: position.coords.latitude,
-							longitude: position.coords.longitude
-						});
-					},
-					(error) => {
-						console.log('Error: ', error);
-					},
-					{
-						enableHighAccuracy: false,
-						timeout: 1,
-						distanceFilter: 1
-					}
-				);	
-			}
-		} else {
-			this.watchId = navigator.geolocation.watchPosition(
-				(position) => {
-					console.log('position: ', position);
-					this.setState({
-						latitude: position.coords.latitude,
-						longitude: position.coords.longitude
-					});
-				},
-				(error) => {
-					console.log('Error: ', error);
-				},
-				{
-					enableHighAccuracy: false,
-					timeout: 1,
-					distanceFilter: 1
-				}
-			);	
-
-		}
+		//Continue here
+		this.watchId = navigator.geolocation.watchPosition(
+			(position) => {
+				console.log('position: ', position);
+				 this.setState({
+					latitude: position.coords.latitude,
+					longitude: position.coords.longitude
+				});
+			 },
+			 (error) => {
+				 console.log('Error: ', error);
+			 },
+			 {
+				 enableHighAccuracy: false,
+				 timeout: 1,
+				 distanceFilter: 1
+			 }
+		 );		
     };
     
 
@@ -393,6 +352,19 @@ export default class Incidencias extends Component {
           } catch (err) {
             console.warn(err)
           }
+	};
+
+	requestLocationPermissioniOS = () => {
+		// this.watchId = navigator.geolocation.requestAuthorization();
+		Permissions.check('location', {type: 'always'}).then(response => {
+			console.log('check', response);
+			if (response === 'authorized') {
+				this.setState({ requestiOSLocation:  true });
+				this.findLocationHandler()
+			} else {
+				this.setState({ requestiOSLocation:  false });
+			}
+		  });
 	};
 
 	sendIncidentHandler = () => {
@@ -519,30 +491,70 @@ export default class Incidencias extends Component {
 	};
 	typeOfLocation = (text) => {
 		this.setState({ typeOfLocation: text }, () => {
-			if (this.state.typeOfLocation === 'Su ubicación actual') {
-				const updatedLocationForm = {
-					...this.state.formUbicacion
-				};
-				for (let key in updatedLocationForm) {
-					updatedLocationForm[key].valid = true;
+			if (Platform.OS === 'android') {
+				if (this.state.typeOfLocation === 'Su ubicación actual') {
+					const updatedLocationForm = {
+						...this.state.formUbicacion
+					};
+					for (let key in updatedLocationForm) {
+						updatedLocationForm[key].valid = true;
+					}
+					this.setState({
+						formUbicacion: updatedLocationForm,
+						formUbicacionIsValid: true,
+						showMap: true
+					});
+				} else {
+					const updatedLocationForm = {
+						...this.state.formUbicacion
+					};
+					for (let key in updatedLocationForm) {
+						updatedLocationForm[key].valid = false;
+					}
+					this.setState({
+						formUbicacion: updatedLocationForm,
+						formUbicacionIsValid: false,
+						showMap: false
+					});
 				}
-				this.setState({
-					formUbicacion: updatedLocationForm,
-					formUbicacionIsValid: true,
-					showMap: true
-				});
 			} else {
-				const updatedLocationForm = {
-					...this.state.formUbicacion
-				};
-				for (let key in updatedLocationForm) {
-					updatedLocationForm[key].valid = false;
+				if (this.state.requestiOSLocation && this.state.typeOfLocation === 'Su ubicación actual') {
+					const updatedLocationForm = {
+						...this.state.formUbicacion
+					};
+					for (let key in updatedLocationForm) {
+						updatedLocationForm[key].valid = true;
+					}
+					this.setState({
+						formUbicacion: updatedLocationForm,
+						formUbicacionIsValid: true,
+						showMap: true
+					});
+				} else {
+					this.setState({ typeOfLocation: 'Dirección específica' })
+					!this.state.requestiOSLocation && Alert.alert(
+						'Reporte', 
+						'Active su ubicación GPS', 
+						[ 
+							{ text: 'Si', }, 
+							{ text: 'No', }, 
+						], 
+						{
+							cancelable: false
+						},
+					);
+					const updatedLocationForm = {
+						...this.state.formUbicacion
+					};
+					for (let key in updatedLocationForm) {
+						updatedLocationForm[key].valid = false;
+					}
+					this.setState({
+						formUbicacion: updatedLocationForm,
+						formUbicacionIsValid: false,
+						showMap: false
+					});
 				}
-				this.setState({
-					formUbicacion: updatedLocationForm,
-					formUbicacionIsValid: false,
-					showMap: false
-				});
 			}
 		});
 	};

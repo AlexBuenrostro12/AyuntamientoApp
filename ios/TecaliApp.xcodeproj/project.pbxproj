@@ -11,6 +11,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		15260A3F2328019B00E1EEFA /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 15260A342328018C00E1EEFA /* libReactNativePermissions.a */; };
 		157B0C2C23170A6600C4BF7A /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 157B0C2523170A5500C4BF7A /* libRCTWebSocket.a */; };
 		157B0C3323170AA100C4BF7A /* libRNFIRMessaging.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 157B0C3223170A9B00C4BF7A /* libRNFIRMessaging.a */; };
 		157B0C3A23170AD400C4BF7A /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 157B0C3923170ACE00C4BF7A /* libRNFetchBlob.a */; };
@@ -94,6 +95,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
+		};
+		15260A0A2328018C00E1EEFA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 15858EDD230C5DDA00E5A6B0 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 382D29C3A91ACFC87D6061980CCF446D;
+			remoteInfo = ReactNativePermissions;
+		};
+		15260A332328018C00E1EEFA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 152609E92328018C00E1EEFA /* ReactNativePermissions.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9D23B34F1C767B80008B4819;
+			remoteInfo = ReactNativePermissions;
 		};
 		157B0C2423170A5500C4BF7A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -592,6 +607,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = TecaliApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = TecaliApp/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		152609E92328018C00E1EEFA /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		157B0C1D23170A5500C4BF7A /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		157B0C2D23170A9B00C4BF7A /* RNFIRMessaging.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFIRMessaging.xcodeproj; path = "../node_modules/react-native-fcm/ios/RNFIRMessaging.xcodeproj"; sourceTree = "<group>"; };
 		157B0C3423170ACE00C4BF7A /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
@@ -670,6 +686,7 @@
 				157B0C9C23170CCB00C4BF7A /* libAirMaps.a in Frameworks */,
 				157B0CA323170CED00C4BF7A /* libRCTGeolocation.a in Frameworks */,
 				157B0CAA23170D1000C4BF7A /* libRNAddCalendarEvent.a in Frameworks */,
+				15260A3F2328019B00E1EEFA /* libReactNativePermissions.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -772,6 +789,14 @@
 				15858ED6230C5BD400E5A6B0 /* libjsiexecutor.a */,
 				15858ED8230C5BD400E5A6B0 /* libjsi-tvOS.a */,
 				15858EDA230C5BD400E5A6B0 /* libjsiexecutor-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		152609EA2328018C00E1EEFA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				15260A342328018C00E1EEFA /* libReactNativePermissions.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -934,6 +959,7 @@
 				15EED1AC23184B9600B7FA94 /* QBImagePicker.bundle */,
 				15ED02692316FEFE00F2CB0F /* libReact.a */,
 				15A59935230C71A100C44D49 /* libreact-native-async-storage.a */,
+				15260A0B2328018C00E1EEFA /* libReactNativePermissions.a */,
 				15CFB1C8230DCBBE0042B2B8 /* libRNGestureHandler.a */,
 				15EED1AE23184B9600B7FA94 /* libRNImageCropPicker.a */,
 				15CFB108230DC0FC0042B2B8 /* libRNReanimated.a */,
@@ -974,6 +1000,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				152609E92328018C00E1EEFA /* ReactNativePermissions.xcodeproj */,
 				157B0CA423170D0A00C4BF7A /* RNAddCalendarEvent.xcodeproj */,
 				157B0C9D23170CE900C4BF7A /* RCTGeolocation.xcodeproj */,
 				157B0C9623170CC500C4BF7A /* AirMaps.xcodeproj */,
@@ -1151,6 +1178,7 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 767JZZ9SM8;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
@@ -1256,6 +1284,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 152609EA2328018C00E1EEFA /* Products */;
+					ProjectRef = 152609E92328018C00E1EEFA /* ReactNativePermissions.xcodeproj */;
+				},
+				{
 					ProductGroup = 157B0CA523170D0A00C4BF7A /* Products */;
 					ProjectRef = 157B0CA423170D0A00C4BF7A /* RNAddCalendarEvent.xcodeproj */;
 				},
@@ -1325,6 +1357,20 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		15260A0B2328018C00E1EEFA /* libReactNativePermissions.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativePermissions.a;
+			remoteRef = 15260A0A2328018C00E1EEFA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		15260A342328018C00E1EEFA /* libReactNativePermissions.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativePermissions.a;
+			remoteRef = 15260A332328018C00E1EEFA /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		157B0C2523170A5500C4BF7A /* libRCTWebSocket.a */ = {
@@ -1991,6 +2037,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 767JZZ9SM8;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -2013,6 +2060,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 767JZZ9SM8;
 				INFOPLIST_FILE = TecaliAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
