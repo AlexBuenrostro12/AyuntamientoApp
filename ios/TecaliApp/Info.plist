@@ -13,7 +13,7 @@
 		<string>boton app.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<string>com.gobtecalitlan.TecaliApp</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -42,17 +42,19 @@
 		</dict>
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
-	<string>TecaliApp quiere usar tu calendario</string>
+	<string>TecaliApp quiere acceder a tu calendario</string>
 	<key>NSCameraUsageDescription</key>
 	<string>TecaliApp quiere acceder a tu camara</string>
 	<key>NSContactsUsageDescription</key>
-	<string>TecaliApp quiere usar tus contactos</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>TecaliApp quiere usar tu ubicaciòn</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>TecaliApp quiere usar tu ubicaciòn</string>
+	<string>TecaliApp quiere acceder a tus contactos</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>TecaliApp quiere acceder al uso del microfono</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>TecaliApp quiere acceder a tu ubicación</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TecaliApp quiere acceder a tu ubicación</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>TecaliApp quiere acceder a tu ubicación</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -82,7 +84,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
-		<string>external-accessory</string>
+		<string>fetch</string>
 		<string>location</string>
 		<string>remote-notification</string>
 	</array>
@@ -98,5 +100,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 </dict>
 </plist>

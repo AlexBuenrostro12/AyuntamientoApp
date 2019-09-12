@@ -98,6 +98,8 @@ export default class Home extends Component {
 
 	//Obtiene el token y tiempo de expiracion almacenado globalmente en la app
 	async componentDidMount() {
+		//Request lcoation permissons
+		Platform.OS === 'ios' ? this.watchId = navigator.geolocation.requestAuthorization() : null;
 		this.changeFirstGifHandler();
 		//BackHandler
 		this._willBlurSubscription = this.props.navigation.addListener('willBlur', (payload) =>

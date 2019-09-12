@@ -1,8 +1,8 @@
 import React from 'react';
-import { KeyboardAvoidingView } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
 const KBAvoiding = (props) => (
-    <KeyboardAvoidingView style={{ flex: 1 }} enabled>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' && 'padding'} enabled>
         {props.children}
     </KeyboardAvoidingView>
 );

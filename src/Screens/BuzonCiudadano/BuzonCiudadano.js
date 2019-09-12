@@ -11,6 +11,7 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import Buzon from '../../components/Buzon/Buzon';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
+import KBAvoiding from '../../components/KBAvoiding/KBAvoiding';
 
 const StyledSafeArea = styled.SafeAreaView`
 	flex: 1;
@@ -511,9 +512,11 @@ export default class BuzonCiudadano extends Component {
 						/>
 					</StyledHeader>
 					<StatusBar color="#f39028" />
-					<View style={{ flex: 1, margin: 10 }}>
-						{this.state.addSuggestion ? addSugerencia : sugerencia}
-					</View>
+					<KBAvoiding>
+						<View style={{ flex: 1, margin: 10 }}>
+							{this.state.addSuggestion ? addSugerencia : sugerencia}
+						</View>
+					</KBAvoiding>
 				</StyledContainer>
 			</StyledSafeArea>
 		);

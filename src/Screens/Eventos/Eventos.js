@@ -26,6 +26,7 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import CustomInput from '../../components/CustomInput/CustomInput';
 import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
+import KBAvoiding from '../../components/KBAvoiding/KBAvoiding';
 
 const theme = {
 	commonFlex: '1',
@@ -992,17 +993,19 @@ export default class Eventos extends Component {
 						/>
 					</StyledHeader>
 					<StatusBar color="#000000" />
-					<View style={{ flex: 1, margin: 10 }}>
-						<ThemeProvider theme={theme}>
-							{!this.state.addEvent && !this.state.changeBanner ? (
-								eventos
-							) : this.state.addEvent && !this.state.changeBanner ? (
-								addEvent
-							) : this.state.changeBanner && !this.state.addEvent ? (
-								changeBanner
-							) : null}
-						</ThemeProvider>
-					</View>
+					<KBAvoiding>
+						<View style={{ flex: 1, margin: 10 }}>
+							<ThemeProvider theme={theme}>
+								{!this.state.addEvent && !this.state.changeBanner ? (
+									eventos
+								) : this.state.addEvent && !this.state.changeBanner ? (
+									addEvent
+								) : this.state.changeBanner && !this.state.addEvent ? (
+									changeBanner
+								) : null}
+							</ThemeProvider>
+						</View>
+					</KBAvoiding>
 				</StyledContainer>
 			</StyledSafeArea>
 		);
