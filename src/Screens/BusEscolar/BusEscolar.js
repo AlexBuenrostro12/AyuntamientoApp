@@ -8,7 +8,7 @@ import {
 	TimePickerAndroid,
 	Image, 
 	Dimensions,
-	BackHandler
+	BackHandler,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderToolbar from '../../components/HeaderToolbar/HeaderToolbar';
@@ -20,6 +20,7 @@ import axios from '../../../axios-ayuntamiento';
 import Buses from '../../components/Buses/Buses';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
+import KBAvoiding from '../../components/KBAvoiding/KBAvoiding';
 
 export default class BusEscolar extends Component {
 	_didFocusSubscription;
@@ -301,6 +302,7 @@ export default class BusEscolar extends Component {
 		//check if the form is valid
 		this.setState({ loading: true });
 		if (this.state.formIsValid) {
+
 			const formData = {};
 			for (let formElementIdentifier in this.state.form) {
 				formData[formElementIdentifier] = this.state.form[formElementIdentifier].value;
@@ -483,9 +485,11 @@ export default class BusEscolar extends Component {
 						/>	
 					</View>
 					<StatusBar color="#bac95f" />
-					<View style={{ flex: 1, margin: 10 }}>
-						{!this.state.addBus ? bus : addBus}
-					</View>
+					<KBAvoiding>
+						<View style={{ flex: 1, margin: 10 }}>
+							{!this.state.addBus ? bus : addBus}
+						</View>
+					</KBAvoiding>
 				</View>
 			</SafeAreaView>
 		);

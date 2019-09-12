@@ -15,6 +15,7 @@ import CustomCardItemTitle from '../../components/CustomCardItemTitle/CustomCard
 import CustomInput from '../../components/CustomInput/CustomInput';
 import firebaseClient from '../../components/AuxiliarFunctions/FirebaseClient';
 import CustomAddBanner from '../../components/CustomAddBanner/CustomAddBanner';
+import KBAvoiding from '../../components/KBAvoiding/KBAvoiding';
 
 const theme = {
 	commonFlex: '1',
@@ -654,9 +655,11 @@ export default class Noticias extends Component {
 						/>
 					</StyledHeader>
 					<StatusBar color="#c7175b" />
-					<View style={{ flex: 1, margin: 10 }}>
-						<ThemeProvider theme={theme}>{!this.state.addNew ? noticias : addNew}</ThemeProvider>
-					</View>
+					<KBAvoiding>
+						<View style={{ flex: 1, margin: 10 }}>
+							<ThemeProvider theme={theme}>{!this.state.addNew ? noticias : addNew}</ThemeProvider>
+						</View>
+					</KBAvoiding>
 				</StyledContainer>
 			</StyledSafeArea>
 		);

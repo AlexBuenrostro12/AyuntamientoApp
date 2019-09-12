@@ -23,6 +23,7 @@ import CustomSpinner from '../../components/CustomSpinner/CustomSpinner';
 import CustomInput from '../../components/CustomInput/CustomInput';
 import axios from '../../../axios-ayuntamiento';
 import TurismoAux from '../../components/TurismoAux/TurismoAux';
+import KBAvoiding from '../../components/KBAvoiding/KBAvoiding';
 
 const { height, width } = Dimensions.get('window');
 
@@ -584,7 +585,9 @@ export default class Turismo extends Component {
 						/>
 					</View>
 					<StatusBar color="#00a3e4" />
-					<View style={{ flex: 1, margin: 10 }}>{!this.state.addPlace ? body : addPlace}</View>
+					<KBAvoiding>
+						<View style={{ flex: 1, margin: 10 }}>{!this.state.addPlace ? body : addPlace}</View>
+					</KBAvoiding>
 				</View>
 			</SafeAreaView>
 		);

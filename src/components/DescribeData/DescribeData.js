@@ -336,13 +336,13 @@ export default class DescribreData extends Component {
 			}
 		} else {
 			const { config, fs } = RNFetchBlob;
-			let DownloadDir = fs.dirs.DownloadDir;
+			let DocumentDir = fs.dirs.DocumentDir;
 			const stringName = this.makeNameHandler();
 			const nameImage = String(this.state.nameOfImage) + String(stringName) + '.png';
 			console.log('nameImage: ', nameImage);
 			let options = {
 				fileCache: false,
-				path: DownloadDir + '/' + String(nameImage)
+				path: DocumentDir + '/' + String(nameImage)
 			};
 					
 			config(options).fetch('GET', url).then((res) => {
